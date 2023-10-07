@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-0jj-2ypgi=tz+(es1-6*%vqhd-90ft+#a%qzbz9yn8orneh@m7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['development-env.eba-4pe5cwek.us-west-2.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['development-env.eba-4pe5cwek.us-west-2.elasticbeanstalk.com', 'solo-connect-prod.eba-4pe5cwek.us-west-2.elasticbeanstalk.com', 'localhost']
 
 
 # Application definition
@@ -116,6 +116,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join('.', 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
