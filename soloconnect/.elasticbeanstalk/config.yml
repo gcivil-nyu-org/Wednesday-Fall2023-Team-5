@@ -8,6 +8,9 @@ environment-defaults:
   development-env:
     branch: null
     repository: null
+  soloconnect-integration:
+    branch: null
+    repository: null
 global:
   application_name: soloconnect
   branch: null
