@@ -1,9 +1,9 @@
 branch-defaults:
   default:
-    environment: development-env
+    environment: soloconnect-integration
     group_suffix: null
   feature-initial-deployment:
-    environment: development-env
+    environment: soloconnect-integration
 environment-defaults:
   development-env:
     branch: null
