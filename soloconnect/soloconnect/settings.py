@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['development-env.eba-4pe5cwek.us-west-2.elasticbeanstalk.com', 'solo-connect-prod.eba-4pe5cwek.us-west-2.elasticbeanstalk.com', 'localhost', '127.0.0.1', 'soloconnect-integration.us-west-2.elasticbeanstalk.com']
 
-
 # Application definition
 
 INSTALLED_APPS = [
