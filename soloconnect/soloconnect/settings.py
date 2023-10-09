@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'soloconnect.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
+        'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'GEN0rm5MN8u3fGMELD49',
         'HOST': 'containers-us-west-48.railway.app',
