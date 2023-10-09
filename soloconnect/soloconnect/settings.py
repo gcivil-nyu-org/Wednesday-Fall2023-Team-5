@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'soloconnect.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'Ydhe3kX9SduorskPP0B1',
+        'HOST': 'containers-us-west-48.railway.app',
+        'PORT': '6762',
     }
 }
 

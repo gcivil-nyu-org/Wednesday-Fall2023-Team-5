@@ -7,8 +7,8 @@ class CustomUser(AbstractUser):
     dob = models.DateField()
     bio = models.TextField(max_length=500, blank=True)
     email = models.EmailField(max_length=254, unique=True)
-
-    USERNAME_FIELD = email
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return f"fname: {self.first_name}, lname: {self.last_name}, email: {self.email}"
