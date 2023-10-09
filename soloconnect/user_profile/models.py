@@ -1,9 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
-# Create your models here.
-# not fully finished yet
 class CustomUser(AbstractUser):
     ## for user interaction
     username = None
@@ -15,3 +12,6 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"fname: {self.first_name}, lname: {self.last_name}, email: {self.email}"
+
+class MatchingPreferences(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
