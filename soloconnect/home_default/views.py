@@ -3,4 +3,4 @@ from django.http import HttpResponse
 
 # Create your views here.
 def home_page(request):
-    return HttpResponse("This is a placeholder for the home page")
+    return render(request, 'home_default/home.html', {})
