@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return f"fname: {self.first_name}, lname: {self.last_name}, email: {self.email}"
+        return f"fname: {self.first_name}, lname: {self.last_name}, email: {self.email}, bio: {self.bio}"
 
 class MatchingPreferences(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
