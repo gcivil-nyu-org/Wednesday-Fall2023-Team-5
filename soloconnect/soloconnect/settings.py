@@ -128,5 +128,5 @@ STATIC_ROOT = os.path.join('.', 'static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = 'view_profile'
-LOGIN_REDIRECT_URL = 'home_page'
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'view_profile'
