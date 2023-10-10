@@ -1,6 +1,6 @@
 {% extends 'home_default/base.html' %}
 {% block content %}
-    <p>This is a placeholder for the home page</p>
+    <h1>Home</h1>
     {% if user.is_authenticated %}
         <a href="{% url 'logout' %}">Log Out</a>
         <br>
