@@ -65,6 +65,6 @@ class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     dob = models.DateField(null=True)
     bio = models.TextField(max_length=500, blank=True, null=True)
-    university = models.TextField(max_length=100, null=True)
+    university = models.TextField(max_length=200, null=True)
     # profile_picture = models.ImageField()
     # matching = ArrayField() mapped to PREFERENCE_MAP (from helpers.py)
