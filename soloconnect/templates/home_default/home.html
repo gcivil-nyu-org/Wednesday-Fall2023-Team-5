@@ -3,6 +3,8 @@
     <p>This is a placeholder for the home page</p>
     {% if user.is_authenticated %}
         <a href="{% url 'logout' %}">Log Out</a>
+        <br>
+        <a href="{% url 'view_profile' %}">Profile</a>
     {% else %}
         <a href="{% url 'register_account' %}"> Register Account </a>
         <br>

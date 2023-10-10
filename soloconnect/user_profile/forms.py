@@ -9,7 +9,7 @@ class AccountRegistrationForm(UserCreationForm):
         model = CustomUser
         fields = ("first_name", "last_name", "email")
 
-class ProfileCreationForm(forms.ModelForm):
+class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ("dob", "bio", "university")
