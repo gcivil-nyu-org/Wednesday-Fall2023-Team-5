@@ -71,3 +71,4 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"User profile for {self.user.email}"
+
