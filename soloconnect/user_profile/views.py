@@ -12,6 +12,7 @@ def create_user_account(request):
         profile_form = forms.ProfileCreationForm(request.POST)
         if registration_form.is_valid() and profile_form.is_valid():
             registration_form.save()
+            profile_form.save()
             # THIS HAS NOT BEEN CREATED - IT WILL 404 IF UNCOMMENTED
             # redirect(reverse('add_matching_preferences'))
             return redirect(reverse('home_page'))
