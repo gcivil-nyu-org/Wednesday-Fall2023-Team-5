@@ -1,8 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
-from helpers import PREFERENCE_MAP
+from .helpers import PREFERENCE_MAP
 
 
 class UserManager(BaseUserManager):
@@ -54,13 +55,16 @@ class CustomUser(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return f"fname: {self.first_name}, lname: {self.last_name}, email: {self.email}, bio: {self.bio}"
+        return f"fname: {self.first_name}, lname: {self.last_name}, email: {self.email}"
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    dob = models.DateField()
-    bio = models.TextField(max_length=500, blank=True)
-    university = models.TextField(max_length=100)
+    # When you reference the custom user model as a foreign key, use settings.AUTH_USER_MODEL
+    # this is because CustomUser has taken the place of User as AUTH_USER_MODEL
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    dob = models.DateField(null=True)
+    bio = models.TextField(max_length=500, blank=True, null=True)
+    university = models.TextField(max_length=100, null=True)
     # profile_picture = models.ImageField()
     # matching = ArrayField() mapped to PREFERENCE_MAP (from helpers.py)
