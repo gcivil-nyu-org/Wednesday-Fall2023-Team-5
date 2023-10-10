@@ -61,10 +61,12 @@ class CustomUser(AbstractUser):
 class UserProfile(models.Model):
     # When you reference the custom user model as a foreign key, use settings.AUTH_USER_MODEL
     # this is because CustomUser has taken the place of User as AUTH_USER_MODEL
-
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True)
     dob = models.DateField(null=True)
     bio = models.TextField(max_length=500, blank=True, null=True)
     university = models.TextField(max_length=200, null=True)
+
     # profile_picture = models.ImageField()
     # matching = ArrayField() mapped to PREFERENCE_MAP (from helpers.py)
+    def __str__(self):
+        return f"User profile for {self.user.email}"

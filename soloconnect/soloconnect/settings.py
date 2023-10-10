@@ -76,11 +76,11 @@ WSGI_APPLICATION = 'soloconnect.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'railway',
         'USER': 'postgres',
-        'PASSWORD': 'GEN0rm5MN8u3fGMELD49',
-        'HOST': 'containers-us-west-48.railway.app',
-        'PORT': '6762',
+        'PASSWORD': 'BQAdFBwe520KBUAZtzF2',
+        'HOST': 'containers-us-west-159.railway.app',
+        'PORT': '7875',
     }
 }
 
@@ -127,3 +127,5 @@ STATIC_ROOT = os.path.join('.', 'static')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'home_page'
