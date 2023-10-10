@@ -6,6 +6,8 @@ branch-defaults:
     environment: soloconnect-integration
   feature-initial-deployment:
     environment: soloconnect-integration
+  feature-profile-creation:
+    environment: soloconnect-integration
 environment-defaults:
   development-env:
     branch: null
