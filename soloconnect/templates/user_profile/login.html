@@ -1,0 +1,14 @@
+{% extends 'home_default/base.html' %}
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    <fieldset>
+        {{ form.as_p }}
+    </fieldset>
+    <button type="submit">Login</button>
+</form>
+<small>
+    Need an Account?
+    <a href="{% url "register_account" %}">Sign Up</a>
+</small>
+{% endblock content %}
