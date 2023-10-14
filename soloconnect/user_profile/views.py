@@ -11,17 +11,21 @@ from . import forms
 
 # Create your views here.
 
+
 # User Profile CRUD
 def create_user_account(request):
     if request.method == "POST":
         registration_form = forms.AccountRegistrationForm(request.POST)
         if registration_form.is_valid():
             registration_form.save()
-            return redirect(reverse('login'))
+            return redirect(reverse("login"))
     else:
         registration_form = forms.AccountRegistrationForm()
 
-    return render(request, 'user_profile/user_registration.html', {"acc_form": registration_form})
+    return render(
+        request, "user_profile/user_registration.html", {"acc_form": registration_form}
+    )
+
 
 @login_required
 def view_profile(request):
@@ -42,15 +46,19 @@ def view_profile(request):
     }
     return render(request, "user_profile/view_profile.html", context)
 
+
 @login_required
 def edit_profile(request):
     if request.method == "POST":
-        profile_form = forms.ProfileUpdateForm(request.POST, instance=request.user.userprofile)
+        profile_form = forms.ProfileUpdateForm(
+            request.POST, instance=request.user.userprofile
+        )
         if profile_form.is_valid():
             profile_form.save()
-            return redirect(reverse('view_profile'))
+            return redirect(reverse("view_profile"))
 
     profile_form = forms.ProfileUpdateForm(instance=request.user.userprofile)
 
-    return render(request, 'user_profile/edit_profile.html', {"profile_form": profile_form})
-
+    return render(
+        request, "user_profile/edit_profile.html", {"profile_form": profile_form}
+    )

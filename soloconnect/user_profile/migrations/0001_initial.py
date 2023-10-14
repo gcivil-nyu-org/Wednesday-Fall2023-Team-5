@@ -8,7 +8,6 @@ import user_profile.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -111,7 +110,9 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "users",
                 "abstract": False,
             },
-            managers=[("objects", user_profile.models.UserManager()),],
+            managers=[
+                ("objects", user_profile.models.UserManager()),
+            ],
         ),
         migrations.CreateModel(
             name="UserProfile",

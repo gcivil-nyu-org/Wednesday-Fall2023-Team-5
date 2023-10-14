@@ -14,16 +14,17 @@ Preference map key:
 11: sports
 """
 
-PREFERENCE_MAP = ['hiking',
-                  'clubbing',
-                  'beach',
-                  'sightseeing',
-                  'bar hopping',
-                  'food tourism',
-                  'museums',
-                  'historical/cultural sites',
-                  'spa',
-                  'relaxed',
-                  'camping',
-                  'sports'
-                  ]
+PREFERENCE_MAP = [
+    "hiking",
+    "clubbing",
+    "beach",
+    "sightseeing",
+    "bar hopping",
+    "food tourism",
+    "museums",
+    "historical/cultural sites",
+    "spa",
+    "relaxed",
+    "camping",
+    "sports",
+]
