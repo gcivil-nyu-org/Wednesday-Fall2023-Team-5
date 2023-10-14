@@ -8,7 +8,7 @@ script:
   - flake8 --exclude=migrations .
   - coverage run --source=soloconnect manage.py test
 install:
-  - pip install -r requirements.txt
+  - pip install -r soloconnect/requirements.txt
 
 after_script:
   - python -m coveralls
