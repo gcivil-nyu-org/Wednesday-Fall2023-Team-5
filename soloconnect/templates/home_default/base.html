@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>SoloConnect</title>
-  </head>
-  <body>
-    <header>
-        <a href="{% url 'home_page' %}">Home</a>
-    </header>
-	{% block content %}
-    {% endblock content %}
-  </body>
+</head>
+<body>
+<header>
+    <a href="{% url 'home_page' %}">Home</a>
+</header>
+{% block content %}
+{% endblock content %}
+</body>
 </html>

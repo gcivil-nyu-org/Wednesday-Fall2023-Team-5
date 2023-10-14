@@ -1,13 +1,11 @@
-from django.shortcuts import render
-
 # Create your views here.
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import CustomUser, UserProfile
-from django.conf import settings
-from django.contrib.auth.decorators import login_required
+
 from . import forms
+
 
 # Create your views here.
 
