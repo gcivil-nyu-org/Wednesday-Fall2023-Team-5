@@ -3,6 +3,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse
+import logging
 
 from . import forms
 
@@ -12,11 +13,14 @@ from . import forms
 
 # User Profile CRUD
 def create_user_account(request):
+    logger = logging.getLogger("django")
     if request.method == "POST":
         registration_form = forms.AccountRegistrationForm(request.POST)
         if registration_form.is_valid():
             registration_form.save()
+            logger.info("Saved form")
             return redirect(reverse("user_profile:login"))
+
     else:
         registration_form = forms.AccountRegistrationForm()
 
@@ -29,7 +33,8 @@ def create_user_account(request):
 def view_profile(request):
     bio = "There's nothing here"
     university = "There's nothing here"
-
+    logger = logging.getLogger("django")
+    logger.info("Here in view profile")
     if request.user.userprofile.bio is not None:
         bio = request.user.userprofile.bio
     if request.user.userprofile.university is not None:

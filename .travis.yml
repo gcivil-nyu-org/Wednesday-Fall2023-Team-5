@@ -31,4 +31,4 @@ deploy:
     env: "soloconnect-dev"
     bucket_name: "elasticbeanstalk-us-west-2-698845801092"
     on:
-      branch: feature-travis-integration
+      branch: feature-travis-integration-restructure
