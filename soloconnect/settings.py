@@ -128,5 +128,5 @@ STATIC_ROOT = os.path.join("soloconnect", "static")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = "view_profile"
+LOGIN_URL = "user_profile:login"
+LOGIN_REDIRECT_URL = "user_profile:view_profile"
