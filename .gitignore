@@ -1,2 +1,4 @@
 .idea/
 /soloconnect/.pytest_cache/
+/test/.pytest_cache/
+/.pytest_cache/
