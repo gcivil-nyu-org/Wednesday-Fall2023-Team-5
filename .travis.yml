@@ -17,27 +17,27 @@ deploy:
   - provider: elasticbeanstalk
     access_key_id: $ACCESS_KEY_ID
     secret_access_key: $SECRET_ACCESS_KEY
-    region: "us-west-2"
-    app: "soloconnect"
-    env: "soloconnect-integration"
-    bucket_name: "elasticbeanstalk-us-west-2-698845801092"
+    region: $REGION
+    app: $APP_NAME
+    env: $INTEGRATION
+    bucket_name: $BUCKET_NAME
     on:
       branch: develop
   - provider: elasticbeanstalk
     access_key_id: $ACCESS_KEY_ID
     secret_access_key: $SECRET_ACCESS_KEY
-    region: "us-west-2"
-    app: "soloconnect"
-    env: "soloconnect-dev"
-    bucket_name: "elasticbeanstalk-us-west-2-698845801092"
+    region: $REGION
+    app: $APP_NAME
+    env: $DEV
+    bucket_name: $BUCKET_NAME
     on:
       branch: feature-travis-integration-restructure
   - provider: elasticbeanstalk
     access_key_id: $ACCESS_KEY_ID
     secret_access_key: $SECRET_ACCESS_KEY
-    region: "us-west-2"
-    app: "soloconnect"
-    env: "soloconnect-production"
-    bucket_name: "elasticbeanstalk-us-west-2-698845801092"
+    region: $REGION
+    app: $APP_NAME
+    env: $PROD
+    bucket_name: $BUCKET_NAME
     on:
       branch: master
