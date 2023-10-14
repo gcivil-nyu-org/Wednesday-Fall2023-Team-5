@@ -1,0 +1,43 @@
+language: python
+os: linux
+python:
+  - "3.8"
+# command to install dependencies
+script:
+  - black --check .
+  - flake8 --exclude=migrations --max-line-length=99 .
+  - coverage run --source=soloconnect manage.py test
+install:
+  - pip install -r requirements.txt
+
+after_script:
+  - python -m coveralls
+
+deploy:
+  - provider: elasticbeanstalk
+    access_key_id: $ACCESS_KEY_ID
+    secret_access_key: $SECRET_ACCESS_KEY
+    region: $REGION
+    app: $APP_NAME
+    env: $INTEGRATION
+    bucket_name: $BUCKET_NAME
+    on:
+      branch: develop
+  - provider: elasticbeanstalk
+    access_key_id: $ACCESS_KEY_ID
+    secret_access_key: $SECRET_ACCESS_KEY
+    region: $REGION
+    app: $APP_NAME
+    env: $DEV
+    bucket_name: $BUCKET_NAME
+    on:
+      branch: feature-travis-integration-restructure
+  - provider: elasticbeanstalk
+    access_key_id: $ACCESS_KEY_ID
+    secret_access_key: $SECRET_ACCESS_KEY
+    region: $REGION
+    app: $APP_NAME
+    env: $PROD
+    bucket_name: $BUCKET_NAME
+    on:
+      branch: master
