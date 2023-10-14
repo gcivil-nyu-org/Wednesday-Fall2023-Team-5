@@ -14,12 +14,21 @@ after_script:
   - python -m coveralls
 
 deploy:
-  provider: elasticbeanstalk
-  access_key_id: $ACCESS_KEY_ID
-  secret_access_key: $SECRET_ACCESS_KEY
-  region: "us-west-2"
-  app: "soloconnect"
-  env: "soloconnect-integration"
-  bucket_name: "elasticbeanstalk-us-west-2-698845801092"
-  on:
-    branch: feature-travis-integration
+  - provider: elasticbeanstalk
+    access_key_id: $ACCESS_KEY_ID
+    secret_access_key: $SECRET_ACCESS_KEY
+    region: "us-west-2"
+    app: "soloconnect"
+    env: "soloconnect-integration"
+    bucket_name: "elasticbeanstalk-us-west-2-698845801092"
+    on:
+      branch: develop
+  - provider: elasticbeanstalk
+    access_key_id: $ACCESS_KEY_ID
+    secret_access_key: $SECRET_ACCESS_KEY
+    region: "us-west-2"
+    app: "soloconnect"
+    env: "soloconnect-dev"
+    bucket_name: "elasticbeanstalk-us-west-2-698845801092"
+    on:
+      branch: feature-travis-integration
