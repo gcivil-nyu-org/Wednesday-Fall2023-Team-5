@@ -30,7 +30,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "soloconnect-integration.us-west-2.elasticbeanstalk.com",
     "soloconnect-production.us-west-2.elasticbeanstalk.com",
-    "soloconnect-dev.us-west-2.elasticbeanstalk.com"
+    "soloconnect-dev.us-west-2.elasticbeanstalk.com",
 ]
 
 # Application definition
