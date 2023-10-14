@@ -1,8 +1,0 @@
-{% extends 'home_default/base.html' %}
-{% block content %}
-    <p>Welcome, {{ first_name }} {{ last_name | first }}.</p>
-    <p>Email: {{ email }}</p>
-    <p>University: {{ university }}</p>
-    <p>Bio: {{ bio }}</p>
-    <a href="{% url 'edit_profile' %}">Edit profile</a>
-{% endblock content %}
