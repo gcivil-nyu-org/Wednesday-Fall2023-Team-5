@@ -6,7 +6,7 @@ python:
 script:
   - black --check .
   - flake8 --exclude=migrations .
-  - coverage run --source=soloconnect manage.py test
+  - coverage run --source=soloconnect soloconnect/manage.py test
 install:
   - pip install -r soloconnect/requirements.txt
 
