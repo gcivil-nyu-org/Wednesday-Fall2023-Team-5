@@ -88,6 +88,9 @@ DATABASES = {
         "NAME": os.getenv("RDS_DB_NAME"),
         "PASSWORD": os.getenv("RDS_PASSWORD"),
         "ENGINE": "django.db.backends.postgresql",
+        "TEST": {
+            "NAME": os.getenv("RDS_DB_NAME")
+        }
     }
 }
 
