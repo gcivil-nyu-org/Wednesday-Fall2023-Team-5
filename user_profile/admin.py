@@ -5,8 +5,16 @@ from django.utils.translation import gettext_lazy as _
 from .models import CustomUser, UserProfile
 
 
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
+    can_delete = False
+    verbose_name_plural = 'UserProfile'
+    fk_name = 'user'
+
+
 @admin.register(CustomUser)
 class UserAdmin(DjangoUserAdmin):
+    inlines = (UserProfileInline, )
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         (_("Personal info"), {"fields": ("first_name", "last_name")}),

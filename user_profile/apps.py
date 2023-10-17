@@ -6,4 +6,5 @@ class UserProfileConfig(AppConfig):
     name = "user_profile"
 
     def ready(self):
+        # DISCLAIMER Do not comment out the below line it will break so many things
         from .import signals
