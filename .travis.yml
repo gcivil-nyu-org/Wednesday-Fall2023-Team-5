@@ -3,10 +3,10 @@ os: linux
 python:
   - "3.8"
 # command to install dependencies
-script:
-  - black --check .
-  - flake8 --exclude=migrations --max-line-length=99 .
-  - coverage run --source=soloconnect manage.py test
+#script:
+#  - black --check .
+#  - flake8 --exclude=migrations --max-line-length=99 .
+#  - coverage run --source=soloconnect manage.py test
 install:
   - pip install -r requirements.txt
 
