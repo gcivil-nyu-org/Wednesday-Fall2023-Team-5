@@ -81,8 +81,12 @@ WSGI_APPLICATION = "soloconnect.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "PORT": os.getenv("RDS_PORT"),
+        "USER": os.getenv("RDS_USERNAME"),
+        "HOST": os.getenv("RDS_HOSTNAME"),
+        "NAME": os.getenv("RDS_DB_NAME"),
+        "PASSWORD": os.getenv("RDS_PASSWORD"),
+        "ENGINE": "django.db.backends.postgresql",
     }
 }
 
