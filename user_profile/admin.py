@@ -38,6 +38,7 @@ class UserAdmin(DjangoUserAdmin):
     ordering = ("email",)
 """
 
+
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
@@ -45,9 +46,11 @@ class UserProfileInline(admin.StackedInline):
     verbose_name_plural = "UserProfile"
     fk_name = "user"
 
+
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     pass
 
+
 class UserAdmin(AuthUserAdmin):
-    inlines = (UserProfileInline, )
+    inlines = (UserProfileInline,)
