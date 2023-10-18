@@ -28,3 +28,9 @@ PREFERENCE_MAP = [
     "camping",
     "sports",
 ]
+
+
+def email_is_valid(email):
+    if email.endswith(".edu") and email[0].isalpha():
+        return True
+    return False
