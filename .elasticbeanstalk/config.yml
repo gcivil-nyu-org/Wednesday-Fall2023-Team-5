@@ -8,8 +8,13 @@ branch-defaults:
     environment: soloconnect-integration
   settings-update:
     environment: soloconnect-db-test-alternate
+  stock-user-model:
+    environment: soloconnect-db-final
 environment-defaults:
   development-env:
+    branch: null
+    repository: null
+  soloconnect-db-final:
     branch: null
     repository: null
   soloconnect-integration:
