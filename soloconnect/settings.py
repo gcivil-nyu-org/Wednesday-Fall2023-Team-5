@@ -32,7 +32,7 @@ ALLOWED_HOSTS = [
     "soloconnect-integration.us-west-2.elasticbeanstalk.com",
     "soloconnect-production.us-west-2.elasticbeanstalk.com",
     "soloconnect-dev.us-west-2.elasticbeanstalk.com",
-    "soloconnect-db-final.us-west-2.elasticbeanstalk.com"
+    "soloconnect-db-final.us-west-2.elasticbeanstalk.com",
 ]
 
 # Application definition
@@ -89,9 +89,7 @@ DATABASES = {
         "NAME": os.getenv("RDS_DB_NAME"),
         "PASSWORD": os.getenv("RDS_PASSWORD"),
         "ENGINE": "django.db.backends.postgresql",
-        "TEST": {
-            "NAME": "testdatabase"
-        }
+        "TEST": {"NAME": "testdatabase"},
     }
 }
 
