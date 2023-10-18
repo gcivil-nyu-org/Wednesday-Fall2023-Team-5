@@ -28,9 +28,12 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "soloconnect-db-test.us-west-2.elasticbeanstalk.com",
     "soloconnect-integration.us-west-2.elasticbeanstalk.com",
     "soloconnect-production.us-west-2.elasticbeanstalk.com",
     "soloconnect-dev.us-west-2.elasticbeanstalk.com",
+    "soloconnect-db-final.us-west-2.elasticbeanstalk.com",
+    "soloconnect-production.us-east-1.elasticbeanstalk.com",
 ]
 
 # Application definition
@@ -81,8 +84,13 @@ WSGI_APPLICATION = "soloconnect.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "PORT": os.getenv("RDS_PORT"),
+        "USER": os.getenv("RDS_USERNAME"),
+        "HOST": os.getenv("RDS_HOSTNAME_PROD"),
+        "NAME": os.getenv("RDS_DB_NAME"),
+        "PASSWORD": os.getenv("RDS_PASSWORD"),
+        "ENGINE": "django.db.backends.postgresql",
+        "TEST": {"NAME": "testdatabase"},
     }
 }
 
@@ -103,8 +111,6 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-
-AUTH_USER_MODEL = "user_profile.CustomUser"
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

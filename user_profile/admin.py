@@ -1,10 +1,9 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import User
+from .models import UserProfile
+from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 
-from .models import CustomUser, UserProfile
-
-
+"""
 @admin.register(CustomUser)
 class UserAdmin(DjangoUserAdmin):
     fieldsets = (
@@ -37,6 +36,21 @@ class UserAdmin(DjangoUserAdmin):
     list_display = ("email", "first_name", "last_name", "is_staff")
     search_fields = ("email", "first_name", "last_name")
     ordering = ("email",)
+"""
 
 
-admin.register(UserProfile)
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
+    can_delete = False
+    max_num = 1
+    verbose_name_plural = "UserProfile"
+    fk_name = "user"
+
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    pass
+
+
+class UserAdmin(AuthUserAdmin):
+    inlines = (UserProfileInline,)
