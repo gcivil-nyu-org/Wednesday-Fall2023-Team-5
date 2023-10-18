@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
     "soloconnect-production.us-west-2.elasticbeanstalk.com",
     "soloconnect-dev.us-west-2.elasticbeanstalk.com",
     "soloconnect-db-final.us-west-2.elasticbeanstalk.com",
+    "soloconnect-production.us-east-1.elasticbeanstalk.com",
 ]
 
 # Application definition
