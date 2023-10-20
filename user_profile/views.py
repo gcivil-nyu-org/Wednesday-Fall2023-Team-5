@@ -1,6 +1,7 @@
 # Create your views here.
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.urls import reverse
 import logging
@@ -20,7 +21,6 @@ def create_user_account(request):
             registration_form.save()
             logger.info("Saved form")
             return redirect(reverse("user_profile:login"))
-
     else:
         registration_form = forms.AccountRegistrationForm()
 
@@ -65,3 +65,11 @@ def edit_profile(request):
     return render(
         request, "user_profile/edit_profile.html", {"profile_form": profile_form}
     )
+
+
+@login_required
+def milestone_profile(request):
+    if request.method == "POST":
+        request.user.is_active = False
+        return redirect(reverse("home_default:home_page"))
+    return render(request, "user_profile/milestone_confirm.html", context)
