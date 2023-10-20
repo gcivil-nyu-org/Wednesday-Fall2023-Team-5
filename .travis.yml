@@ -5,7 +5,7 @@ python:
 # command to install dependencies
 script:
   - black --check .
-  # - flake8 --exclude=migrations --max-line-length=99 .
+  - flake8 --exclude=migrations --max-line-length=99 .
   - coverage run --source=soloconnect manage.py test
 install:
   - pip install -r requirements.txt
@@ -23,3 +23,12 @@ deploy:
     env: soloconnect-production
     on:
       branch: master
+  - provider: elasticbeanstalk
+    access_key_id: $ACCESS_KEY_ID
+    secret_access_key: $SECRET_ACCESS_KEY
+    region: $REGION_UE1
+    app: $APP_NAME
+    bucket: $BUCKET_NAME_UE1
+    env: soloconnect-integration
+    on:
+      branch: develop
