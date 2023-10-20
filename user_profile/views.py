@@ -70,6 +70,8 @@ def edit_profile(request):
 @login_required
 def milestone_profile(request):
     if request.method == "POST":
-        request.user.is_active = False
+        currentUser = User.objects.get(pk=request.user.pk)
+        currentUser.is_active = False
+        currentUser.save()
         return redirect(reverse("home_default:home_page"))
-    return render(request, "user_profile/milestone_confirm.html", context)
+    return render(request, "user_profile/milestone_confirm.html", {})
