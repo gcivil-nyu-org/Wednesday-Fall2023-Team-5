@@ -28,10 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "soloconnect-db-test.us-west-2.elasticbeanstalk.com",
-    "soloconnect-integration.us-west-2.elasticbeanstalk.com",
-    "soloconnect-production.us-west-2.elasticbeanstalk.com",
-    "soloconnect-dev.us-west-2.elasticbeanstalk.com",
+    "soloconnect-integration.us-east-1.elasticbeanstalk.com",
     "soloconnect-db-final.us-west-2.elasticbeanstalk.com",
     "soloconnect-production.us-east-1.elasticbeanstalk.com",
 ]
@@ -86,7 +83,7 @@ DATABASES = {
     "default": {
         "PORT": os.getenv("RDS_PORT"),
         "USER": os.getenv("RDS_USERNAME"),
-        "HOST": os.getenv("RDS_HOSTNAME_PROD"),
+        "HOST": os.getenv("RDS_HOSTNAME"),
         "NAME": os.getenv("RDS_DB_NAME"),
         "PASSWORD": os.getenv("RDS_PASSWORD"),
         "ENGINE": "django.db.backends.postgresql",
