@@ -1,14 +1,14 @@
-# Create your views here.
-
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, authenticate
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
 import logging
 
 from . import forms
-
-
-# Create your views here.
 
 
 # User Profile CRUD
@@ -20,7 +20,6 @@ def create_user_account(request):
             registration_form.save()
             logger.info("Saved form")
             return redirect(reverse("user_profile:login"))
-
     else:
         registration_form = forms.AccountRegistrationForm()
 
@@ -65,3 +64,48 @@ def edit_profile(request):
     return render(
         request, "user_profile/edit_profile.html", {"profile_form": profile_form}
     )
+
+
+@login_required
+def milestone_profile(request):
+    if request.method == "POST":
+        try:
+            current_user = User.objects.get(pk=request.user.pk)
+        except ObjectDoesNotExist:
+            messages.error(
+                request, "Encountered a user does not exist error- please try again"
+            )
+        else:
+            current_user.is_active = False
+            current_user.save()
+            return redirect(reverse("home_default:home_page"))
+
+    return render(request, "user_profile/milestone_confirm.html", {})
+
+
+# Login/logout views
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+
+        try:
+            user_instance = User.objects.get(username=username)
+        except ObjectDoesNotExist:
+            user_instance = None
+
+        if user_instance is not None:
+            if not user_instance.is_active:
+                user_instance.is_active = True
+                user_instance.save()
+                messages.success(request, "Successfully reactivated account")
+
+            user = authenticate(request, username=username, password=password)
+            login(request, user)
+            messages.success(request, "Successfully logged in")
+            return redirect(reverse("user_profile:view_profile"))
+        else:
+            messages.info(request, "Please enter a valid username and password")
+
+    auth_form = AuthenticationForm()
+    return render(request, "user_profile/login.html", {"form": auth_form})

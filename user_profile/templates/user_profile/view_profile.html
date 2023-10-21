@@ -1,8 +1,9 @@
 {% extends 'home_default/base.html' %}
 {% block content %}
-<p>Welcome, {{ first_name }} {{ last_name | first }}.</p>
-<p>Email: {{ email }}</p>
-<p>University: {{ university }}</p>
-<p>Bio: {{ bio }}</p>
-<a href="{% url 'user_profile:edit_profile' %}">Edit profile</a>
+    <p>Welcome, {{ first_name }} {{ last_name | first }}.</p>
+    <p>Email: {{ email }}</p>
+    <p>University: {{ university }}</p>
+    <p>Bio: {{ bio }}</p>
+    <a href="{% url 'user_profile:edit_profile' %}">Edit profile</a>
+    <a href="{% url 'user_profile:milestone_profile' %}">Delete profile</a>
 {% endblock content %}

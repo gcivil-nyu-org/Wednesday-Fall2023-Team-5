@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "home_default.apps.HomeDefaultConfig",
     "user_profile.apps.UserProfileConfig",
+    "crispy_forms",
+    "crispy_bootstrap4",
 ]
 
 MIDDLEWARE = [
@@ -133,3 +135,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_URL = "user_profile:login"
 LOGIN_REDIRECT_URL = "user_profile:view_profile"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
