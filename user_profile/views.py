@@ -86,7 +86,10 @@ def login_view(request):
         username = request.POST["username"]
         password = request.POST["password"]
 
-        user_instance = User.objects.get(username=username)
+        try:
+            user_instance = User.objects.get(username=username)
+        except:
+            user_instance = None
 
         if user_instance is not None:
             if not user_instance.is_active:
