@@ -2,6 +2,9 @@
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, logout, authenticate
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
 import logging
@@ -75,3 +78,28 @@ def milestone_profile(request):
         currentUser.save()
         return redirect(reverse("home_default:home_page"))
     return render(request, "user_profile/milestone_confirm.html", {})
+
+
+# Login/logout views
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+
+        user_instance = User.objects.get(username=username)
+
+        if user_instance is not None:
+            if not user_instance.is_active:
+                user_instance.is_active = True
+                user_instance.save()
+                messages.success(request, "Successfully reactivated account")
+
+            user = authenticate(request, username=username, password=password)
+            login(request, user)
+            messages.success(request, "Successfully logged in")
+            return redirect(reverse("user_profile:view_profile"))
+        else:
+            messages.info(request, "Please enter a valid username and password")
+
+    auth_form = AuthenticationForm()
+    return render(request, "user_profile/login.html", {"form": auth_form})

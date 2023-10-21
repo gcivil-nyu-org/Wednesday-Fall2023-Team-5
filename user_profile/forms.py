@@ -1,10 +1,11 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
 from .helpers import email_is_valid
 from .models import User, UserProfile
 
 
+# CRUD Forms
 class AccountRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
 

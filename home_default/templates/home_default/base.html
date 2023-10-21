@@ -9,6 +9,13 @@
 <header>
     <a href="{% url 'home_default:home_page' %}">Home</a>
 </header>
+<div>
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
+</div>
 {% block content %}
 {% endblock content %}
 </body>
