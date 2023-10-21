@@ -74,10 +74,17 @@ def edit_profile(request):
 @login_required
 def milestone_profile(request):
     if request.method == "POST":
-        currentUser = User.objects.get(pk=request.user.pk)
-        currentUser.is_active = False
-        currentUser.save()
-        return redirect(reverse("home_default:home_page"))
+        try:
+            current_user = User.objects.get(pk=request.user.pk)
+        except ObjectDoesNotExist:
+            messages.error(
+                request, "Encountered a user does not exist error- please try again"
+            )
+        else:
+            current_user.is_active = False
+            current_user.save()
+            return redirect(reverse("home_default:home_page"))
+
     return render(request, "user_profile/milestone_confirm.html", {})
 
 
