@@ -7,6 +7,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
 import logging
 
 from . import forms
@@ -88,7 +89,7 @@ def login_view(request):
 
         try:
             user_instance = User.objects.get(username=username)
-        except:
+        except ObjectDoesNotExist:
             user_instance = None
 
         if user_instance is not None:
