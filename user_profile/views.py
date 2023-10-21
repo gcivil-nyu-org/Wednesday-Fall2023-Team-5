@@ -1,5 +1,3 @@
-# Create your views here.
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
@@ -11,9 +9,6 @@ from django.core.exceptions import ObjectDoesNotExist
 import logging
 
 from . import forms
-
-
-# Create your views here.
 
 
 # User Profile CRUD
