@@ -1,26 +1,10 @@
-<<<<<<< Updated upstream
-{% extends 'home_default/base.html' %}
-{% block content %}
-    <p>Welcome, {{ first_name }} {{ last_name | first }}.</p>
-    <p>Email: {{ email }}</p>
-    <p>University: {{ university }}</p>
-    <p>Bio: {{ bio }}</p>
-    <a href="{% url 'user_profile:edit_profile' %}">Edit profile</a>
-    <a href="{% url 'user_profile:milestone_profile' %}">Delete profile</a>
-{% endblock content %}
-=======
+{%  extends 'home_default/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link rel="stylesheet" type="text/css" href="{% static 'user_profile/user_profile_page.css' %}">
-    <title>SoloConnect</title>
-</head>
-<body>
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'user_profile/user_profile_page.css' %}">
 <header>
-    <section class="vh-100" style="background-color: #f4f5f7;">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
+    <section class="vh-100" style="background-color: #dbe5ef;">
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col col-lg-6 mb-4 mb-lg-0">
@@ -32,7 +16,6 @@
                 alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
               <h5> {{ first_name }} {{ last_name }} </h5>
               <p>{{ bio }}</p>
-              <a href="{% url 'user_profile:edit_profile' %}"><i class="far fa-edit mb-5">Edit profile</i></a>
             </div>
             <div class="col-md-8">
               <div class="card-body p-4">
@@ -48,6 +31,16 @@
                   </div>
                 </div>
                 <hr class="mt-0 mb-4">
+                  <div class="row pt-1">
+                      <a href="{% url 'user_profile:edit_profile' %}">
+                          <button type="button" class="btn btn-success btn-rounded">Edit Profile</button>
+                      </a>
+                      <br>
+                      <br>
+                      <a href="{% url 'user_profile:milestone_profile' %}">
+                        <button type="button" class="btn btn-danger btn-secondary btn-rounded">Delete profile</button>
+                      </a>
+                </div>
               </div>
             </div>
           </div>
@@ -56,19 +49,5 @@
     </div>
   </div>
 </section>
-    <a href="{% url 'home_default:home_page' %}">Home</a>
 </header>
-</body>
-</html>
-
-
-
-{#{% extends 'home_default/base.html' %}#}
-{#{% block content %}#}
-{#<p>Welcome, {{ first_name }} {{ last_name | first }}.</p>#}
-{#<p>Email: {{ email }}</p>#}
-{#<p>University: {{ university }}</p>#}
-{#<p>Bio: {{ bio }}</p>#}
-{#<a href="{% url 'user_profile:edit_profile' %}">Edit profile</a>#}
-{#{% endblock content %}#}
->>>>>>> Stashed changes
+{% endblock content %}
