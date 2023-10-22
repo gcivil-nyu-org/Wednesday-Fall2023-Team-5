@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 {% extends 'home_default/base.html' %}
 {% block content %}
     <p>Welcome, {{ first_name }} {{ last_name | first }}.</p>
@@ -7,3 +8,67 @@
     <a href="{% url 'user_profile:edit_profile' %}">Edit profile</a>
     <a href="{% url 'user_profile:milestone_profile' %}">Delete profile</a>
 {% endblock content %}
+=======
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="stylesheet" type="text/css" href="{% static 'user_profile/user_profile_page.css' %}">
+    <title>SoloConnect</title>
+</head>
+<body>
+<header>
+    <section class="vh-100" style="background-color: #f4f5f7;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-lg-6 mb-4 mb-lg-0">
+        <div class="card mb-3" style="border-radius: .5rem;">
+          <div class="row g-0">
+            <div class="col-md-4 gradient-custom text-center text-white"
+              style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+              <h5> {{ first_name }} {{ last_name }} </h5>
+              <p>{{ bio }}</p>
+              <a href="{% url 'user_profile:edit_profile' %}"><i class="far fa-edit mb-5">Edit profile</i></a>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body p-4">
+                <hr class="mt-0 mb-4">
+                <div class="row pt-1">
+                  <div class="col-6 mb-3">
+                    <h6>Email</h6>
+                    <p class="text-muted">{{ email }}</p>
+                  </div>
+                  <div class="col-6 mb-3">
+                    <h6>University</h6>
+                    <p class="text-muted"> {{ university }} </p>
+                  </div>
+                </div>
+                <hr class="mt-0 mb-4">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+    <a href="{% url 'home_default:home_page' %}">Home</a>
+</header>
+</body>
+</html>
+
+
+
+{#{% extends 'home_default/base.html' %}#}
+{#{% block content %}#}
+{#<p>Welcome, {{ first_name }} {{ last_name | first }}.</p>#}
+{#<p>Email: {{ email }}</p>#}
+{#<p>University: {{ university }}</p>#}
+{#<p>Bio: {{ bio }}</p>#}
+{#<a href="{% url 'user_profile:edit_profile' %}">Edit profile</a>#}
+{#{% endblock content %}#}
+>>>>>>> Stashed changes
