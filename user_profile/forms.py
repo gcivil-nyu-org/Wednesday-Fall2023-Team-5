@@ -26,4 +26,5 @@ class AccountRegistrationForm(UserCreationForm):
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ("dob", "bio", "university")
+        fields = ("dob", "bio", "university", "age_lower", "age_upper", 
+            "verified_prof", "drink_pref", "smoke_pref", "edu_level", "interests", "languages")
