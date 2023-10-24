@@ -38,6 +38,12 @@ def detail_profile(request, id):
             "last_name": target_user.last_name,
             "bio": target_user.userprofile.bio,
             "university": target_user.userprofile.university,
+            "verified_prof": target_user.userprofile.verified_prof,
+            "drink_pref": target_user.userprofile.drink_pref,
+            "smoke_pref": target_user.userprofile.smoke_pref,
+            "edu_level": target_user.userprofile.edu_level,
+            "interests": target_user.userprofile.interests,
+            "languages": target_user.userprofile.languages,
         }
         return render(request, "user_profile/detail_profile.html", context)
     else:
@@ -67,6 +73,7 @@ def view_profile(request):
         "interests": request.user.userprofile.interests,
         "languages": request.user.userprofile.languages,
     }
+
     return render(request, "user_profile/view_profile.html", context)
 
 
