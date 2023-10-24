@@ -1,0 +1,11 @@
+{% extends 'home_default/base.html' %}
+{% block content %}
+<div class="container py-5 h-100">
+    <div class="row">
+        <div class="col">
+            <p class="font-weight-bold">This user's account is no longer active</p>
+            <small><a href="{% url 'home_default:home_page' %}">Go home</a></small>
+        </div>
+    </div>
+</div>
+{% endblock content %}

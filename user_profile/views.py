@@ -28,6 +28,36 @@ def create_user_account(request):
     )
 
 
+def detail_profile(request, id):
+    # fetch the target user according to id parameter passed
+    # through url or throw a 404
+    try:
+        target_user = User.objects.get(id=id)
+    except ObjectDoesNotExist:
+        target_user = None
+
+    if target_user is not None:
+        if target_user.is_active:
+            context = {
+                "first_name": target_user.first_name,
+                "last_name": target_user.last_name,
+                "bio": target_user.userprofile.bio,
+                "university": target_user.userprofile.university,
+                "verified_prof": target_user.userprofile.verified_prof,
+                "drink_pref": target_user.userprofile.drink_pref,
+                "smoke_pref": target_user.userprofile.smoke_pref,
+                "edu_level": target_user.userprofile.edu_level,
+                "interests": target_user.userprofile.interests,
+                "languages": target_user.userprofile.languages,
+            }
+            return render(request, "user_profile/detail_profile.html", context)
+        else:
+            return render(request, "user_profile/detail_profile_inactive.html", {})
+
+    messages.error(request, "The requested user profile was not found")
+    return redirect(reverse("home_default:home_page"))
+
+
 @login_required
 def view_profile(request):
     logger = logging.getLogger("django")
@@ -48,6 +78,7 @@ def view_profile(request):
         "interests": request.user.userprofile.interests,
         "languages": request.user.userprofile.languages,
     }
+
     return render(request, "user_profile/view_profile.html", context)
 
 
