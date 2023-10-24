@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 import logging
@@ -31,26 +31,31 @@ def create_user_account(request):
 def detail_profile(request, id):
     # fetch the target user according to id parameter passed
     # through url or throw a 404
-    target_user = get_object_or_404(User, id=id)
-    if target_user.is_active:
-        context = {
-            "first_name": target_user.first_name,
-            "last_name": target_user.last_name,
-            "bio": target_user.userprofile.bio,
-            "university": target_user.userprofile.university,
-            "verified_prof": target_user.userprofile.verified_prof,
-            "drink_pref": target_user.userprofile.drink_pref,
-            "smoke_pref": target_user.userprofile.smoke_pref,
-            "edu_level": target_user.userprofile.edu_level,
-            "interests": target_user.userprofile.interests,
-            "languages": target_user.userprofile.languages,
-        }
-        return render(request, "user_profile/detail_profile.html", context)
-    else:
-        # if the target user's profile is inactive, queue error message
-        # and re-render the user's current page
-        messages.error(request, "This user's profile is inactive")
-        return redirect(request.path_info)
+    try:
+        target_user = User.objects.get(id=id)
+    except ObjectDoesNotExist:
+        target_user = None
+
+    if target_user is not None:
+        if target_user.is_active:
+            context = {
+                "first_name": target_user.first_name,
+                "last_name": target_user.last_name,
+                "bio": target_user.userprofile.bio,
+                "university": target_user.userprofile.university,
+                "verified_prof": target_user.userprofile.verified_prof,
+                "drink_pref": target_user.userprofile.drink_pref,
+                "smoke_pref": target_user.userprofile.smoke_pref,
+                "edu_level": target_user.userprofile.edu_level,
+                "interests": target_user.userprofile.interests,
+                "languages": target_user.userprofile.languages,
+            }
+            return render(request, "user_profile/detail_profile.html", context)
+        else:
+            return render(request, "user_profile/detail_profile_inactive.html", {})
+
+    messages.error(request, "The requested user profile was not found")
+    return redirect(reverse("home_default:home_page"))
 
 
 @login_required
