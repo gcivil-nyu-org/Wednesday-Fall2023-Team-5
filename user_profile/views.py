@@ -98,7 +98,8 @@ def edit_profile(request):
         else:
             messages.error(
                 request,
-                "There was an error editing your profile instance. Please verify your responses and try again",
+                "There was an error editing your profile instance\
+                Please verify your responses and try again",
             )
 
     profile_form = forms.ProfileUpdateForm(instance=request.user.userprofile)
