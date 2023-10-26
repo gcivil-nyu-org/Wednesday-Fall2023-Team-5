@@ -19,6 +19,9 @@ def create_user_account(request):
         if registration_form.is_valid():
             registration_form.save()
             logger.info("Saved form")
+            messages.success(
+                request, "Successfully created your account. Please log in."
+            )
             return redirect(reverse("user_profile:login"))
     else:
         registration_form = forms.AccountRegistrationForm()
@@ -90,7 +93,13 @@ def edit_profile(request):
         )
         if profile_form.is_valid():
             profile_form.save()
+            messages.success(request, "Profile successfully edited")
             return redirect(reverse("user_profile:view_profile"))
+        else:
+            messages.error(
+                request,
+                "There was an error editing your profile instance. Please verify your responses and try again",
+            )
 
     profile_form = forms.ProfileUpdateForm(instance=request.user.userprofile)
 
