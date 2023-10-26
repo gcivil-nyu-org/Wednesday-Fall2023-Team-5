@@ -28,24 +28,57 @@ def create_user_account(request):
     )
 
 
+def detail_profile(request, id):
+    # fetch the target user according to id parameter passed
+    # through url or throw a 404
+    try:
+        target_user = User.objects.get(id=id)
+    except ObjectDoesNotExist:
+        target_user = None
+
+    if target_user is not None:
+        if target_user.is_active:
+            context = {
+                "first_name": target_user.first_name,
+                "last_name": target_user.last_name,
+                "bio": target_user.userprofile.bio,
+                "university": target_user.userprofile.university,
+                "verified_prof": target_user.userprofile.verified_prof,
+                "drink_pref": target_user.userprofile.drink_pref,
+                "smoke_pref": target_user.userprofile.smoke_pref,
+                "edu_level": target_user.userprofile.edu_level,
+                "interests": target_user.userprofile.interests,
+                "languages": target_user.userprofile.languages,
+            }
+            return render(request, "user_profile/detail_profile.html", context)
+        else:
+            return render(request, "user_profile/detail_profile_inactive.html", {})
+
+    messages.error(request, "The requested user profile was not found")
+    return redirect(reverse("home_default:home_page"))
+
+
 @login_required
 def view_profile(request):
-    bio = "There's nothing here"
-    university = "There's nothing here"
     logger = logging.getLogger("django")
     logger.info("Here in view profile")
-    if request.user.userprofile.bio is not None:
-        bio = request.user.userprofile.bio
-    if request.user.userprofile.university is not None:
-        university = request.user.userprofile.university
 
     context = {
         "first_name": request.user.first_name,
         "last_name": request.user.last_name,
         "email": request.user.email,
-        "bio": bio,
-        "university": university,
+        "bio": request.user.userprofile.bio,
+        "university": request.user.userprofile.university,
+        "age_lower": request.user.userprofile.age_lower,
+        "age_upper": request.user.userprofile.age_upper,
+        "verified_prof": request.user.userprofile.verified_prof,
+        "drink_pref": request.user.userprofile.drink_pref,
+        "smoke_pref": request.user.userprofile.smoke_pref,
+        "edu_level": request.user.userprofile.edu_level,
+        "interests": request.user.userprofile.interests,
+        "languages": request.user.userprofile.languages,
     }
+
     return render(request, "user_profile/view_profile.html", context)
 
 
