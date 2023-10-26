@@ -19236,3 +19236,11 @@ fieldset:disabled .btn-group>.btn {
 .carousel-control-next-icon:after {
 	content: ""
 }
+body {
+  padding-top: 60px;
+}
+@media (max-width: 979px) {
+  body {
+    padding-top: 0px;
+  }
+}
