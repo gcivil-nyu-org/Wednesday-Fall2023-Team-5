@@ -1,13 +1,24 @@
 {% extends 'home_default/base.html' %}
 {% block content %}
-<h1>Home</h1>
-{% if user.is_authenticated %}
-<a href="{% url 'user_profile:logout' %}">Log Out</a>
-<br>
-<a href="{% url 'user_profile:view_profile' %}">Profile</a>
-{% else %}
-<a href="{% url 'user_profile:register_account' %}"> Register Account </a>
-<br>
-<a href="{% url 'user_profile:login' %}">Log In</a>
-{% endif %}
+<div class="container">
+    <div class="row mt-6">
+        <div class="col-7">
+            <h1 class="fw-bold">Plan a trip- enhance your experience with other solo travellers</h1>
+            <p class="lead mt-4">
+                SoloConnect connects you to other people traveling solo wherever your adventure takes you.
+                Make new friends, explore your destination together, and create lifelong memories.
+            </p>
+            <a href="{% url 'user_profile:register_account' %}">
+                <button type="button" class="btn btn-primary mt-3">Join Today</button>
+            </a>
+        </div>
+        <div class="col-5">
+            <!---
+            Placeholder for the final image
+            I'm thinking like a PNG-style logo thing that will layer directly on top of the bg
+            --->
+            <p>lil image</p>
+        </div>
+    </div>
+</div>
 {% endblock content %}
