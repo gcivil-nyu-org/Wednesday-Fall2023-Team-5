@@ -8044,6 +8044,12 @@ textarea.form-control-lg {
   margin-top: 3rem !important;
 }
 
+/* Custom margin class*/
+.mt-6 {
+  margin-top: 6rem !important;
+}
+/* end custom */
+
 .mt-auto {
   margin-top: auto !important;
 }
