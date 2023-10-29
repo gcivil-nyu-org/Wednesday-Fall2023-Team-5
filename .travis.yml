@@ -32,3 +32,4 @@ deploy:
     env: soloconnect-integration
     on:
       branch: develop
+      
