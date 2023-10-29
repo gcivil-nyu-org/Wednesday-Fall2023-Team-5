@@ -1,7 +1,6 @@
 # ------- Creating new class of array field using postgres.fields -------
-from django.contrib.postgres.fields import ArrayField
-from django.contrib.postgres.fields import ArrayField
 from django import forms
+from django.contrib.postgres.fields import ArrayField
 
 
 class ChoiceArrayField(ArrayField):
