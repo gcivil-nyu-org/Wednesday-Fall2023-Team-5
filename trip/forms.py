@@ -1,5 +1,6 @@
 from django import forms
-from .models import Trip, UserTrip
+from .models import UserTrip
+
 
 class UserTripCreationForm(forms.ModelForm):
     destination_city_ef = forms.CharField()
