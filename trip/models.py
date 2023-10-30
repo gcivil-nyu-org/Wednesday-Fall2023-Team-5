@@ -12,6 +12,15 @@ class Trip(models.Model):
         max_length=500, verbose_name="Destination Country"
     )
 
+    """
+    TripMetaData
+    
+    unique_together is an attribute that determines how get_or_create
+    interacts with the model. By including this, we ensure that 
+    destination_country and destination_city are considered as a tuple
+    rather than on their own.
+    """
+
     class Meta:
         unique_together = ["destination_country", "destination_city"]
 
