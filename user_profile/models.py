@@ -2,85 +2,15 @@
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
-from django import forms
 
-DRINK_PREF_CHOICES = [
-    ("Frequently", "Frequently"),
-    ("Socially", "Socially"),
-    ("Rarely", "Rarely"),
-    ("Never", "Never"),
-]
-
-SMOKE_PREF_CHOICES = [
-    ("Socially", "Socially"),
-    ("Regularly", "Regularly"),
-    ("Never", "Never"),
-]
-
-EDU_LEVEL_CHOICES = [
-    ("In college", "In college"),
-    ("Undergraduate degree", "Undergraduate degree"),
-    ("In grad school", "In grad school"),
-    ("Graduate degree", "Graduate degree"),
-]
-
-INTEREST_CHOICES = [
-    ("hiking", "hiking"),
-    ("clubbing", "clubbing"),
-    ("beach", "beach"),
-    ("sightseeing", "sightseeing"),
-    ("bar hopping", "bar hopping"),
-    ("food tourism", "food tourism"),
-    ("museums", "museums"),
-    ("historical/cultural sites", "historical/cultural sites"),
-    ("spa", "spa"),
-    ("relaxed", "relaxed"),
-    ("camping", "camping"),
-    ("sports", "sports"),
-]
-
-LANG_CHOICES = [
-    ("Chinese", "Chinese"),
-    ("Spanish", "Spanish"),
-    ("English", "English"),
-    ("Arabic", "Arabic"),
-    ("Hindi", "Hindi"),
-    ("Bengali", "Bengali"),
-    ("Portuguese", "Portuguese"),
-    ("Russian", "Russian"),
-    ("Japanese", "Japanese"),
-    ("Urdu", "Urdu"),
-]
-
-
-# ------- Creating new class of array field using postgres.fields -------
-class ChoiceArrayField(ArrayField):
-    """
-    A field that allows us to store an array of choices.
-
-    Uses Django 1.9's postgres ArrayField
-    and a MultipleChoiceField for its formfield.
-
-    Usage:
-
-        choices = ChoiceArrayField(models.CharField(max_length=...,
-                                                    choices=(...,)),
-                                   default=[...])
-    """
-
-    def formfield(self, **kwargs):
-        defaults = {
-            "form_class": forms.MultipleChoiceField,
-            "choices": self.base_field.choices,
-            "widget": forms.CheckboxSelectMultiple,  # remove this for list selection
-        }
-        defaults.update(kwargs)
-
-        return super(ArrayField, self).formfield(**defaults)
-
-
-# ----------------------------------------------------------------------
+from common import ChoiceArrayField
+from constants import (
+    DRINK_PREF_CHOICES,
+    SMOKE_PREF_CHOICES,
+    EDU_LEVEL_CHOICES,
+    INTEREST_CHOICES,
+    LANG_CHOICES,
+)
 
 
 class UserProfile(models.Model):

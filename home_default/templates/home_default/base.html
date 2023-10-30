@@ -60,11 +60,28 @@
     {% endif %}
 
     <!-- a href="{% url 'home_default:home_page' %}">Home</a> -->
+
+<!-- Messages section -->
 </header>
 <div class = "container">
     {% if messages %}
         {% for message in messages %}
-            {{ message }}
+            {% if message.tags == "success" %}
+                <div class="alert alert-dismissible alert-success">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <p class="mb-0">{{ message }}</p>
+                </div>
+            {% elif message.tags == "error" %}
+                <div class="alert alert-dismissible alert-warning">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <p class="mb-0">{{ message }}</p>
+                </div>
+            {% else %}
+                <div class="alert alert-dismissible alert-info">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <p class="mb-0">{{ message }}</p>
+                </div>
+            {% endif %}
         {% endfor %}
     {% endif %}
 </div>
