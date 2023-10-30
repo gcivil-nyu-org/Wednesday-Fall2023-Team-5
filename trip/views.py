@@ -2,10 +2,9 @@ from django.shortcuts import render, redirect  # noqa
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
-from django.core.exceptions import ObjectDoesNotExist
 
 from . import forms
-from .models import Trip, UserTrip
+from .models import Trip
 
 
 # Create your views here.
@@ -30,6 +29,7 @@ def create_trip(request):
 
     ut_creation_form = forms.UserTripCreationForm()
     return render(request, "trip/create_trip.html", {"form": ut_creation_form})
+
 
 @login_required
 def view_trips(request):
