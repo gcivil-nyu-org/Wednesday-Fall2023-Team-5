@@ -26,8 +26,9 @@ def create_trip(request):
             ut_instance.save()
             messages.success(request, "Successfully created your trip")
             return redirect(reverse("trip:view_trips"))
+    else:
+        ut_creation_form = forms.UserTripCreationForm()
 
-    ut_creation_form = forms.UserTripCreationForm()
     return render(request, "trip/create_trip.html", {"form": ut_creation_form})
 
 
