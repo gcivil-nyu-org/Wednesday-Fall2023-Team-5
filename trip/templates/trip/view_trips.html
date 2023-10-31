@@ -1,0 +1,28 @@
+{% extends "home_default/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Your Trips</h1>
+        </div>
+    </div>
+    {% if trips %}
+        {% for ut in trips %}
+            <div class="row">
+                <h4>Trip to {{ ut.trip.destination_city }}, {{ ut.trip.destination_country }}</h4>
+                <p>Start date: {{ ut.start_trip|date:"m/d/Y" }}</p>
+                <p>End date: {{ ut.end_trip|date:"m/d/Y" }}</p>
+            </div>
+        {% endfor %}
+        <div class="row">
+            <a href="{% url 'trip:create_trip' %}">
+                <button type="button" class="btn btn-success btn-rounded">
+                    <i class="fas fa-edit" style="font-size:20px"></i> Plan a Trip
+                </button>
+            </a>
+        </div>
+    {% else %}
+        <p>To see your trips, <a href="{% url 'trip:create_trip' %}">create a trip</a></p>
+    {% endif %}
+</div>
+{% endblock content %}

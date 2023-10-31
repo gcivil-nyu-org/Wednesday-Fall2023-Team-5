@@ -1,3 +1,38 @@
-from django.shortcuts import render  # noqa
+from django.shortcuts import render, redirect  # noqa
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.urls import reverse
+
+from . import forms
+from .models import Trip
+
 
 # Create your views here.
+@login_required
+def create_trip(request):
+    if request.method == "POST":
+        usertrip_creation_form = forms.UserTripCreationForm(request.POST)
+        if usertrip_creation_form.is_valid():
+            usertrip_data = usertrip_creation_form.cleaned_data
+            usertrip_instance = usertrip_creation_form.save(commit=False)
+
+            trip_instance, _ = Trip.objects.get_or_create(
+                destination_city=usertrip_data["destination_city_ef"],
+                destination_country=usertrip_data["destination_country_ef"],
+            )
+
+            usertrip_instance.trip = trip_instance
+            usertrip_instance.user = request.user
+            usertrip_instance.save()
+            messages.success(request, "Successfully created your trip")
+            return redirect(reverse("trip:view_trips"))
+    else:
+        usertrip_creation_form = forms.UserTripCreationForm()
+
+    return render(request, "trip/create_trip.html", {"form": usertrip_creation_form})
+
+
+@login_required
+def view_trips(request):
+    trip_queryset = request.user.usertrip_set.all()
+    return render(request, "trip/view_trips.html", {"trips": trip_queryset})
