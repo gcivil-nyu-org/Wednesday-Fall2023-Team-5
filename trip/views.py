@@ -61,7 +61,7 @@ def detail_trip(request, id):
         -   Positional argument ~Q used to exclude the user themselves from the
             user set that they see
         Keyword arguments used to:
-        -   Make sure that destination combo 
+        -   Make sure that destination combo
             (destination_city, destination_country) are the same (kwarg 1)
         -   Make sure that start_date is greater than the user's specified
             start date (kwarg 2)
@@ -70,6 +70,7 @@ def detail_trip(request, id):
         """
 
         user_qs = User.objects.filter(
+            ~Q(id=request.user.id),
             usertrip__trip=trip_instance,
             usertrip__start_trip__gte=start_date,
             usertrip__end_trip__lte=end_date,
