@@ -1,0 +1,29 @@
+{% extends "home_default/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Your upcoming trip to {{ usertrip_instance.trip.destination_city }}, {{usertrip_instance.trip.destination_country}}</h2>
+        </div>
+    </div>
+    {% if user_qs %}
+        {% for u in user_qs %}
+            <div class="row">
+                <div class="col">
+                    <p>{{ u.first_name }} {{ u.last_name|first }}.</p>
+                    <p>Travel dates: {{ u.usertrip.start_trip|date:"m/d/Y" }} - {{ u.usertrip.end_trip|date:"m/d/Y" }}</p>
+                    <p>Bio: {{ u.userprofile.bio }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="row">
+            <div class="col">
+                <p>No matches found for this date range</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+
+{% endblock content %}

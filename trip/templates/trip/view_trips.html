@@ -12,6 +12,8 @@
                 <h4>Trip to {{ ut.trip.destination_city }}, {{ ut.trip.destination_country }}</h4>
                 <p>Start date: {{ ut.start_trip|date:"m/d/Y" }}</p>
                 <p>End date: {{ ut.end_trip|date:"m/d/Y" }}</p>
+                <small><a href="{% url 'trip:detail_trip' id=ut.id %}">View Trip</a></small>
+                <br>
             </div>
         {% endfor %}
         <div class="row">
