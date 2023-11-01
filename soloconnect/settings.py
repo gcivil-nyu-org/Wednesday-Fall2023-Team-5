@@ -149,3 +149,11 @@ LOGIN_URL = "user_profile:login"
 LOGIN_REDIRECT_URL = "user_profile:view_profile"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+# Email configs
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'soloconnect4@gmail.com'
+EMAIL_HOST_PASSWORD = 'boyp dmed papx airi'
+EMAIL_PORT = 587
