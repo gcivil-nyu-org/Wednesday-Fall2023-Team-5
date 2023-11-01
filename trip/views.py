@@ -72,7 +72,7 @@ def detail_trip(request, id):
         user_qs = User.objects.filter(
             ~Q(id=request.user.id),
             Q(usertrip__trip=trip_instance),
-            Q(usertrip__start_trip__gte=start_date) & Q(usertrip__start_trip__lt=end_date)
+            Q(usertrip__start_trip__lt=end_date)
         )
 
     else:

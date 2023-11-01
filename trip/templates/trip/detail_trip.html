@@ -8,11 +8,13 @@
     </div>
     {% if user_qs %}
         <h4>Users visiting at the same time as you</h4>
+        <br>
         {% for u in user_qs %}
             <div class="row">
                 <div class="col">
-                    <p>{{ u.first_name }} {{ u.last_name|first }}.</p>
+                    <p class="font-weight-bold">{{ u.first_name }} {{ u.last_name|first }}.</p>
                     <p>Bio: {{ u.userprofile.bio }}</p>
+                    <br>
                 </div>
             </div>
         {% endfor %}
