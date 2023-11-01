@@ -95,7 +95,7 @@ DATABASES = {
         "TEST": {"NAME": "testdatabase2", "ENGINE": "django.db.backends.sqlite3"},
     }
 }
-if 'test' in sys.argv:
+if "test" in sys.argv:
     DATABASES["default"] = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "HOST": "awseb-e-jxcdqsyak2-stack-awsebrdsdatabase-jg37moq5mxxu.cr5o1t6nblfb.us-east-1.rds.amazonaws.com",

@@ -14,13 +14,12 @@ from django.test import Client
 
 class TestUserProfile(TestCase):
     client = Client()
+
     def setUp(self):
         user_name = "testuser" + str(time.time())
         email = user_name + "@nyu.edu"
-        self.credentials = {"username": user_name,
-                            "email": email,
-                            "password": "secret"}
-        sys.argv = 'test'
+        self.credentials = {"username": user_name, "email": email, "password": "secret"}
+        sys.argv = "test"
         User.objects.create_user(**self.credentials)
 
     def test_login_view(self):
