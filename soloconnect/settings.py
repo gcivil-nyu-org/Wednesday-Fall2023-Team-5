@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,6 +32,7 @@ ALLOWED_HOSTS = [
     "soloconnect-integration.us-east-1.elasticbeanstalk.com",
     "soloconnect-db-final.us-west-2.elasticbeanstalk.com",
     "soloconnect-production.us-east-1.elasticbeanstalk.com",
+    "testserver",
 ]
 
 # Application definition
@@ -90,10 +92,19 @@ DATABASES = {
         "NAME": os.getenv("RDS_DB_NAME"),
         "PASSWORD": os.getenv("RDS_PASSWORD"),
         "ENGINE": "django.db.backends.postgresql",
-        "TEST": {"NAME": "testdatabase"},
+        "TEST": {"NAME": "testdatabase2", "ENGINE": "django.db.backends.sqlite3"},
     }
 }
-
+if 'test' in sys.argv:
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "HOST": "awseb-e-jxcdqsyak2-stack-awsebrdsdatabase-jg37moq5mxxu.cr5o1t6nblfb.us-east-1.rds.amazonaws.com",
+        "USER": "scroot",
+        "PASSWORD": "s0l0c0nn3c7$",
+        "NAME": "ebdb",
+        "PORT": "5432",
+        "TEST": {"NAME": os.environ.get("TEST_DATABASE_NAME")},
+    }
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
