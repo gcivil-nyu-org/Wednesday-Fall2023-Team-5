@@ -98,11 +98,11 @@ DATABASES = {
 if "test" in sys.argv:
     DATABASES["default"] = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "HOST": "awseb-e-jxcdqsyak2-stack-awsebrdsdatabase-jg37moq5mxxu.cr5o1t6nblfb.us-east-1.rds.amazonaws.com",
-        "USER": "scroot",
-        "PASSWORD": "s0l0c0nn3c7$",
-        "NAME": "ebdb",
-        "PORT": "5432",
+        "HOST": os.getenv("TEST_RDS_HOSTNAME"),
+        "USER": os.getenv("TEST_RDS_USERNAME"),
+        "PASSWORD": os.getenv("TEST_RDS_PASSWORD"),
+        "NAME": os.getenv("TEST_RDS_DB_NAME"),
+        "PORT": os.getenv("TEST_RDS_DB_PORT"),
         "TEST": {"NAME": os.environ.get("TEST_DATABASE_NAME")},
     }
 # Password validation

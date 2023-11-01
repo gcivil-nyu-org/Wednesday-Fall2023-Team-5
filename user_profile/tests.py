@@ -1,11 +1,9 @@
 # Create your tests here.
 import sys
 import time
-from sys import argv
 from unittest import TestCase
 
 from django.contrib.auth.models import User
-from django.test import SimpleTestCase
 
 
 from django.urls import reverse
@@ -30,3 +28,13 @@ class TestUserProfile(TestCase):
         response = self.client.post("/login/", self.credentials, follow=True)
         # should be logged in now
         self.assertTrue(response.context["user"].is_active)
+
+    def test_login_unknown_user(self):
+        credentials = {
+            "username": "unknown_user",
+            "email": "unknown@nyu.edu",
+            "password": "secret",
+        }
+        response = self.client.post("/login/", credentials, follow=True)
+        # should be logged in now
+        self.assertFalse(response.context["user"].is_active)
