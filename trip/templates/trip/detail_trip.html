@@ -7,16 +7,17 @@
         </div>
     </div>
     {% if user_qs %}
+        <h4>Users visiting at the same time as you</h4>
         {% for u in user_qs %}
             <div class="row">
                 <div class="col">
                     <p>{{ u.first_name }} {{ u.last_name|first }}.</p>
-                    <p>Travel dates: {{ u.usertrip.start_trip|date:"m/d/Y" }} - {{ u.usertrip.end_trip|date:"m/d/Y" }}</p>
                     <p>Bio: {{ u.userprofile.bio }}</p>
                 </div>
             </div>
         {% endfor %}
     {% else %}
+        <h4>Users visiting at the same time as you</h4>
         <div class="row">
             <div class="col">
                 <p>No matches found for this date range</p>
