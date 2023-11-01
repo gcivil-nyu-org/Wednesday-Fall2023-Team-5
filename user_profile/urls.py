@@ -16,23 +16,35 @@ urlpatterns = [
     path("profile/edit", views.edit_profile, name="edit_profile"),
     path("profile/delete", views.milestone_profile, name="milestone_profile"),
     path("profile/detail/<int:id>", views.detail_profile, name="detail_profile"),
-    path("reset_password/", auth_views.PasswordResetView.as_view(
-        email_template_name="user_profile/password_reset_email.html",
-        success_url='reset_password_sent',
-        template_name='user_profile/password_reset_form.html'
+    path(
+        "reset_password/",
+        auth_views.PasswordResetView.as_view(
+            email_template_name="user_profile/password_reset_email.html",
+            success_url="reset_password_sent",
+            template_name="user_profile/password_reset_form.html",
+        ),
+        name="reset_password",
     ),
-         name="reset_password"),
-    path("reset_password/reset_password_sent/", auth_views.PasswordResetDoneView.as_view(
-        template_name='user_profile/password_reset_done.html'
+    path(
+        "reset_password/reset_password_sent/",
+        auth_views.PasswordResetDoneView.as_view(
+            template_name="user_profile/password_reset_done.html"
+        ),
+        name="password_reset_done",
     ),
-         name='password_reset_done'),
-    path("reset/<uidb64>/<token>/", auth_views.PasswordResetConfirmView.as_view(
-        success_url='reset_password_complete',
-        template_name='user_profile/password_reset_confirm.html'
+    path(
+        "reset/<uidb64>/<token>/",
+        auth_views.PasswordResetConfirmView.as_view(
+            success_url="reset_password_complete",
+            template_name="user_profile/password_reset_confirm.html",
+        ),
+        name="password_reset_confirm",
     ),
-         name="password_reset_confirm"),
-    path('reset/MQ/set-password/reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(
-        template_name='user_profile/password_reset_complete.html'
+    path(
+        "reset/MQ/set-password/reset_password_complete/",
+        auth_views.PasswordResetCompleteView.as_view(
+            template_name="user_profile/password_reset_complete.html"
+        ),
+        name="password_reset_complete",
     ),
-         name='password_reset_complete')
 ]
