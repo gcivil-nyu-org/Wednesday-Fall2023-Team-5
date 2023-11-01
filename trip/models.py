@@ -41,3 +41,10 @@ class UserTrip(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"UserID: {self.user}, \
+        TT: {self.travel_type}, \
+        TripID: {self.trip}, \
+        SD: {self.start_trip}, \
+        ED: {self.end_trip}"

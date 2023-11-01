@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect  # noqa
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 
 from . import forms
-from .models import Trip
+from .models import Trip, UserTrip
 
 
 # Create your views here.
@@ -36,3 +39,45 @@ def create_trip(request):
 def view_trips(request):
     trip_queryset = request.user.usertrip_set.all()
     return render(request, "trip/view_trips.html", {"trips": trip_queryset})
+
+
+@login_required
+def detail_trip(request, id):
+    # Retrieve trip
+    try:
+        usertrip_instance = UserTrip.objects.get(id=id)
+    except ObjectDoesNotExist:
+        usertrip_instance = None
+
+    if usertrip_instance is not None:
+        trip_instance = usertrip_instance.trip
+
+        end_date = usertrip_instance.end_trip
+
+        """
+        Filter QS to retrieve associated users
+        Filter settings:
+        -   Positional argument ~Q used to exclude the user themselves from the
+            user set that they see
+        Keyword arguments used to:
+        -   Make sure that destination combo
+            (destination_city, destination_country) are the same (kwarg 1)
+        -   Make sure that start_date is greater than the user's specified
+            start date (kwarg 2)
+        -   Make sure that end_date is greater than the user's specified
+            end date (kwarg 3)
+        """
+
+        user_qs = User.objects.filter(
+            ~Q(id=request.user.id),
+            Q(usertrip__trip=trip_instance),
+            Q(usertrip__start_trip__lt=end_date),
+        )
+
+    else:
+        messages.error(request, "Please select a valid trip")
+        return redirect("trip/view/")
+
+    context = {"usertrip_instance": usertrip_instance, "user_qs": user_qs}
+
+    return render(request, "trip/detail_trip.html", context)
