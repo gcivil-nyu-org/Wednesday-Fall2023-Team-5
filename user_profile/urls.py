@@ -22,7 +22,7 @@ urlpatterns = [
             email_template_name="user_profile/password_reset_email.html",
             success_url="reset_password_sent",
             template_name="user_profile/password_reset_form.html",
-            subject_template_name="user_profile/password_reset_subject.txt"
+            subject_template_name="user_profile/password_reset_subject.txt",
         ),
         name="reset_password",
     ),
