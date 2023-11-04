@@ -2,6 +2,7 @@
 
 from django.contrib.auth.models import User
 from django.db import models
+import os
 
 from common import ChoiceArrayField
 from constants import (
@@ -72,6 +73,9 @@ class UserImages(models.Model):
         blank=True,
     )
     uploaded = models.DateTimeField(auto_now_add=True)
+
+    def get_absolute_url(self):
+        return os.path.join("/media", self.image.name)
 
     # Need to add a form with tag multiple
     # Need to implement dropzone (later)
