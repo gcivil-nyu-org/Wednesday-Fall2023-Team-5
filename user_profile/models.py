@@ -2,6 +2,7 @@
 
 from django.contrib.auth.models import User
 from django.db import models
+from PIL import Image
 import os
 
 from common import ChoiceArrayField
@@ -77,7 +78,9 @@ class UserImages(models.Model):
     def get_absolute_url(self):
         return os.path.join("/media", self.image.name)
 
-    # Need to add a form with tag multiple
-    # Need to implement dropzone (later)
-    # Need to make migrations
-    # Need to make changes in AWS to make sure it uploads properly
+    def save(self, *args, **kwargs):
+        super().save()
+        existing_pic = Image.open(self.image.path)
+        output_size = (400, 400)
+        existing_pic.thumbnail(output_size)
+        existing_pic.save(self.image.path)
