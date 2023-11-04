@@ -118,15 +118,12 @@ def edit_profile(request):
         {"profile_form": profile_form},
     )
 
+
 @login_required
 def upload_images(request):
     user_profile_instance = request.user.userprofile
 
-    ImageFormSet = inlineformset_factory(
-        UserProfile,
-        UserImages,
-        ImageUploadForm
-    )
+    ImageFormSet = inlineformset_factory(UserProfile, UserImages, ImageUploadForm)
 
     if request.method == "POST":
         image_formset = ImageFormSet(
@@ -141,7 +138,9 @@ def upload_images(request):
 
     image_formset = ImageFormSet(instance=user_profile_instance)
 
-    return render(request, "user_profile/upload_images.html", {"image_formset": image_formset})
+    return render(
+        request, "user_profile/upload_images.html", {"image_formset": image_formset}
+    )
 
 
 @login_required
