@@ -71,6 +71,12 @@ def view_profile(request):
 
     image_qs = request.user.userprofile.userimages_set.all()
 
+    if image_qs:
+        list_range = range(1, len(image_qs))
+    else:
+        list_range = None
+
+
     context = {
         "first_name": request.user.first_name,
         "last_name": request.user.last_name,
@@ -86,7 +92,6 @@ def view_profile(request):
         "interests": request.user.userprofile.interests,
         "languages": request.user.userprofile.languages,
         "images": image_qs,
-        "range": range(1, len(image_qs)),
     }
 
     return render(request, "user_profile/view_profile.html", context)
