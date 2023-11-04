@@ -38,6 +38,16 @@ class UserAdmin(DjangoUserAdmin):
     ordering = ("email",)
 """
 
+class UserImagesInline(admin.StackedInline):
+    model = UserImages
+    max_num = 5
+    verbose_name_plural = "User Images"
+    fk_name = "user_profile"
+
+@admin.register(UserImages)
+class UserImagesAdmin(admin.ModelAdmin):
+    pass
+
 
 class UserImagesInline(admin.StackedInline):
     model = UserImages
@@ -61,8 +71,12 @@ class UserProfileInline(admin.StackedInline):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    inlines = [UserImagesInline]
+    inlines = [
+        UserImagesInline
+    ]
 
 
 class UserAdmin(AuthUserAdmin):
-    inlines = [UserProfileInline]
+    inlines = [
+        UserProfileInline
+    ]
