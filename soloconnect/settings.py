@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     "trip.apps.TripConfig",
     "crispy_forms",
     "crispy_bootstrap4",
+    "django_countries",
+    "cities_light",
 ]
 
 MIDDLEWARE = [
