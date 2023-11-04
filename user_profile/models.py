@@ -63,3 +63,17 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"User profile for {self.user.username}"
+
+
+class UserImages(models.Model):
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    image = models.ImageField(
+        upload_to="profileImages/",
+        blank=True,
+    )
+    uploaded = models.DateTimeField(auto_now_add=True)
+
+    # Need to add a form with tag multiple
+    # Need to implement dropzone (later)
+    # Need to make migrations
+    # Need to make changes in AWS to make sure it uploads properly
