@@ -69,6 +69,13 @@
                       </a>
                       <br>
                       <br>
+                      <a href="{% url 'user_profile:upload_images' %}">
+                          <button type="button" class="btn btn-success btn-rounded">
+                              <i class="fas fa-edit" style="font-size:20px"></i> Upload Images
+                          </button>
+                      </a>
+                      <br>
+                      <br>
                       <a href="{% url 'user_profile:milestone_profile' %}">
                         <button type="button" class="btn btn-danger btn-secondary btn-rounded">
                              <i class='fa fa-trash' style='font-size:20px'></i>  Delete profile
@@ -88,6 +95,10 @@
                               <i class="fa fa-info" style="font-size:20px"></i> View Planned Trips
                           </button>
                       </a>
+
+                      {% for image in images %}
+                          <img src="{% static '{{ image.url }}' %}"  alt="picture for {{ firstname }}"/>
+                      {% endfor %}
                 </div>
               </div>
             </div>
