@@ -1,5 +1,7 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path
+from django.conf.urls.static import static
+from soloconnect import settings
 
 from . import views
 
@@ -14,6 +16,7 @@ urlpatterns = [
     ),
     path("profile/", views.view_profile, name="view_profile"),
     path("profile/edit", views.edit_profile, name="edit_profile"),
+    path("profile/upload/", views.upload_images, name="upload_images"),
     path("profile/delete", views.milestone_profile, name="milestone_profile"),
     path("profile/detail/<int:id>", views.detail_profile, name="detail_profile"),
     path(
@@ -48,4 +51,4 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
