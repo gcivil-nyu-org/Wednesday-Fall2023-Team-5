@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
-from django.forms import ClearableFileInput
 from .helpers import email_is_valid
 from .models import User, UserProfile, UserImages
 
