@@ -86,6 +86,7 @@ def view_profile(request):
         "interests": request.user.userprofile.interests,
         "languages": request.user.userprofile.languages,
         "images": image_qs,
+        "range": range(1, len(image_qs)),
     }
 
     return render(request, "user_profile/view_profile.html", context)
