@@ -76,7 +76,6 @@ def view_profile(request):
     else:
         qs_range = None
 
-
     context = {
         "first_name": request.user.first_name,
         "last_name": request.user.last_name,
@@ -92,7 +91,6 @@ def view_profile(request):
         "interests": request.user.userprofile.interests,
         "languages": request.user.userprofile.languages,
         "images": image_qs,
-        "images_length": len(image_qs),
         "qs_range": qs_range,
     }
 
