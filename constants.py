@@ -1,3 +1,5 @@
+from cities_light.models import City, Country
+
 DRINK_PREF_CHOICES = [
     ("Frequently", "Frequently"),
     ("Socially", "Socially"),
@@ -47,3 +49,6 @@ LANG_CHOICES = [
 ]
 
 TRAVEL_TYPE = [("Solo", "Solo"), ("Companion", "Companion")]
+
+DEST_COUNTRY = [(country['name_ascii'], country['name_ascii']) for country in Country.objects.all().values('name_ascii')]
+DEST_CITY = [(city['name_ascii'], city['name_ascii']) for city in City.objects.all().values('name_ascii')]

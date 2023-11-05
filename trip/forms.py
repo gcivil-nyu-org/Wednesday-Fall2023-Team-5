@@ -1,12 +1,16 @@
+from cities_light.models import City, Country
 from django import forms
+
+from common import ChoiceArrayField
+from constants import DEST_CITY, DEST_COUNTRY
 from .models import UserTrip
 from django.core.exceptions import ValidationError
 from .helpers import start_date_in_future, end_date_after_start_date
 
 
 class UserTripCreationForm(forms.ModelForm):
-    destination_city_ef = forms.CharField(label="Destination City")
-    destination_country_ef = forms.CharField(label="Destination Country")
+    destination_city_ef = forms.MultipleChoiceField(choices=DEST_CITY)
+    destination_country_ef = forms.MultipleChoiceField(choices=DEST_COUNTRY)
 
     def clean(self):
         cleaned_data = self.cleaned_data
