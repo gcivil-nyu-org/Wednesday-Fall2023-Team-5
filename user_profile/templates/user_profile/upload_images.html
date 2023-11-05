@@ -3,7 +3,12 @@
 {% block content %}
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ image_formset | crispy }}
+    {{ image_formset.management_form }}
+    {% for form in image_formset %}
+        <h5 class="text-primary">Upload Image {{ forloop.counter }}</h5>
+        {{ form | crispy }}
+        <hr>
+    {% endfor %}
     <input type="submit" value="Submit"/>
 </form>
 {% endblock content %}
