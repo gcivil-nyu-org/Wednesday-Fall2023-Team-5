@@ -20,14 +20,14 @@ urlpatterns = [
         "reset_password/",
         auth_views.PasswordResetView.as_view(
             email_template_name="user_profile/password_reset_email.html",
-            success_url="reset_password_sent",
+            success_url="/reset_password_sent/",
             template_name="user_profile/password_reset_form.html",
             subject_template_name="user_profile/password_reset_subject.txt",
         ),
         name="reset_password",
     ),
     path(
-        "reset_password/reset_password_sent/",
+        "reset_password_sent/",
         auth_views.PasswordResetDoneView.as_view(
             template_name="user_profile/password_reset_done.html"
         ),
@@ -36,13 +36,13 @@ urlpatterns = [
     path(
         "reset/<uidb64>/<token>/",
         auth_views.PasswordResetConfirmView.as_view(
-            success_url="reset_password_complete",
+            success_url="/reset_password_complete/",
             template_name="user_profile/password_reset_confirm.html",
         ),
         name="password_reset_confirm",
     ),
     path(
-        "reset/MQ/set-password/reset_password_complete/",
+        "reset_password_complete/",
         auth_views.PasswordResetCompleteView.as_view(
             template_name="user_profile/password_reset_complete.html"
         ),
