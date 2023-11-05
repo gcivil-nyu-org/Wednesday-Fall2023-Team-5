@@ -44,6 +44,13 @@ def detail_profile(request, id):
 
     if target_user is not None:
         if target_user.is_active:
+            image_qs = target_user.userprofile.userimages_set.all()
+
+            if image_qs:
+                qs_range = range(1, len(image_qs))
+            else:
+                qs_range = None
+
             context = {
                 "first_name": target_user.first_name,
                 "last_name": target_user.last_name,
@@ -55,6 +62,8 @@ def detail_profile(request, id):
                 "edu_level": target_user.userprofile.edu_level,
                 "interests": target_user.userprofile.interests,
                 "languages": target_user.userprofile.languages,
+                "images": image_qs,
+                "qs_range": qs_range,
             }
             return render(request, "user_profile/detail_profile.html", context)
         else:
