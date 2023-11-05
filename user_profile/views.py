@@ -138,7 +138,14 @@ def edit_profile(request):
 def upload_images(request):
     user_profile_instance = request.user.userprofile
 
-    ImageFormSet = inlineformset_factory(UserProfile, UserImages, ImageUploadForm)
+    ImageFormSet = inlineformset_factory(
+        UserProfile,
+        UserImages,
+        ImageUploadForm,
+        can_delete=False,
+        max_num=5,
+        extra=5,
+    )
 
     if request.method == "POST":
         image_formset = ImageFormSet(
