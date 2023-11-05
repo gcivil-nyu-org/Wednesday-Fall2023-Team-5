@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django_countries.fields import CountryField
 
 from common import ChoiceArrayField
 from constants import TRAVEL_TYPE
@@ -7,9 +8,15 @@ from constants import TRAVEL_TYPE
 
 # Create your models here.
 class Trip(models.Model):
-    destination_city = models.CharField(max_length=500, verbose_name="Destination City")
-    destination_country = models.CharField(
-        max_length=500, verbose_name="Destination Country"
+    # destination_city = models.CharField(max_length=500, verbose_name="Destination City")
+    # destination_country = models.CharField(
+    #     max_length=500, verbose_name="Destination Country"
+    # )
+    destination_city = models.ForeignKey(
+        "cities_light.City", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    destination_country = models.ForeignKey(
+        "cities_light.Country", on_delete=models.SET_NULL, null=True, blank=True
     )
 
     # TripMetaData
