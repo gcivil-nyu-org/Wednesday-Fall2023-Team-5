@@ -1,0 +1,25 @@
+{% extends "home_default/base.html" %}
+{% block content %}
+<div class="container">
+    <div>
+        <h1>Your Potential Matches</h1>
+    </div>
+    {% if all_user_profiles %}
+        {% for user_profile in all_user_profiles %}
+            <div class="row">
+                <div class="col">
+                    <h4>FirstName: <i>{{ user_profile.user.first_name }}</i></h4>
+                    <h4>LastName: <i>{{ user_profile.user.last_name }}</i></h4>
+                    <h4>Email: <i>{{ user_profile.user.email }}</i></h4>
+                    <br><br>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h2>No potential matching user as per your matching preferences,
+            try softening the preferences a bit</h2>
+    {% endif %}
+</div>
+
+
+{% endblock content %}
