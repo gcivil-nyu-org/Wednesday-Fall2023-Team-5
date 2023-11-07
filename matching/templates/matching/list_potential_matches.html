@@ -11,6 +11,9 @@
                     <h4>FirstName: <i>{{ user_profile.user.first_name }}</i></h4>
                     <h4>LastName: <i>{{ user_profile.user.last_name }}</i></h4>
                     <h4>Email: <i>{{ user_profile.user.email }}</i></h4>
+                    {% if user_profile.user.bio %}
+                        <p>Bio: {{ user_profile.user.bio }}</p>
+                    {% endif %}
                     <br><br>
                 </div>
             </div>
