@@ -47,3 +47,72 @@ LANG_CHOICES = [
 ]
 
 TRAVEL_TYPE = [("Solo", "Solo"), ("Companion", "Companion")]
+
+COUNTRY_CHOICES = [
+    ("India", "India"),
+    ("United Kingdom", "United Kingdom"),
+    ("United States", "United States"),
+]
+
+CITY_CHOICES = [
+    ("Ahmedabad", "Ahmedabad"),
+    ("Bangalore", "Bangalore"),
+    ("Bristol", "Bristol"),
+    ("Chennai", "Chennai"),
+    ("Chicago", "Chicago"),
+    ("Dallas", "Dallas"),
+    ("Houston", "Houston"),
+    ("Glasgow", "Glasgow"),
+    ("Hyderabad", "Hyderabad"),
+    ("Jaipur", "Jaipur"),
+    ("Kolkata", "Kolkata"),
+    ("Leeds", "Leeds"),
+    ("Liverpool", "Liverpool"),
+    ("London", "London"),
+    ("Los Angeles", "Los Angeles"),
+    ("Mumbai", "Mumbai"),
+    ("New Delhi", "New Delhi"),
+    ("New York City", "New York City"),
+    ("Newcastle", "Newcastle"),
+    ("Nottingham", "Nottingham"),
+    ("Phoenix", "Phoenix"),
+    ("Philadelphia", "Philadelphia"),
+    ("Pune", "Pune"),
+    ("San Antonio", "San Antonio"),
+    ("San Diego", "San Diego"),
+    ("Sheffield", "Sheffield")
+]
+INDIAN_CITIES = [
+    ("Ahmedabad", "Ahmedabad"),
+    ("Bangalore", "Bangalore"),
+    ("Chennai", "Chennai"),
+    ("Hyderabad", "Hyderabad"),
+    ("Jaipur", "Jaipur"),
+    ("Kolkata", "Kolkata"),
+    ("Mumbai", "Mumbai"),
+    ("New Delhi", "New Delhi"),
+    ("Pune", "Pune")
+]
+
+UK_CITIES = [
+    ("Bristol", "Bristol"),
+    ("Glasgow", "Glasgow"),
+    ("Leeds", "Leeds"),
+    ("Liverpool", "Liverpool"),
+    ("London", "London"),
+    ("Newcastle", "Newcastle"),
+    ("Nottingham", "Nottingham"),
+    ("Sheffield", "Sheffield")
+]
+
+US_CITIES = [
+    ("Chicago", "Chicago"),
+    ("Dallas", "Dallas"),
+    ("Houston", "Houston"),
+    ("Los Angeles", "Los Angeles"),
+    ("New York City", "New York City"),
+    ("Phoenix", "Phoenix"),
+    ("Philadelphia", "Philadelphia"),
+    ("San Antonio", "San Antonio"),
+    ("San Diego", "San Diego")
+]
