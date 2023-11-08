@@ -1,21 +1,23 @@
 {% extends "home_default/base.html" %}
 {% block content %}
 <div class="container">
-    <div>
-        <h1>Your Potential Matches</h1>
-    </div>
+    <h1>Your Potential Matches</h1>
     {% if all_user_profiles %}
         {% for user_profile in all_user_profiles %}
-            <div class="row">
-                <div class="col">
+            <div class="col-3">
+                <div class="row-gap-3">
                     <h4>FirstName: <i>{{ user_profile.user.first_name }}</i></h4>
                     <h4>LastName: <i>{{ user_profile.user.last_name }}</i></h4>
                     <h4>Email: <i>{{ user_profile.user.email }}</i></h4>
                     {% if user_profile.user.bio %}
                         <p>Bio: {{ user_profile.user.bio }}</p>
                     {% endif %}
-                    <br><br>
                 </div>
+{#                <div>#}
+{#                    <button type="button" class="btn btn-info btn-rounded">Send Request</button>#}
+{#                    <button type="button" class="btn btn-rounded btn-secondary">Cancel Request</button>#}
+{#                </div>#}
+                <br><br>
             </div>
         {% endfor %}
     {% else %}
