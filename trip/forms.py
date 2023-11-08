@@ -24,6 +24,7 @@ class UserTripCreationForm(forms.ModelForm):
         end_date = cleaned_data.get("end_trip")
         city = cleaned_data.get("destination_city_ef")
         country = cleaned_data.get("destination_country_ef")
+
         if not start_date_in_future(start_date):
             raise ValidationError("Start date must be in the future")
         if not end_date_after_start_date(start_date, end_date):

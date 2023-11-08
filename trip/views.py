@@ -17,11 +17,18 @@ def create_trip(request):
         usertrip_creation_form = forms.UserTripCreationForm(request.POST)
         if usertrip_creation_form.is_valid():
             usertrip_data = usertrip_creation_form.cleaned_data
+
             usertrip_instance = usertrip_creation_form.save(commit=False)
 
+            dest_city_raw = usertrip_data["destination_city_ef"]
+            dest_city = dest_city_raw[0]
+
+            dest_country_raw = usertrip_data["destination_country_ef"]
+            dest_country = dest_country_raw[0]
+
             trip_instance, _ = Trip.objects.get_or_create(
-                destination_city=usertrip_data["destination_city_ef"],
-                destination_country=usertrip_data["destination_country_ef"],
+                destination_city=dest_city,
+                destination_country=dest_country,
             )
 
             usertrip_instance.trip = trip_instance
