@@ -91,7 +91,7 @@ INDIAN_CITIES = [
     ("Kolkata", "Kolkata"),
     ("Mumbai", "Mumbai"),
     ("New Delhi", "New Delhi"),
-    ("Pune", "Pune")
+    ("Pune", "Pune"),
 ]
 
 UK_CITIES = [
