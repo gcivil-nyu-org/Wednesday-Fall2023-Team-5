@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "trip.apps.TripConfig",
     "crispy_forms",
     "crispy_bootstrap4",
+    "matching.apps.MatchingConfig",
 ]
 
 MIDDLEWARE = [
@@ -149,3 +150,11 @@ LOGIN_URL = "user_profile:login"
 LOGIN_REDIRECT_URL = "user_profile:view_profile"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+# Email configs
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = 587

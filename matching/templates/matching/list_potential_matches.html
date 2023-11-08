@@ -1,0 +1,30 @@
+{% extends "home_default/base.html" %}
+{% block content %}
+<div class="container">
+    <h1>Your Potential Matches:</h1>
+    {% if matching_users %}
+        {% for user in matching_users %}
+            <div class="col-3">
+                <div class="row-gap-3">
+                    <h4>FirstName: <i>{{ user.first_name }}</i></h4>
+                    <h4>LastName: <i>{{ user.last_name }}</i></h4>
+                    <h4>Email: <i>{{ user.email }}</i></h4>
+                    {% if user.userprofile.bio %}
+                        <h5>Bio: {{ user.userprofile.bio }}</h5>
+                    {% endif %}
+                </div>
+{#                <div>#}
+{#                    <button type="button" class="btn btn-info btn-rounded">Send Request</button>#}
+{#                    <button type="button" class="btn btn-rounded btn-secondary">Cancel Request</button>#}
+{#                </div>#}
+                <br><br>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h2>No potential matching user as per your matching preferences,
+            try softening the preferences a bit</h2>
+    {% endif %}
+</div>
+
+
+{% endblock content %}
