@@ -52,36 +52,12 @@ COUNTRY_CHOICES = [
     ("India", "India"),
     ("United Kingdom", "United Kingdom"),
     ("United States", "United States"),
+    ("Canada", "Canada"),
+    ("Mexico", "Mexico"),
+    ("Italy", "Italy"),
+    ("France", "France"),
 ]
 
-CITY_CHOICES = [
-    ("Ahmedabad", "Ahmedabad"),
-    ("Bangalore", "Bangalore"),
-    ("Bristol", "Bristol"),
-    ("Chennai", "Chennai"),
-    ("Chicago", "Chicago"),
-    ("Dallas", "Dallas"),
-    ("Houston", "Houston"),
-    ("Glasgow", "Glasgow"),
-    ("Hyderabad", "Hyderabad"),
-    ("Jaipur", "Jaipur"),
-    ("Kolkata", "Kolkata"),
-    ("Leeds", "Leeds"),
-    ("Liverpool", "Liverpool"),
-    ("London", "London"),
-    ("Los Angeles", "Los Angeles"),
-    ("Mumbai", "Mumbai"),
-    ("New Delhi", "New Delhi"),
-    ("New York City", "New York City"),
-    ("Newcastle", "Newcastle"),
-    ("Nottingham", "Nottingham"),
-    ("Phoenix", "Phoenix"),
-    ("Philadelphia", "Philadelphia"),
-    ("Pune", "Pune"),
-    ("San Antonio", "San Antonio"),
-    ("San Diego", "San Diego"),
-    ("Sheffield", "Sheffield")
-]
 INDIAN_CITIES = [
     ("Ahmedabad", "Ahmedabad"),
     ("Bangalore", "Bangalore"),
@@ -91,7 +67,7 @@ INDIAN_CITIES = [
     ("Kolkata", "Kolkata"),
     ("Mumbai", "Mumbai"),
     ("New Delhi", "New Delhi"),
-    ("Pune", "Pune")
+    ("Pune", "Pune"),
 ]
 
 UK_CITIES = [
@@ -102,7 +78,7 @@ UK_CITIES = [
     ("London", "London"),
     ("Newcastle", "Newcastle"),
     ("Nottingham", "Nottingham"),
-    ("Sheffield", "Sheffield")
+    ("Sheffield", "Sheffield"),
 ]
 
 US_CITIES = [
@@ -114,5 +90,70 @@ US_CITIES = [
     ("Phoenix", "Phoenix"),
     ("Philadelphia", "Philadelphia"),
     ("San Antonio", "San Antonio"),
-    ("San Diego", "San Diego")
+    ("San Diego", "San Diego"),
 ]
+
+CANADA_CITIES = [
+    ("Calgary", "Calgary"),
+    ("Edmonton", "Edmonton"),
+    ("Hamilton", "Hamilton"),
+    ("Mississauga", "Mississauga"),
+    ("Montreal", "Montreal"),
+    ("Niagara Falls", "Niagara Falls"),
+    ("Ottawa", "Ottawa"),
+    ("Quebec City", "Quebec City"),
+    ("Toronto", "Toronto"),
+    ("Vancouver", "Vancouver"),
+]
+
+MEXICO_CITIES = [
+    ("Cancun", "Cancun"),
+    ("Chichen Itza", "Chichen Itza"),
+    ("Guadalajara", "Guadalajara"),
+    ("Los Cabos", "Los Cabos"),
+    ("Mexico City", "Mexico City"),
+    ("Oaxaca City", "Oaxaca City"),
+    ("Playa del Carmen", "Playa del Carmen"),
+    ("Puerto Vallarta", "Puerto Vallarta"),
+]
+
+FRANCE_CITIES = [
+    ("Burgundy", "Burgundy"),
+    ("Bordeaux", "Bordeaux"),
+    ("Cannes", "Cannes"),
+    ("Corsica", "Corsica"),
+    ("Eze", "Eze"),
+    ("Marseille", "Marseille"),
+    ("Nice", "Nice"),
+    ("Normandy", "Normandy"),
+    ("Paris", "Paris"),
+    ("Toulouse", "Toulouse"),
+]
+
+ITALY_CITIES = [
+    ("Florence", "Florence"),
+    ("Genoa", "Genoa"),
+    ("Milan", "Milan"),
+    ("Naples", "Naples"),
+    ("Palermo", "Palermo"),
+    ("Rome", "Rome"),
+    ("Venice", "Venice"),
+]
+
+
+def concat_sort_city_tuples(*args):
+    return_list = []
+    for arg in args:
+        return_list += arg
+    return sorted(return_list)
+
+
+CITY_CHOICES = concat_sort_city_tuples(
+    INDIAN_CITIES,
+    US_CITIES,
+    UK_CITIES,
+    CANADA_CITIES,
+    MEXICO_CITIES,
+    FRANCE_CITIES,
+    ITALY_CITIES,
+)
