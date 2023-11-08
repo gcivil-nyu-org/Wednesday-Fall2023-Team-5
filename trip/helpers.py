@@ -1,5 +1,4 @@
 import datetime
-import logging
 
 from constants import INDIAN_CITIES, US_CITIES, UK_CITIES
 
