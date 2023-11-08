@@ -1,5 +1,3 @@
-from trip.helpers import concat_sort_city_tuples
-
 DRINK_PREF_CHOICES = [
     ("Frequently", "Frequently"),
     ("Socially", "Socially"),
@@ -141,6 +139,14 @@ ITALY_CITIES = [
     ("Rome", "Rome"),
     ("Venice", "Venice"),
 ]
+
+
+def concat_sort_city_tuples(*args):
+    return_list = []
+    for arg in args:
+        return_list += arg
+    return sorted(return_list)
+
 
 CITY_CHOICES = concat_sort_city_tuples(
     INDIAN_CITIES,
