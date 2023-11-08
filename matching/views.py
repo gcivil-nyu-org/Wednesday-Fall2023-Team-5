@@ -29,16 +29,18 @@ def show_potential_matches(request, trip_id):
         usertrip__trip__destination_country=current_usertrip.trip.destination_country,
     ).distinct()
 
-    condition = reduce(
-        or_,
-        [
-            Q(usertrip__user__userprofile__languages__icontains=q)
-            for q in current_user.userprofile.languages
-        ],
-    )
-    # additional condition to show matches with atleast one common language
-    matching_users = matching_users.filter(condition)
-
+    try:
+        condition = reduce(
+            or_,
+            [
+                Q(usertrip__user__userprofile__languages__icontains=q)
+                for q in current_user.userprofile.languages
+            ],
+        )
+        # additional condition to show matches with at least one common language
+        matching_users = matching_users.filter(condition)
+    except Exception as e:
+        print(e)
     # filter out the current user from match pool
     matching_users = [user for user in matching_users if user != current_user]
 
