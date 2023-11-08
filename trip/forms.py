@@ -1,7 +1,7 @@
-from cities_light.models import City, Country # noqa F401
+from cities_light.models import City, Country  # noqa F401
 from django import forms
 
-from common import ChoiceArrayField # noqa F401
+from common import ChoiceArrayField  # noqa F401
 from constants import DEST_CITY, DEST_COUNTRY
 from .models import UserTrip
 from django.core.exceptions import ValidationError

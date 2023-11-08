@@ -19,7 +19,7 @@ def create_trip(request):
             usertrip_data = usertrip_creation_form.cleaned_data
             usertrip_instance = usertrip_creation_form.save(commit=False)
 
-            trip_instance, _ = Trip.objects.get_or_create(
+            trip_instance, _ = Trip.objects.get(
                 destination_city=usertrip_data["destination_city_ef"],
                 destination_country=usertrip_data["destination_country_ef"],
             )

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django_countries.fields import CountryField # noqa F401
+from django_countries.fields import CountryField  # noqa F401
 
 from common import ChoiceArrayField
 from constants import TRAVEL_TYPE
