@@ -22,4 +22,5 @@ urlpatterns = [
     path("", include("home_default.urls")),
     path("", include("user_profile.urls")),
     path("", include("trip.urls")),
+    path("trip/view/<int:trip_id>/", include("matching.urls")),
 ]

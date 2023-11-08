@@ -1,31 +1,30 @@
 {% extends "home_default/base.html" %}
 {% block content %}
 <div class="container">
-    <div class="row">
+    <div class="row-gap-3">
         <div class="col">
-            <h2>Your upcoming trip to {{ usertrip_instance.trip.destination_city }}, {{usertrip_instance.trip.destination_country}}</h2>
+             <h4>Trip to {{ usertrip_instance.trip.destination_city }}, {{ usertrip_instance.trip.destination_country }}</h4>
+                <p>Start date: {{ usertrip_instance.start_trip|date:"m/d/Y" }}</p>
+                <p>End date: {{ usertrip_instance.end_trip|date:"m/d/Y" }}</p>
+        </div>
+        <div class="col">
+            <a href="{% url 'matching:show_potential_matches' trip_id=usertrip_instance.id%}">
+                <button type="button" class="btn btn-info btn-rounded">
+                Show Potential Matches
+            </button>
+            </a>
+{#            <a href="#">#}
+{#                <button type="button" class="btn btn-rounded btn-primary">#}
+{#                    Show Pending Matches#}
+{#                </button>#}
+{#            </a>#}
+{#            <a href="#">#}
+{#                <button type="button" class="btn btn-success btn-rounded">#}
+{#                    Show Matches#}
+{#                </button>#}
+{#            </a>#}
         </div>
     </div>
-    {% if user_qs %}
-        <h4>Users visiting at the same time as you</h4>
-        <br>
-        {% for u in user_qs %}
-            <div class="row">
-                <div class="col">
-                    <p class="font-weight-bold">{{ u.first_name }} {{ u.last_name|first }}.</p>
-                    <p>Bio: {{ u.userprofile.bio }}</p>
-                    <br>
-                </div>
-            </div>
-        {% endfor %}
-    {% else %}
-        <h4>Users visiting at the same time as you</h4>
-        <div class="row">
-            <div class="col">
-                <p>No matches found for this date range</p>
-            </div>
-        </div>
-    {% endif %}
 </div>
 
 

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "trip.apps.TripConfig",
     "crispy_forms",
     "crispy_bootstrap4",
+    "matching.apps.MatchingConfig",
 ]
 
 MIDDLEWARE = [
