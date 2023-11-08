@@ -80,7 +80,7 @@ CITY_CHOICES = [
     ("Pune", "Pune"),
     ("San Antonio", "San Antonio"),
     ("San Diego", "San Diego"),
-    ("Sheffield", "Sheffield")
+    ("Sheffield", "Sheffield"),
 ]
 INDIAN_CITIES = [
     ("Ahmedabad", "Ahmedabad"),
@@ -102,7 +102,7 @@ UK_CITIES = [
     ("London", "London"),
     ("Newcastle", "Newcastle"),
     ("Nottingham", "Nottingham"),
-    ("Sheffield", "Sheffield")
+    ("Sheffield", "Sheffield"),
 ]
 
 US_CITIES = [
@@ -114,5 +114,5 @@ US_CITIES = [
     ("Phoenix", "Phoenix"),
     ("Philadelphia", "Philadelphia"),
     ("San Antonio", "San Antonio"),
-    ("San Diego", "San Diego")
+    ("San Diego", "San Diego"),
 ]
