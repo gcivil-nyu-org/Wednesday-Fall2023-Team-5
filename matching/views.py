@@ -1,10 +1,9 @@
 from functools import reduce
 
-from django.db.models import ExpressionWrapper, IntegerField, F, Q
+from django.db.models import Q
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from user_profile.models import UserProfile
 from trip.models import UserTrip
 import datetime
 from datetime import date
@@ -15,8 +14,8 @@ from operator import or_
 def show_potential_matches(request, trip_id):
     current_user = request.user
     current_usertrip = UserTrip.objects.get(id=trip_id)
-    # all_user_profiles = UserTrip.objects.all()
 
+    # applying dynamic filter to generate match pool
     matching_users = User.objects.filter(
         usertrip__start_trip=current_usertrip.start_trip,
         usertrip__end_trip=current_usertrip.end_trip,
@@ -26,7 +25,6 @@ def show_potential_matches(request, trip_id):
         usertrip__user__userprofile__dob__gt=date.today()
         - datetime.timedelta(days=365.25 * current_user.userprofile.age_upper),
         usertrip__user__userprofile__verified_prof=current_user.userprofile.verified_prof,
-        # without last filter - {changing chinese, spanish}, User3, User6, User7 must be there
         usertrip__trip__destination_city=current_usertrip.trip.destination_city,
         usertrip__trip__destination_country=current_usertrip.trip.destination_country,
     ).distinct()
@@ -38,7 +36,11 @@ def show_potential_matches(request, trip_id):
             for q in current_user.userprofile.languages
         ],
     )
+    # additional condition to show matches with atleast one common language
     matching_users = matching_users.filter(condition)
+
+    # filter out the current user from match pool
+    matching_users = [user for user in matching_users if user != current_user]
 
     context = {"matching_users": matching_users, "current_user": current_user}
     return render(request, "matching/list_potential_matches.html", context)

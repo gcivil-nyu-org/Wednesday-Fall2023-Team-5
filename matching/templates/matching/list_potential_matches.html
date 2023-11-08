@@ -1,16 +1,16 @@
 {% extends "home_default/base.html" %}
 {% block content %}
 <div class="container">
-    <h1>Your Potential Matches</h1>
-    {% if all_user_profiles %}
-        {% for user_profile in all_user_profiles %}
+    <h1>Your Potential Matches:</h1>
+    {% if matching_users %}
+        {% for user_profile in matching_users %}
             <div class="col-3">
                 <div class="row-gap-3">
-                    <h4>FirstName: <i>{{ user_profile.user.first_name }}</i></h4>
-                    <h4>LastName: <i>{{ user_profile.user.last_name }}</i></h4>
-                    <h4>Email: <i>{{ user_profile.user.email }}</i></h4>
-                    {% if user_profile.user.bio %}
-                        <p>Bio: {{ user_profile.user.bio }}</p>
+                    <h4>FirstName: <i>{{ user_profile.first_name }}</i></h4>
+                    <h4>LastName: <i>{{ user_profile.last_name }}</i></h4>
+                    <h4>Email: <i>{{ user_profile.email }}</i></h4>
+                    {% if user_profile.bio %}
+                        <p>Bio: {{ user_profile.bio }}</p>
                     {% endif %}
                 </div>
 {#                <div>#}
