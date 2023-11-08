@@ -1,6 +1,6 @@
 import datetime
 
-from constants import INDIAN_CITIES, US_CITIES, UK_CITIES
+from constants import INDIAN_CITIES, US_CITIES, UK_CITIES, CANADA_CITIES, MEXICO_CITIES, ITALY_CITIES, FRANCE_CITIES
 
 
 def start_date_in_future(std):
@@ -27,3 +27,11 @@ def city_present_in_country(city, country):
         return True if city_tuple in US_CITIES else False
     elif country == "United Kingdom":
         return True if city_tuple in UK_CITIES else False
+    elif country == "Canada":
+        return True if city_tuple in CANADA_CITIES else False
+    elif country == "Mexico":
+        return True if city_tuple in MEXICO_CITIES else False
+    elif country == "France":
+        return True if city_tuple in FRANCE_CITIES else False
+    elif country == "Italy":
+        return True if city_tuple in ITALY_CITIES else False
