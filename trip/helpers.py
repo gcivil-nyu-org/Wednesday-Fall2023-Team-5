@@ -27,3 +27,10 @@ def city_present_in_country(city, country):
         return True if city_tuple in US_CITIES else False
     elif country == "United Kingdom":
         return True if city_tuple in UK_CITIES else False
+
+
+def concat_sort_city_tuples(*args):
+    return_list = []
+    for arg in args:
+        return_list += arg
+    return sorted(return_list)
