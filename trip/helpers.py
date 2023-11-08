@@ -1,6 +1,14 @@
 import datetime
 
-from constants import INDIAN_CITIES, US_CITIES, UK_CITIES, CANADA_CITIES, MEXICO_CITIES, ITALY_CITIES, FRANCE_CITIES
+from constants import (
+    INDIAN_CITIES,
+    US_CITIES,
+    UK_CITIES,
+    CANADA_CITIES,
+    MEXICO_CITIES,
+    ITALY_CITIES,
+    FRANCE_CITIES,
+)
 
 
 def start_date_in_future(std):
