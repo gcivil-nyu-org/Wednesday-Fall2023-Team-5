@@ -133,22 +133,24 @@ def login_view(request):
         password = request.POST["password"]
 
         try:
-            user_instance = User.objects.get(username=username)
-        except ObjectDoesNotExist:
-            user_instance = None
-
-        if user_instance is not None:
-            if not user_instance.is_active:
-                user_instance.is_active = True
-                user_instance.save()
+            user = User.objects.get(username=username)
+            if not user.check_password(password):
+                raise Exception("Incorrect Password")
+            if not user.is_active:
+                user.is_active = True
+                user.save()
                 messages.success(request, "Successfully reactivated account")
-
             user = authenticate(request, username=username, password=password)
+        except Exception as e:
+            print(e)
+            user = None
+
+        if user is None:
+            messages.error(request, "Please enter a valid username and password")
+        else:
             login(request, user)
             messages.success(request, "Successfully logged in")
             return redirect(reverse("user_profile:view_profile"))
-        else:
-            messages.info(request, "Please enter a valid username and password")
 
     auth_form = AuthenticationForm()
     return render(request, "user_profile/login.html", {"form": auth_form})
