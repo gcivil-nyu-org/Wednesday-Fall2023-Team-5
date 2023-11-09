@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-handler403 = 'home_default.views.custom_403'
+handler403 = "home_default.views.custom_403"
 
 urlpatterns = [
     path("admin/", admin.site.urls),

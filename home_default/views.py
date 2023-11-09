@@ -7,4 +7,4 @@ def home_page(request):
 
 
 def custom_403(request, exception):
-    return render(request, 'home_default/403.html', {}, status=403)
+    return render(request, "home_default/403.html", {}, status=403)

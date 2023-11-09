@@ -11,7 +11,6 @@ from operator import or_
 from django.core.exceptions import PermissionDenied
 
 
-
 @login_required
 def show_potential_matches(request, trip_id):
     current_user = request.user
