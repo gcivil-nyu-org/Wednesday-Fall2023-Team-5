@@ -56,6 +56,7 @@ def detail_trip(request, ut_id):
         usertrip_instance = UserTrip.objects.get(id=ut_id)
 
         if usertrip_instance.user != request.user:
+            messages.warning(request, "You're not allowed to view this")
             raise PermissionDenied
 
     except ObjectDoesNotExist:
@@ -88,7 +89,7 @@ def detail_trip(request, ut_id):
 
     else:
         messages.error(request, "Please select a valid trip")
-        return redirect("trip/view/")
+        return redirect(reverse("trip:view_trips"))
 
     context = {"usertrip_instance": usertrip_instance, "user_qs": user_qs}
 
