@@ -8,12 +8,17 @@ from trip.models import UserTrip
 import datetime
 from datetime import date
 from operator import or_
+from django.core.exceptions import PermissionDenied
+
 
 
 @login_required
 def show_potential_matches(request, trip_id):
     current_user = request.user
     current_usertrip = UserTrip.objects.get(id=trip_id)
+
+    if current_usertrip.user != current_user:
+        raise PermissionDenied
 
     # applying dynamic filter to generate match pool
     matching_users = User.objects.filter(

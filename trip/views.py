@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+from django.core.exceptions import PermissionDenied
 
 from . import forms
 from .models import Trip, UserTrip
@@ -49,10 +50,14 @@ def view_trips(request):
 
 
 @login_required
-def detail_trip(request, id):
+def detail_trip(request, ut_id):
     # Retrieve trip
     try:
-        usertrip_instance = UserTrip.objects.get(id=id)
+        usertrip_instance = UserTrip.objects.get(id=ut_id)
+
+        if usertrip_instance.user != request.user:
+            raise PermissionDenied
+
     except ObjectDoesNotExist:
         usertrip_instance = None
 
