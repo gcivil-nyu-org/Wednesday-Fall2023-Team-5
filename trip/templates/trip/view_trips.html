@@ -9,7 +9,7 @@
     {% if trips %}
         {% for ut in trips %}
             <div class="row">
-                <a href="{% url 'trip:detail_trip' id=ut.id %}">
+                <a href="{% url 'trip:detail_trip' ut_id=ut.id %}">
                     Trip to: {{ ut.trip.destination_city }}, {{ ut.trip.destination_country }}
                 </a>
                 <br><br>
