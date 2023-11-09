@@ -134,12 +134,15 @@ def login_view(request):
 
         try:
             user = User.objects.get(username=username)
+
             if not user.check_password(password):
                 raise Exception("Incorrect Password")
+
             if not user.is_active:
                 user.is_active = True
                 user.save()
                 messages.success(request, "Successfully reactivated account")
+
             user = authenticate(request, username=username, password=password)
         except Exception as e:
             print(e)
