@@ -1,10 +1,8 @@
 from django.shortcuts import render, redirect  # noqa
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.contrib import messages
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
 from django.core.exceptions import PermissionDenied
 
 from . import forms
@@ -62,35 +60,42 @@ def detail_trip(request, ut_id):
     except ObjectDoesNotExist:
         usertrip_instance = None
 
-    if usertrip_instance is not None:
-        trip_instance = usertrip_instance.trip
+    if usertrip_instance is None:
+        messages.error(request, "Please select a valid trip")
+        return redirect(reverse("trip:view_trips"))
 
-        end_date = usertrip_instance.end_trip
+    context = {"usertrip_instance": usertrip_instance}
 
-        """
-        Filter QS to retrieve associated users
-        Filter settings:
-        -   Positional argument ~Q used to exclude the user themselves from the
-            user set that they see
-        Keyword arguments used to:
-        -   Make sure that destination combo
-            (destination_city, destination_country) are the same (kwarg 1)
-        -   Make sure that start_date is greater than the user's specified
-            start date (kwarg 2)
-        -   Make sure that end_date is greater than the user's specified
-            end date (kwarg 3)
-        """
+    return render(request, "trip/detail_trip.html", context)
 
-        user_qs = User.objects.filter(
-            ~Q(id=request.user.id),
-            Q(usertrip__trip=trip_instance),
-            Q(usertrip__start_trip__lt=end_date),
-        )
 
+@login_required
+def update_trip(request, ut_id):
+    try:
+        usertrip_instance = UserTrip.objects.get(id=ut_id)
+        if usertrip_instance.user != request.user:
+            messages.warning(request, "You're not allowed to edit this")
+            raise PermissionDenied
+    except ObjectDoesNotExist:
+        usertrip_instance = None
+
+    if usertrip_instance:
+        if request.method == "POST":
+            usertrip_update_form = forms.UserTripUpdateForm(
+                request.POST, instance=usertrip_instance
+            )
+            if usertrip_update_form.is_valid():
+                usertrip_update_form.save()
+                messages.success(request, "Trip successfully edited")
+                return redirect(reverse("trip:detail_trip", kwargs={"ut_id": ut_id}))
+        else:
+            usertrip_update_form = forms.UserTripUpdateForm(instance=usertrip_instance)
     else:
         messages.error(request, "Please select a valid trip")
         return redirect(reverse("trip:view_trips"))
 
-    context = {"usertrip_instance": usertrip_instance, "user_qs": user_qs}
-
-    return render(request, "trip/detail_trip.html", context)
+    return render(
+        request,
+        "trip/update_trip.html",
+        {"usertrip_update_form": usertrip_update_form},
+    )
