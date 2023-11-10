@@ -10,9 +10,6 @@ from constants import (
     FRANCE_CITIES,
 )
 
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
-from django.contrib import messages
-
 
 def start_date_in_future(std):
     if isinstance(std, datetime.date):
@@ -46,15 +43,3 @@ def city_present_in_country(city, country):
         return True if city_tuple in FRANCE_CITIES else False
     elif country == "Italy":
         return True if city_tuple in ITALY_CITIES else False
-
-
-def retrieve_none_or_403(request, target_model, identifier, message):
-    try:
-        instance = target_model.objects.get(id=identifier)
-        if instance.user != request.user:
-            messages.warning(request, message)
-            raise PermissionDenied
-    except ObjectDoesNotExist:
-        instance = None
-
-    return instance

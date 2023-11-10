@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.urls import reverse
 from . import forms
 from .models import Trip, UserTrip
-from .helpers import retrieve_none_or_403
+from common import retrieve_none_or_403
 
 
 # Create your views here.
