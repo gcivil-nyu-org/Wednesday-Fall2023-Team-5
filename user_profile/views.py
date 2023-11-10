@@ -6,6 +6,9 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms import inlineformset_factory
+from .models import UserImages, UserProfile
+from .forms import ImageUploadForm
 import logging
 
 from . import forms
@@ -41,6 +44,13 @@ def detail_profile(request, id):
 
     if target_user is not None:
         if target_user.is_active:
+            image_qs = target_user.userprofile.userimages_set.all()
+
+            if image_qs:
+                qs_range = range(1, len(image_qs))
+            else:
+                qs_range = None
+
             context = {
                 "first_name": target_user.first_name,
                 "last_name": target_user.last_name,
@@ -52,6 +62,8 @@ def detail_profile(request, id):
                 "edu_level": target_user.userprofile.edu_level,
                 "interests": target_user.userprofile.interests,
                 "languages": target_user.userprofile.languages,
+                "images": image_qs,
+                "qs_range": qs_range,
             }
             return render(request, "user_profile/detail_profile.html", context)
         else:
@@ -65,6 +77,13 @@ def detail_profile(request, id):
 def view_profile(request):
     logger = logging.getLogger("django")
     logger.info("Here in view profile")
+
+    image_qs = request.user.userprofile.userimages_set.all()
+
+    if image_qs:
+        qs_range = range(1, len(image_qs))
+    else:
+        qs_range = None
 
     context = {
         "first_name": request.user.first_name,
@@ -80,6 +99,8 @@ def view_profile(request):
         "edu_level": request.user.userprofile.edu_level,
         "interests": request.user.userprofile.interests,
         "languages": request.user.userprofile.languages,
+        "images": image_qs,
+        "qs_range": qs_range,
     }
 
     return render(request, "user_profile/view_profile.html", context)
@@ -87,9 +108,11 @@ def view_profile(request):
 
 @login_required
 def edit_profile(request):
+    user_profile_instance = request.user.userprofile
+
     if request.method == "POST":
         profile_form = forms.ProfileUpdateForm(
-            request.POST, instance=request.user.userprofile
+            request.POST, instance=user_profile_instance
         )
         if profile_form.is_valid():
             profile_form.save()
@@ -102,10 +125,43 @@ def edit_profile(request):
                 Please verify your responses and try again",
             )
 
-    profile_form = forms.ProfileUpdateForm(instance=request.user.userprofile)
+    profile_form = forms.ProfileUpdateForm(instance=user_profile_instance)
 
     return render(
-        request, "user_profile/edit_profile.html", {"profile_form": profile_form}
+        request,
+        "user_profile/edit_profile.html",
+        {"profile_form": profile_form},
+    )
+
+
+@login_required
+def upload_images(request):
+    user_profile_instance = request.user.userprofile
+
+    ImageFormSet = inlineformset_factory(
+        UserProfile,
+        UserImages,
+        ImageUploadForm,
+        can_delete=False,
+        max_num=5,
+        extra=5,
+    )
+
+    if request.method == "POST":
+        image_formset = ImageFormSet(
+            request.POST, request.FILES, instance=user_profile_instance
+        )
+        if image_formset.is_valid():
+            image_formset.save()
+            messages.success(request, "Photos successfully uploaded")
+            return redirect(reverse("user_profile:view_profile"))
+        else:
+            messages.error(request, "Unable to upload photos; please try again")
+
+    image_formset = ImageFormSet(instance=user_profile_instance)
+
+    return render(
+        request, "user_profile/upload_images.html", {"image_formset": image_formset}
     )
 
 

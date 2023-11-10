@@ -1,0 +1,14 @@
+{% extends 'home_default/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ image_formset.management_form }}
+    {% for form in image_formset %}
+        <h5 class="text-primary">Upload Image {{ forloop.counter }}</h5>
+        {{ form | crispy }}
+        <hr>
+    {% endfor %}
+    <input type="submit" value="Submit"/>
+</form>
+{% endblock content %}
