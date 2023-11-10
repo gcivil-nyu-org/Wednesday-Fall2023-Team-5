@@ -48,10 +48,7 @@ def view_trips(request):
 @login_required
 def detail_trip(request, ut_id):
     usertrip_instance = retrieve_none_or_403(
-        request,
-        UserTrip,
-        ut_id,
-        "You are not allowed to view this."
+        request, UserTrip, ut_id, "You are not allowed to view this."
     )
 
     if usertrip_instance is None:
@@ -66,10 +63,7 @@ def detail_trip(request, ut_id):
 @login_required
 def update_trip(request, ut_id):
     usertrip_instance = retrieve_none_or_403(
-        request,
-        UserTrip,
-        ut_id,
-        "You are not allowed to edit this."
+        request, UserTrip, ut_id, "You are not allowed to edit this."
     )
 
     if usertrip_instance:
