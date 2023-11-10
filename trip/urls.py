@@ -7,4 +7,5 @@ urlpatterns = [
     path("trip/create/", views.create_trip, name="create_trip"),
     path("trip/view/<int:ut_id>", views.detail_trip, name="detail_trip"),
     path("trip/update/<int:ut_id>", views.update_trip, name="update_trip"),
+    path("trip/delete/<int:ut_id>", views.milestone_trip, name="milestone_trip"),
 ]

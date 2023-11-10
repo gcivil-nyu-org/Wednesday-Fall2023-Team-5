@@ -41,7 +41,7 @@ def create_trip(request):
 
 @login_required
 def view_trips(request):
-    trip_queryset = request.user.usertrip_set.all()
+    trip_queryset = request.user.usertrip_set.filter(is_active=True)
     return render(request, "trip/view_trips.html", {"trips": trip_queryset})
 
 
@@ -86,3 +86,25 @@ def update_trip(request, ut_id):
         "trip/update_trip.html",
         {"usertrip_update_form": usertrip_update_form},
     )
+
+
+@login_required
+def milestone_trip(request, ut_id):
+    usertrip_instance = retrieve_none_or_403(
+        request, UserTrip, ut_id, "You are not allowed to edit this."
+    )
+
+    if usertrip_instance and usertrip_instance.is_active:
+        if request.method == "POST":
+            usertrip_instance.is_active = False
+            usertrip_instance.save()
+            return redirect(reverse("trip:view_trips"))
+    else:
+        messages.error(
+            request,
+            "This trip either does not exist or has been cancelled already.\
+            Please select a valid trip",
+        )
+        return redirect(reverse("trip:view_trips"))
+
+    return render(request, "trip/milestone_confirm.html", {})
