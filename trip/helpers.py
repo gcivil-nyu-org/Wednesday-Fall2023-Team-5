@@ -10,8 +10,7 @@ from constants import (
     FRANCE_CITIES,
 )
 
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.contrib import messages
 
 
