@@ -2,11 +2,9 @@ from django.shortcuts import render, redirect  # noqa
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.exceptions import PermissionDenied
-
 from . import forms
 from .models import Trip, UserTrip
+from .helpers import retrieve_none_or_403
 
 
 # Create your views here.
@@ -49,16 +47,12 @@ def view_trips(request):
 
 @login_required
 def detail_trip(request, ut_id):
-    # Retrieve trip
-    try:
-        usertrip_instance = UserTrip.objects.get(id=ut_id)
-
-        if usertrip_instance.user != request.user:
-            messages.warning(request, "You're not allowed to view this")
-            raise PermissionDenied
-
-    except ObjectDoesNotExist:
-        usertrip_instance = None
+    usertrip_instance = retrieve_none_or_403(
+        request,
+        UserTrip,
+        ut_id,
+        "You are not allowed to view this."
+    )
 
     if usertrip_instance is None:
         messages.error(request, "Please select a valid trip")
@@ -71,13 +65,12 @@ def detail_trip(request, ut_id):
 
 @login_required
 def update_trip(request, ut_id):
-    try:
-        usertrip_instance = UserTrip.objects.get(id=ut_id)
-        if usertrip_instance.user != request.user:
-            messages.warning(request, "You're not allowed to edit this")
-            raise PermissionDenied
-    except ObjectDoesNotExist:
-        usertrip_instance = None
+    usertrip_instance = retrieve_none_or_403(
+        request,
+        UserTrip,
+        ut_id,
+        "You are not allowed to edit this."
+    )
 
     if usertrip_instance:
         if request.method == "POST":

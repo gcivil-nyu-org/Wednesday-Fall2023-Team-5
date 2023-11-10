@@ -41,6 +41,7 @@ class UserTrip(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"UserID: {self.user}, \
