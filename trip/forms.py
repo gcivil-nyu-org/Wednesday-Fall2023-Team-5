@@ -42,7 +42,6 @@ class UserTripCreationForm(forms.ModelForm):
 
 
 class UserTripUpdateForm(forms.ModelForm):
-
     travel_type = forms.ChoiceField(choices=TRAVEL_TYPE, widget=forms.RadioSelect())
 
     def clean(self):
