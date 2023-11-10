@@ -36,9 +36,7 @@ class UserTrip(models.Model):
         verbose_name="Trip End Date",
         help_text="Enter the date you plan to leave your destination",
     )
-    travel_type = ChoiceArrayField(
-        models.CharField(max_length=30, choices=TRAVEL_TYPE), default=list
-    )
+    travel_type = models.CharField(max_length=30, choices=TRAVEL_TYPE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)

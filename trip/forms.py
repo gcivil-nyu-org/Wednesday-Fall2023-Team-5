@@ -1,6 +1,6 @@
 from django import forms
 
-from constants import CITY_CHOICES, COUNTRY_CHOICES
+from constants import CITY_CHOICES, COUNTRY_CHOICES, TRAVEL_TYPE
 from .models import UserTrip
 from django.core.exceptions import ValidationError
 from .helpers import (
@@ -11,6 +11,8 @@ from .helpers import (
 
 
 class UserTripCreationForm(forms.ModelForm):
+    travel_type = forms.ChoiceField(choices=TRAVEL_TYPE, widget=forms.RadioSelect())
+
     destination_city_ef = forms.MultipleChoiceField(
         choices=CITY_CHOICES, label="Destination City"
     )
@@ -40,6 +42,9 @@ class UserTripCreationForm(forms.ModelForm):
 
 
 class UserTripUpdateForm(forms.ModelForm):
+
+    travel_type = forms.ChoiceField(choices=TRAVEL_TYPE, widget=forms.RadioSelect())
+
     def clean(self):
         cleaned_data = self.cleaned_data
         start_date = cleaned_data.get("start_trip")
