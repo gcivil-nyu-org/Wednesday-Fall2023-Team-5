@@ -1,9 +1,10 @@
-{% extends 'home_default/base.html' %}
+{% extends 'home_default/form_base.html' %}
 {% load crispy_forms_tags %}
-{% block content %}
+{% block form %}
 <form method="POST">
     {% csrf_token %}
     {{ profile_form | crispy }}
+    <br>
     <input type="submit" value="Submit"/>
 </form>
-{% endblock content %}
+{% endblock form %}
