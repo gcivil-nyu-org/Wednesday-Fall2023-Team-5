@@ -105,13 +105,18 @@ countryField.addEventListener('change', (e) => {
         case 'France':
             inUse = CITY_CHOICES["FRANCE"];
             break;
+        default:
+            inUse = null;
+            break;
     }
 
-    for (let child of cityField.children) {
-        if (!inUse.includes(child.innerHTML)) {
-            child.style.display = 'none';
-        } else {
-            child.style.display = 'block';
+    if (inUse != null) {
+        for (let child of cityField.children) {
+            if (!inUse.includes(child.innerHTML)) {
+                child.style.display = 'none';
+            } else {
+                child.style.display = 'block';
+            }
         }
     }
 })
