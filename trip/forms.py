@@ -16,13 +16,13 @@ class UserTripCreationForm(forms.ModelForm):
     destination_country_ef = forms.MultipleChoiceField(
         choices=COUNTRY_CHOICES,
         label="Destination Country",
-        widget=forms.SelectMultiple(attrs={"id": "country-create-field"})
+        widget=forms.SelectMultiple(attrs={"id": "country-create-field"}),
     )
 
     destination_city_ef = forms.MultipleChoiceField(
         choices=CITY_CHOICES,
         label="Destination City",
-        widget=forms.SelectMultiple(attrs={"id": "city-create-field"})
+        widget=forms.SelectMultiple(attrs={"id": "city-create-field"}),
     )
 
     def clean(self):
