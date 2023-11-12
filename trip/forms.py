@@ -13,11 +13,16 @@ from .helpers import (
 class UserTripCreationForm(forms.ModelForm):
     travel_type = forms.ChoiceField(choices=TRAVEL_TYPE, widget=forms.RadioSelect())
 
-    destination_city_ef = forms.MultipleChoiceField(
-        choices=CITY_CHOICES, label="Destination City"
-    )
     destination_country_ef = forms.MultipleChoiceField(
-        choices=COUNTRY_CHOICES, label="Destination Country"
+        choices=COUNTRY_CHOICES,
+        label="Destination Country",
+        widget=forms.SelectMultiple(attrs={"id": "country-create-field"})
+    )
+
+    destination_city_ef = forms.MultipleChoiceField(
+        choices=CITY_CHOICES,
+        label="Destination City",
+        widget=forms.SelectMultiple(attrs={"id": "city-create-field"})
     )
 
     def clean(self):
@@ -39,6 +44,13 @@ class UserTripCreationForm(forms.ModelForm):
     class Meta:
         model = UserTrip
         fields = ("start_trip", "end_trip", "travel_type")
+        widgets = {
+            "start_trip": forms.widgets.DateInput(attrs={"type": "date"}),
+            "end_trip": forms.widgets.DateInput(attrs={"type": "date"}),
+        }
+
+    class Media:
+        js = ["trip/js/form-conditional-display.js"]
 
 
 class UserTripUpdateForm(forms.ModelForm):
@@ -57,3 +69,7 @@ class UserTripUpdateForm(forms.ModelForm):
     class Meta:
         model = UserTrip
         fields = ("start_trip", "end_trip", "travel_type")
+        widgets = {
+            "start_trip": forms.widgets.DateInput(attrs={"type": "date"}),
+            "end_trip": forms.widgets.DateInput(attrs={"type": "date"}),
+        }

@@ -1,10 +1,11 @@
 {% extends "home_default/form_base.html" %}
 {% load crispy_forms_tags %}
 {% block form %}
-<form method="POST">
+<form method="POST" id="trip-creation-form">
     {% csrf_token %}
     {{ form | crispy }}
     <br>
     <input type="submit" value="Submit" />
 </form>
+{{ form.media }}
 {% endblock form %}
