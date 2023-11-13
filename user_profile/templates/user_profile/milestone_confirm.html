@@ -1,8 +1,8 @@
-{% extends 'home_default/base.html' %}
-{% block content %}
+{% extends 'home_default/form_base.html' %}
+{% block form %}
     <p>Are you sure you want to delete this account?</p>
     <form method="POST">
         {% csrf_token %}
         <input type="submit" value="Confirm" />
     </form>
-{% endblock content %}
+{% endblock form %}

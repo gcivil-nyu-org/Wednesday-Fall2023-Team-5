@@ -2,6 +2,8 @@
 
 from django.contrib.auth.models import User
 from django.db import models
+from PIL import Image
+import os
 
 from common import ChoiceArrayField
 from constants import (
@@ -63,3 +65,22 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"User profile for {self.user.username}"
+
+
+class UserImages(models.Model):
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    image = models.ImageField(
+        upload_to="profileImages/",
+        blank=True,
+    )
+    uploaded = models.DateTimeField(auto_now_add=True)
+
+    def get_absolute_url(self):
+        return os.path.join("/media", self.image.name)
+
+    def save(self, *args, **kwargs):
+        super().save()
+        existing_pic = Image.open(self.image.path)
+        output_size = (400, 400)
+        existing_pic.thumbnail(output_size)
+        existing_pic.save(self.image.path)

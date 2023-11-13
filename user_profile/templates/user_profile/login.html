@@ -1,6 +1,6 @@
-{% extends 'home_default/base.html' %}
+{% extends 'home_default/form_base.html' %}
 {% load crispy_forms_tags %}
-{% block content %}
+{% block form %}
 <form method="POST">
     {% csrf_token %}
     <fieldset>
@@ -18,4 +18,4 @@
     <a href="{% url 'user_profile:reset_password' %}">Forgot Password</a>
 </small>
     <br>
-{% endblock content %}
+{% endblock form %}

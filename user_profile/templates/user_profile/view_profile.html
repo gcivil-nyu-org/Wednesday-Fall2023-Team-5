@@ -1,101 +1,158 @@
-{%  extends 'home_default/base.html' %}
-{% load static %}
+{% extends 'home_default/base.html' %}
+{% load user_profile_custom_tags %}
 {% block content %}
-<link rel="stylesheet" type="text/css" href="{% static 'user_profile/user_profile_page.css' %}">
-<header>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
-    <section class="vh-100" style="background-color: #dbe5ef;">
-  <div class="container py-5 h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col col-lg-6 mb-4 mb-lg-0">
-        <div class="card mb-3" style="border-radius: .5rem;">
-          <div class="row g-0">
-            <div class="col-md-4 gradient-custom text-center text-white"
-              style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
-              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
-                alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
-              <h5> {{ first_name }} {{ last_name }} </h5>
-              <p>{{ bio }}</p>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body p-4">
-                <hr class="mt-0 mb-4">
-                <div class="row pt-1">
-                  <h5>User Profile:</h5>
-                  <div class="col-6 mb-3">
-                    <h6>Email</h6>
-                    <p class="text-muted">{{ email }}</p>
-                  </div>
-                  <div class="col-6 mb-3">
-                    <h6>University</h6>
-                    <p class="text-muted"> {{ university }} </p>
-                  </div>
-                  <h5>Matching Preferences:</h5>
-                  <div class="col-6 mb-3">
-                    <h6>Age range</h6>
-                    <p class="text-muted"> [{{age_lower}},  {{age_upper}}]</p>
-                  </div>
-                  <div class="col-6 mb-3">
-                    <h6>Verified profiles only?</h6>
-                    <p class="text-muted"> {{verified_prof}} </p>
-                  </div>
-                  <div class="col-6 mb-3">
-                    <h6>Drinking preference</h6>
-                    <p class="text-muted"> {{drink_pref}} </p>
-                  </div>
-                  <div class="col-6 mb-3">
-                    <h6>Smoking preference</h6>
-                    <p class="text-muted"> {{smoke_pref}} </p>
-                  </div>
-                  <div class="col-6 mb-3">
-                    <h6>Education Level</h6>
-                    <p class="text-muted"> {{edu_level}} </p>
-                  </div>
-                  <div class="col-6 mb-3">
-                    <h6>Interests</h6>
-                    <p class="text-muted"> {{interests}} </p>
-                  </div>
-                  <div class="col-6 mb-3">
-                    <h6>Languages</h6>
-                    <p class="text-muted"> {{languages}} </p>
-                  </div>
+
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-6 bg-gradient mt-5">
+            <br>
+            <br>
+            <div id="userPicsCarousel" class="carousel slide" data-bs-ride="carousel">
+            {% if images %}
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="d-flex justify-content-center">
+                            {% get_by_index images 0 as first_image %}
+                            <img src="{{ first_image.get_absolute_url }}" alt="image">
+                        </div>
+                    </div>
+                    {% for i in qs_range %}
+                    {% get_by_index images i as curr_image %}
+                    <div class="carousel-item">
+                        <div class="d-flex justify-content-center">
+                            <img src="{{ curr_image.get_absolute_url }}" alt="image">
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
-                <hr class="mt-0 mb-4">
-                  <div class="row pt-1">
-                      <a href="{% url 'user_profile:edit_profile' %}">
-                          <button type="button" class="btn btn-success btn-rounded">
-                              <i class='fas fa-edit' style='font-size:20px'></i>  Edit Profile
-                          </button>
-                      </a>
-                      <br>
-                      <br>
-                      <a href="{% url 'user_profile:milestone_profile' %}">
-                        <button type="button" class="btn btn-danger btn-secondary btn-rounded">
-                             <i class='fa fa-trash' style='font-size:20px'></i>  Delete profile
-                        </button>
-                      </a>
-                      <br>
-                      <br>
-                      <a href="{% url 'user_profile:detail_profile' id=request.user.id %}">
-                          <button type="button" class="btn btn-info btn-rounded">
-                              <i class="fa fa-info" style="font-size:20px"></i> View Public Profile
-                          </button>
-                      </a>
-                      <br>
-                      <br>
-                      <a href="{% url 'trip:view_trips' %}">
-                          <button type="button" class="btn btn-info btn-rounded">
-                              <i class="fa fa-info" style="font-size:20px"></i> View Planned Trips
-                          </button>
-                      </a>
+            {% else %}
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="d-flex justify-content-center">
+                            <img src="/media/default_avatar.png" alt="image">
+                        </div>
+                    </div>
                 </div>
-              </div>
+            {% endif %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#userPicsCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#userPicsCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
             </div>
-          </div>
+            <br>
+            <br>
         </div>
-      </div>
     </div>
-  </div>
-</section>
-</header>
+    <div class="row justify-content-center" id="userBioHeading">
+        <div class="col-6 bg-dark-subtle">
+            <br>
+            <hr class="bg-secondary"/>
+            <h5 class="text-primary fw-bolder">Bio</h5>
+            <p class="text-primary fw-normal">{{ bio }}</p>
+        </div>
+    </div>
+    <div class="row justify-content-center" id="userProfileHeadingRow-1">
+        <div class="col-6 bg-dark-subtle">
+            <hr class="bg-secondary"/>
+            <h5 class="text-primary fw-bolder">User Profile</h5>
+        </div>
+    </div>
+    <div class="row justify-content-center" id="userProfileContentRow-1">
+        <div class="col-3 bg-dark-subtle">
+            <h6 class="text-primary fw-bold">Email</h6>
+            <p class="text-primary fw-normal">{{ email }}</p>
+        </div>
+        <div class="col-3 bg-dark-subtle">
+            <h6 class="text-primary fw-bold">University</h6>
+            <p class="text-primary fw-normal">{{ university }}</p>
+        </div>
+    </div>
+    <div class="row justify-content-center" id="userProfileHeadingRow-2">
+        <div class="col-6 bg-dark-subtle">
+            <hr class="bg-secondary"/>
+            <h5 class="text-primary fw-bolder">Matching Preferences</h5>
+        </div>
+    </div>
+    <div class="row justify-content-center" id="userProfileContentRow-2">
+        <div class="col-3 bg-dark-subtle">
+            <h6 class="text-primary fw-bold">Age Range</h6>
+            <p class="text-primary fw-normal">{{ age_lower }}, {{ age_upper }}</p>
+        </div>
+        <div class="col-3 bg-dark-subtle">
+            <h6 class="text-primary fw-bold">Verified Profiles Only?</h6>
+            <p class="text-primary fw-normal">{{ verified_prof }}</p>
+        </div>
+    </div>
+    <div class="row justify-content-center" id="userProfileContentRow-3">
+        <div class="col-3 bg-dark-subtle">
+            <h6 class="text-primary fw-bold">Drinking Preference</h6>
+            <p class="text-primary fw-normal">{{ drink_pref }}</p>
+        </div>
+        <div class="col-3 bg-dark-subtle">
+            <h6 class="text-primary fw-bold">Smoking Preference</h6>
+            <p class="text-primary fw-normal">{{ smoke_pref }}</p>
+        </div>
+    </div>
+    <div class="row justify-content-center" id="userProfileContentRow-4">
+        <div class="col-3 bg-dark-subtle">
+            <h6 class="text-primary fw-bold">Education Level</h6>
+            <p class="text-primary fw-normal">{{ edu_level }}</p>
+        </div>
+        <div class="col-3 bg-dark-subtle">
+            <h6 class="text-primary fw-bold">Interests</h6>
+            <p class="text-primary fw-normal">{{ interests }}</p>
+        </div>
+    </div>
+    <div class="row justify-content-center align-left" id="userProfileContentRow-5">
+        <div class="col-3 bg-dark-subtle">
+            <h6 class="text-primary fw-bold">Languages</h6>
+            <p class="text-primary fw-normal">{{ languages }}</p>
+        </div>
+        <div class="col-3 bg-dark-subtle"></div>
+    </div>
+    <div class="row justify-content-center align-left">
+        <div class="col-6 bg-dark-subtle">
+          <br>
+          <a href="{% url 'user_profile:edit_profile' %}">
+              <button type="button" class="btn btn-success btn-rounded">
+                  <i class='fas fa-edit' style='font-size:20px'></i>  Edit Profile
+              </button>
+          </a>
+          <br>
+          <br>
+          <a href="{% url 'user_profile:upload_images' %}">
+              <button type="button" class="btn btn-success btn-rounded">
+                  <i class="fas fa-edit" style="font-size:20px"></i> Upload Images
+              </button>
+          </a>
+          <br>
+          <br>
+          <a href="{% url 'user_profile:milestone_profile' %}">
+            <button type="button" class="btn btn-danger btn-secondary btn-rounded">
+                 <i class='fa fa-trash' style='font-size:20px'></i>  Delete profile
+            </button>
+          </a>
+          <br>
+          <br>
+          <a href="{% url 'user_profile:detail_profile' id=request.user.id %}">
+              <button type="button" class="btn btn-info btn-rounded">
+                  <i class="fa fa-info" style="font-size:20px"></i> View Public Profile
+              </button>
+          </a>
+          <br>
+          <br>
+          <a href="{% url 'trip:view_trips' %}">
+              <button type="button" class="btn btn-info btn-rounded">
+                  <i class="fa fa-info" style="font-size:20px"></i> View Planned Trips
+              </button>
+          </a>
+          <br>
+          <br>
+        </div>
+    </div>
+</div>
 {% endblock content %}

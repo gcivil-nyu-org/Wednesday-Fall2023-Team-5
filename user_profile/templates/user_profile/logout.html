@@ -1,7 +1,7 @@
-{% extends 'home_default/base.html' %}
-{% block content %}
+{% extends 'home_default/form_base.html' %}
+{% block form %}
 <p>You have been logged out</p>
 <small>
     <a href="{% url 'user_profile:login' %}">Log In Again</a>
 </small>
-{% endblock content %}
+{% endblock form %}

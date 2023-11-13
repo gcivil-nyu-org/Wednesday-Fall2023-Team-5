@@ -1,7 +1,7 @@
 {% extends "home_default/base.html" %}
 {% block content %}
 <div class="container">
-    <div class="row-gap-3">
+    <div class="row-gap-3 mt-5">
         <div class="col">
              <h4>Trip to {{ usertrip_instance.trip.destination_city }}, {{ usertrip_instance.trip.destination_country }}</h4>
                 <p>Start date: {{ usertrip_instance.start_trip|date:"m/d/Y" }}</p>
@@ -11,7 +11,17 @@
             <a href="{% url 'matching:show_potential_matches' trip_id=usertrip_instance.id%}">
                 <button type="button" class="btn btn-info btn-rounded">
                 Show Potential Matches
-            </button>
+                </button>
+            </a>
+            <a href="{% url 'trip:update_trip' ut_id=usertrip_instance.id %}">
+                <button type="button" class="btn btn-info btn-rounded">
+                Update Travel Dates
+                </button>
+            </a>
+            <a href="{% url 'trip:milestone_trip' ut_id=usertrip_instance.id %}">
+                <button type="button" class="btn btn-info btn-rounded">
+                Cancel Trip
+                </button>
             </a>
 {#            <a href="#">#}
 {#                <button type="button" class="btn btn-rounded btn-primary">#}
@@ -23,6 +33,12 @@
 {#                    Show Matches#}
 {#                </button>#}
 {#            </a>#}
+        </div>
+    </div>
+    <div class="row gap-3">
+        <div class="col">
+            <br>
+            <small><a href="{% url 'trip:view_trips' %}">View All Trips</a></small>
         </div>
     </div>
 </div>

@@ -1,6 +1,8 @@
 # ------- Creating new class of array field using postgres.fields -------
 from django import forms
 from django.contrib.postgres.fields import ArrayField
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.contrib import messages
 
 
 class ChoiceArrayField(ArrayField):
@@ -29,3 +31,13 @@ class ChoiceArrayField(ArrayField):
 
 
 # ----------------------------------------------------------------------
+def retrieve_none_or_403(request, target_model, identifier, message):
+    try:
+        instance = target_model.objects.get(id=identifier)
+        if instance.user != request.user:
+            messages.warning(request, message)
+            raise PermissionDenied
+    except ObjectDoesNotExist:
+        instance = None
+
+    return instance
