@@ -43,3 +43,5 @@ def city_present_in_country(city, country):
         return True if city_tuple in FRANCE_CITIES else False
     elif country == "Italy":
         return True if city_tuple in ITALY_CITIES else False
+    else:
+        raise TypeError("Country not supported currently")

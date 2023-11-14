@@ -3,7 +3,7 @@ from django.test import TestCase  # noqa
 # Create your tests here.
 from datetime import datetime, timedelta
 
-from trip.helpers import start_date_in_future, end_date_after_start_date
+from trip.helpers import start_date_in_future, end_date_after_start_date, city_present_in_country
 
 
 class TestTrip(TestCase):
@@ -40,3 +40,45 @@ class TestTrip(TestCase):
         self.assertRaises(
             TypeError, lambda: end_date_after_start_date(date_time, date_time)
         )
+
+    def test_city_present_in_country(self):
+        city = ['Bangalore']
+        country = ['India']
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+        city = ['Chicago']
+        country = ['United States']
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+        city = ['London']
+        country = ['United Kingdom']
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+        city = ['Cancun']
+        country = ['Mexico']
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+        city = ['Toronto']
+        country = ['Canada']
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+        city = ['Paris']
+        country = ['France']
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+        city = ['Florence']
+        country = ['Italy']
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+
+
+
+
+
