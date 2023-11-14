@@ -54,9 +54,9 @@ class ProfileUpdateForm(forms.ModelForm):
             "languages": "Languages",
         }
         widgets = {
-            'university': forms.Textarea(attrs={"rows": 1, "cols": 1}),
-            'bio': forms.Textarea(attrs={"rows": 4, "cols": 1}),
-            'dob': forms.widgets.DateInput(attrs={"type": "date"})
+            "university": forms.Textarea(attrs={"rows": 1, "cols": 1}),
+            "bio": forms.Textarea(attrs={"rows": 4, "cols": 1}),
+            "dob": forms.widgets.DateInput(attrs={"type": "date"}),
         }
 
 
