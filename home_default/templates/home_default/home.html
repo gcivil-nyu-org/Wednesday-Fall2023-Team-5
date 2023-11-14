@@ -1,4 +1,5 @@
 {% extends 'home_default/base.html' %}
+{% load static %}
 {% block content %}
 <div class="container">
     <div class="row mt-6">
@@ -23,7 +24,7 @@
             Placeholder for the final image
             I'm thinking like a PNG-style logo thing that will layer directly on top of the bg
             --->
-            <p>lil image</p>
+            <img src="{% static 'home_default/site_images/sc-passport-flight-1.png' %}" alt="Image of a line-art plane trail surrounding passport" height="280" width="350"/>
         </div>
     </div>
     <!---
