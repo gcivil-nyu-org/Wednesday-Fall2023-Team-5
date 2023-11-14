@@ -9,6 +9,8 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.test import Client
 
+from user_profile.helpers import email_is_valid
+
 
 class TestUserProfile(TestCase):
     client = Client()
@@ -17,7 +19,6 @@ class TestUserProfile(TestCase):
         user_name = "testuser" + str(time.time())
         email = user_name + "@nyu.edu"
         self.credentials = {"username": user_name, "email": email, "password": "secret"}
-        sys.argv = "test"
         User.objects.create_user(**self.credentials)
 
     def test_login_view(self):
@@ -38,3 +39,21 @@ class TestUserProfile(TestCase):
         response = self.client.post("/login/", credentials, follow=True)
         # should be logged in now
         self.assertFalse(response.context["user"].is_active)
+
+    def test_valid_email(self):
+        email = "test@nyu.edu"
+        x = email_is_valid(email)
+        self.assertTrue(x)
+
+    def test_in_valid_email(self):
+        email = "123@nyu.edu"
+        x = email_is_valid(email)
+        self.assertFalse(x)
+
+        email = "alpha"
+        x = email_is_valid(email)
+        self.assertFalse(x)
+
+        email = "1233333333333333333333333@nyu.edu"
+        x = email_is_valid(email)
+        self.assertFalse(x)
