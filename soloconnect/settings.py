@@ -93,7 +93,9 @@ DATABASES = {
         "NAME": os.getenv("RDS_DB_NAME"),
         "PASSWORD": os.getenv("RDS_PASSWORD"),
         "ENGINE": "django.db.backends.postgresql",
-        "TEST": {"NAME": "testdatabase2", "ENGINE": "django.db.backends.sqlite3"},
+        "TEST": {"NAME": "testmemory",
+                 "ENGINE": "django.db.backends.sqlite3",
+                 },
     }
 }
 # if "test" in sys.argv:
