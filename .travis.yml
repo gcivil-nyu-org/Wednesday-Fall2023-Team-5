@@ -6,7 +6,7 @@ python:
 script:
   - black --check .
   - flake8 --exclude=migrations --max-line-length=99 .
-  - coverage run --source=soloconnect,trip manage.py test --keepsdb
+  - coverage run --source=soloconnect,trip manage.py test
 install:
   - pip install -r requirements.txt
 
