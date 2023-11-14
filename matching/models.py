@@ -1,7 +1,15 @@
 from django.db import models
+from enum import Enum
 
-from trip.models import Trip
+from trip.models import UserTrip
 from user_profile.models import User
+
+
+class MatchStatusEnum(Enum):
+    PENDING = 'Pending'
+    CANCELLED = 'Cancelled'
+    MATCHED = 'Matched'
+    UNMATCHED = 'Unmatched'
 
 
 class UserTripMatches(models.Model):
@@ -11,15 +19,15 @@ class UserTripMatches(models.Model):
     receiver = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="receive_matches"
     )
-    trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
+    u_trip = models.ForeignKey(UserTrip, on_delete=models.CASCADE)
 
     MatchStatus = [
-        ("Pending", "Pending"),
-        ("Cancelled", "Cancelled"),
-        ("Matched", "Matched"),
-        ("Unmatched", "Unmatched"),
+        (MatchStatusEnum.PENDING.value, MatchStatusEnum.PENDING.value),
+        (MatchStatusEnum.CANCELLED.value, MatchStatusEnum.CANCELLED.value),
+        (MatchStatusEnum.MATCHED.value, MatchStatusEnum.MATCHED.value),
+        (MatchStatusEnum.UNMATCHED.value, MatchStatusEnum.UNMATCHED.value),
     ]
 
     match_status = models.CharField(
-        max_length=10, choices=MatchStatus, default="Pending"
+        max_length=10, choices=MatchStatus, default=MatchStatusEnum.PENDING.value
     )
