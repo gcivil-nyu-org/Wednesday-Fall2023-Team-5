@@ -31,7 +31,8 @@ class ChoiceArrayField(ArrayField):
 
 
 # ----------------------------------------------------------------------
-def retrieve_none_or_403(request, target_model, identifier, message):
+def retrieve_none_or_403(request, target_model, identifier,
+                         message="You are not allowed to edit this."):
     try:
         instance = target_model.objects.get(id=identifier)
         if instance.user != request.user:
