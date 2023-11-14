@@ -6,7 +6,7 @@ python:
 script:
   - black --check .
   - flake8 --exclude=migrations --max-line-length=99 .
-  - python -m coverage run manage.py test
+  - python -m coverage run manage.py test --keepdb
 install:
   - pip install -r requirements.txt
 
