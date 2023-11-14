@@ -16,7 +16,9 @@
     <nav class = "navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
         <div class="container">
             <!-- We can add a logo for solo connect here-->
-            <a class ="navbar-brand" href="{% url 'home_default:home_page' %}">SoloConnect</a>
+            <a class ="navbar-brand" href="{% url 'home_default:home_page' %}">
+                <img src="{% static 'home_default/site_images/sc-logo-main-cropped.png' %}" height="55" width="55" alt="SoloConnect Logo">
+            </a>
             <button class = "navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                     aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -46,14 +48,16 @@
     <nav class = "navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
         <div class="container">
             <!-- We can add a logo for solo connect here-->
-            <a class ="navbar-brand" href="{% url 'home_default:home_page' %}">SoloConnect</a>
-            <button class = "navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+            <a href="{% url 'home_default:home_page' %}">
+                <img src="{% static 'home_default/site_images/sc-logo-main-cropped.png' %}" alt="SoloConnect Logo" height="55" width="55">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                     aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class = "collapse navbar-collapse" id = "navbarCollapse2">
                 <ul class = "nav navbar-nav mr-auto">
-                    <li class ="nav-item">
+                    <li class ="nav-item px-3">
                         <a class="nav-link active" href="{% url 'home_default:home_page' %}">Home</a>
                     </li>
                     <li class ="nav-item">
@@ -64,11 +68,9 @@
         </div>
     </nav>
     {% endif %}
-
-    <!-- a href="{% url 'home_default:home_page' %}">Home</a> -->
-
 <!-- Messages section -->
 </header>
+<br>
 <div class = "container">
     {% if messages %}
         {% for message in messages %}
