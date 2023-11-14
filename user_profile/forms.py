@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
-from .helpers import email_is_valid, dob_gt18_and_lt100
+from .helpers import email_is_valid, dob_gte18_and_lt100
 from .models import User, UserProfile, UserImages
 
 
@@ -27,7 +27,7 @@ class ProfileUpdateForm(forms.ModelForm):
     def clean(self):
         cleaned_data = self.cleaned_data
         dob = cleaned_data.get("dob")
-        res = dob_gt18_and_lt100(dob)
+        res = dob_gte18_and_lt100(dob)
 
         if not res[0]:
             raise ValidationError(res[1])

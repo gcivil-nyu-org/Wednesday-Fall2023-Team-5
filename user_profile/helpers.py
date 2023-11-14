@@ -22,7 +22,7 @@ def email_is_valid(email):
     return False
 
 
-def dob_gt18_and_lt100(dob):
+def dob_gte18_and_lt100(dob):
     time_delta = datetime.date.today() - dob
     age = int(time_delta.days / 365)
     if 18 <= age < 100:
