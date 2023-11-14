@@ -24,6 +24,7 @@ class TestTrip(TestCase):
         date = date_time.date()
         x = start_date_in_future(date)
         self.assertTrue(x)
+
     def test_exception_not_date(self):
-        date_time = 'xxxxxx'
+        date_time = "xxxxxx"
         self.assertRaises(TypeError, lambda: start_date_in_future(date_time))
