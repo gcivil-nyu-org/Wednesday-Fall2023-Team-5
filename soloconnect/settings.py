@@ -96,6 +96,16 @@ DATABASES = {
         "TEST": {"NAME": "testdatabase2", "ENGINE": "django.db.backends.sqlite3"},
     }
 }
+# if "test" in sys.argv:
+# DATABASES["default"] = {
+#     "ENGINE": "django.db.backends.postgresql_psycopg2",
+#     "HOST": os.getenv("TEST_RDS_HOSTNAME"),
+#     "USER": os.getenv("TEST_RDS_USERNAME"),
+#     "PASSWORD": os.getenv("TEST_RDS_PASSWORD"),
+#     "NAME": os.getenv("TEST_RDS_DB_NAME"),
+#     "PORT": os.getenv("TEST_RDS_DB_PORT"),
+#     "TEST": {"NAME": os.environ.get("TEST_DATABASE_NAME")},
+# }
 if "test" in sys.argv:
     DATABASES["default"] = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
