@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
-from .helpers import email_is_valid
+from .helpers import email_is_valid, dob_gte18_and_lt100
 from .models import User, UserProfile, UserImages
 
 
@@ -24,6 +24,16 @@ class AccountRegistrationForm(UserCreationForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        dob = cleaned_data.get("dob")
+        res = dob_gte18_and_lt100(dob)
+
+        if not res[0]:
+            raise ValidationError(res[1])
+
+        return cleaned_data
+
     class Meta:
         model = UserProfile
         fields = (
@@ -42,6 +52,11 @@ class ProfileUpdateForm(forms.ModelForm):
         labels = {
             "interests": "Interests",
             "languages": "Languages",
+        }
+        widgets = {
+            "university": forms.Textarea(attrs={"rows": 1, "cols": 1}),
+            "bio": forms.Textarea(attrs={"rows": 4, "cols": 1}),
+            "dob": forms.widgets.DateInput(attrs={"type": "date"}),
         }
 
 
