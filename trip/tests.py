@@ -2,7 +2,6 @@ from django.test import TestCase  # noqa
 
 # Create your tests here.
 from datetime import datetime, timedelta
-from unittest import TestCase
 
 from trip.helpers import start_date_in_future
 
