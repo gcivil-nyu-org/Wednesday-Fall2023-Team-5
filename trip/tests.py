@@ -1,3 +1,5 @@
+import sys
+
 from django.test import TestCase  # noqa
 
 # Create your tests here.
@@ -7,6 +9,9 @@ from trip.helpers import start_date_in_future, end_date_after_start_date
 
 
 class TestTrip(TestCase):
+    def setUp(self):
+        sys.argv = "test"
+
     def test_start_date_not_in_future(self):
         date = datetime.today().date()
         x = start_date_in_future(date)
