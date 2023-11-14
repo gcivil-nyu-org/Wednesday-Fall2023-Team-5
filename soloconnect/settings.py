@@ -93,7 +93,9 @@ DATABASES = {
         "NAME": os.getenv("RDS_DB_NAME"),
         "PASSWORD": os.getenv("RDS_PASSWORD"),
         "ENGINE": "django.db.backends.postgresql",
-        "TEST": {"NAME": "testdatabase2", "ENGINE": "django.db.backends.sqlite3"},
+        "TEST": {"NAME": "testmemory",
+                 "ENGINE": "django.db.backends.sqlite3",
+                 },
     }
 }
 # if "test" in sys.argv:
@@ -110,7 +112,7 @@ if "test" in sys.argv:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": ":memory:",
+            "NAME": os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
 # Password validation
