@@ -9,9 +9,6 @@ from trip.helpers import start_date_in_future, end_date_after_start_date
 
 
 class TestTrip(TestCase):
-    def setUp(self):
-        sys.argv = "test"
-
     def test_start_date_not_in_future(self):
         date = datetime.today().date()
         x = start_date_in_future(date)
@@ -42,4 +39,6 @@ class TestTrip(TestCase):
     def test_exception_not_date(self):
         date_time = "xxxxxx"
         self.assertRaises(TypeError, lambda: start_date_in_future(date_time))
-        self.assertRaises(TypeError, lambda: end_date_after_start_date(date_time, date_time))
+        self.assertRaises(
+            TypeError, lambda: end_date_after_start_date(date_time, date_time)
+        )
