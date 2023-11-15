@@ -17,10 +17,10 @@ def create_trip(request):
 
             usertrip_instance = usertrip_creation_form.save(commit=False)
 
-            dest_city_raw = usertrip_data["destination_city_ef"]
+            dest_city_raw = usertrip_data["destination_city"]
             dest_city = dest_city_raw[0]
 
-            dest_country_raw = usertrip_data["destination_country_ef"]
+            dest_country_raw = usertrip_data["destination_country"]
             dest_country = dest_country_raw[0]
 
             trip_instance, _ = Trip.objects.get_or_create(

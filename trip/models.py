@@ -10,6 +10,10 @@ class Trip(models.Model):
         max_length=500, verbose_name="Destination Country"
     )
 
+    def __str__(self):
+        return f"DCT: {self.destination_city}, \
+        DCTR: {self.destination_country}"
+
     # TripMetaData
     class Meta:
         """
