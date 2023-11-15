@@ -180,14 +180,10 @@ def show_pending_requests(request, utrip_id):
     pending_matches = UserTripMatches.objects.filter(
         receiver=request.user,
         receiver_user_trip_id=utrip_id,
-        match_status=MatchStatusEnum.PENDING.value
+        match_status=MatchStatusEnum.PENDING.value,
     )
     pending_matches_senders = [pm.sender for pm in pending_matches]
     context = {
         "pending_matching_users": pending_matches_senders,
     }
-    return render(
-        request,
-        "matching/list_pending_requests.html",
-        context
-    )
+    return render(request, "matching/list_pending_requests.html", context)
