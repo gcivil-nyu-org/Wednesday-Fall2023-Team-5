@@ -57,10 +57,10 @@ class TestUserProfile(TestCase):
         x = email_is_valid(email)
         self.assertFalse(x)
 
-class TestLoggedInViews(TestCase):
 
+class TestLoggedInViews(TestCase):
     def setUp(self):
-        client = Client()
+        client = Client() # noqa
         user_name = "testuser" + str(time.time())
         email = user_name + "@nyu.edu"
         self.credentials = {"username": user_name, "email": email, "password": "secret"}
@@ -70,11 +70,13 @@ class TestLoggedInViews(TestCase):
     def test_milestone_profile_GET(self):
         response = self.client.get(reverse("user_profile:milestone_profile"))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'user_profile/milestone_confirm.html')
+        self.assertTemplateUsed(response, "user_profile/milestone_confirm.html")
 
     def test_milestone_profile_POST_delete_profile(self):
         user_instance = User.objects.get(username=self.credentials["username"])
         self.assertTrue(user_instance.is_active)
-        response = self.client.post(reverse("user_profile:milestone_profile"), follow=True)
+        response = self.client.post(
+            reverse("user_profile:milestone_profile"), follow=True
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'home_default/home.html')
+        self.assertTemplateUsed(response, "home_default/home.html")
