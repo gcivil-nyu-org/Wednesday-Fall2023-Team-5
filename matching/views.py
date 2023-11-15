@@ -3,7 +3,7 @@ from functools import reduce
 from django.db.models import Q
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.views.decorators.http import require_http_methods
 from datetime import date, timedelta
 from operator import or_
 from django.contrib import messages
@@ -14,37 +14,37 @@ from .models import UserTripMatches, MatchStatusEnum
 from .utils import get_current_ut_and_receiver
 
 
+@require_http_methods(['GET'])
 @login_required
-def show_potential_matches(request, trip_id):
+def show_potential_matches(request, utrip_id):
     current_user = request.user
-    current_usertrip = retrieve_none_or_403(request, UserTrip, trip_id)
+    current_usertrip: UserTrip = retrieve_none_or_403(request, UserTrip, utrip_id)
 
     if current_usertrip is None:
         messages.error(request, "Please select a valid trip")
         return redirect(reverse("trip:view_trips"))
 
     # applying dynamic filter to generate match pool
-    matching_users = User.objects.filter(
-        usertrip__start_trip=current_usertrip.start_trip,
-        usertrip__end_trip=current_usertrip.end_trip,
-        usertrip__travel_type=current_usertrip.travel_type,
-        usertrip__user__userprofile__dob__lt=date.today() - timedelta(days=365.25 * current_user.userprofile.age_lower),
-        usertrip__user__userprofile__dob__gt=date.today() - timedelta(days=365.25 * current_user.userprofile.age_upper),
-        usertrip__user__userprofile__verified_prof=current_user.userprofile.verified_prof,
-        usertrip__trip__destination_city=current_usertrip.trip.destination_city,
-        usertrip__trip__destination_country=current_usertrip.trip.destination_country,
-    ).distinct()
+    matching_trips = UserTrip.objects.filter(
+        start_trip=current_usertrip.start_trip,
+        end_trip=current_usertrip.end_trip,
+        travel_type=current_usertrip.travel_type,
+        trip__destination_city=current_usertrip.trip.destination_city,
+        trip__destination_country=current_usertrip.trip.destination_country,
+        user__userprofile__dob__lt=date.today() - timedelta(days=365.25 * current_user.userprofile.age_lower),
+        user__userprofile__dob__gt=date.today() - timedelta(days=365.25 * current_user.userprofile.age_upper)
+    )
 
     try:
         condition = reduce(
             or_,
             [
-                Q(usertrip__user__userprofile__languages__icontains=q)
+                Q(user__userprofile__languages__icontains=q)
                 for q in current_user.userprofile.languages
             ],
         )
         # additional condition to show matches with at least one common language
-        matching_users = matching_users.filter(condition)
+        matching_trips = matching_trips.filter(condition)
     except Exception as e:
         print(e)
 
