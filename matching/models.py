@@ -19,7 +19,10 @@ class UserTripMatches(models.Model):
     receiver = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="receive_matches"
     )
-    u_trip = models.ForeignKey(UserTrip, on_delete=models.CASCADE)
+    sender_user_trip = models.ForeignKey(
+        UserTrip, on_delete=models.CASCADE, related_name="sender_trip", null=True)
+    receiver_user_trip = models.ForeignKey(
+        UserTrip, on_delete=models.CASCADE, related_name="receiver_trip", null=True)
 
     MatchStatus = [
         (MatchStatusEnum.PENDING.value, MatchStatusEnum.PENDING.value),
