@@ -5,7 +5,7 @@ from django.test import TestCase  # noqa
 from datetime import datetime, timedelta
 import time
 from django.test import Client
-from django.urls import reverse
+from django.urls import reverse # noqa
 
 from trip.helpers import (
     start_date_in_future,
@@ -114,7 +114,6 @@ class TestTrip(TestCase):
         #
         response = self.client.login(**self.credentials)
         response = self.client.get("/trip/view/")
-        # self.assertTemplateUsed(response=response, template_name='/backstage/account/list_accounts.html')
         self.assertEqual(response.status_code, 200)
-        
-        # self.assertContains(response, "<h1>Your Trips<h1>", html=True)
+        # self.assertContains(response, "<h1>Your Trips<h1>", h
+        # tml=True)
