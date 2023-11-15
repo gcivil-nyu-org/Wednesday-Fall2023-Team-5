@@ -91,3 +91,8 @@ class TestTrip(TestCase):
         country = ["United States"]
         x = city_present_in_country(city, country)
         self.assertFalse(x)
+
+    def test_city_not_present_in_country_exception(self):
+        city = ["Florence"]
+        country = ["UAE"]
+        self.assertRaises(TypeError, lambda: city_present_in_country(city, country))
