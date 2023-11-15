@@ -47,14 +47,21 @@ def show_potential_matches(request, utrip_id):
     except Exception as e:
         print(e)
 
-    # filter out the current user from match pool
+    # users which have already being sent a matching request by current user, but not yet accepted
     current_matching_users = set(
         UserTripMatches.objects.filter(
             sender=current_user, match_status=MatchStatusEnum.PENDING.value
         ).values_list("receiver", flat=True)
     )
 
-    # Setting the Send Request button off for those users
+    # users who have sent a matching request to current user, pending/accepted as a match
+    matching_users = UserTripMatches.objects.filter(
+        receiver=current_user,
+        match_status__in=[MatchStatusEnum.PENDING.value, MatchStatusEnum.MATCHED.value],
+    ).values_list("sender", flat=True)
+
+    # Setting the Send Request button off for those users who have already received a request
+    # from current user
     matching_users = [
         {
             "user": matching_trip.user,
@@ -65,6 +72,7 @@ def show_potential_matches(request, utrip_id):
         }
         for matching_trip in matching_trips
         if matching_trip.user != current_user
+        and matching_trip.user.id not in matching_users
     ]
 
     context = {
