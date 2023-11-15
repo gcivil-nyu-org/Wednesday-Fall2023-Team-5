@@ -8,7 +8,7 @@
                 <p>End date: {{ usertrip_instance.end_trip|date:"m/d/Y" }}</p>
         </div>
         <div class="col">
-            <a href="{% url 'matching:show_potential_matches' trip_id=usertrip_instance.id%}">
+            <a href="{% url 'matching:show_potential_matches' utrip_id=usertrip_instance.id%}">
                 <button type="button" class="btn btn-info btn-rounded">
                 Show Potential Matches
                 </button>
