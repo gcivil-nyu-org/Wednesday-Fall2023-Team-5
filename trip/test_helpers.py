@@ -36,3 +36,9 @@ def test_city_present_in_country(self):
     country = ["Italy"]
     x = city_present_in_country(city, country)
     self.assertTrue(x)
+
+
+def test_city_not_present_in_country(self):
+    city = ["Florence"]
+    country = ["UAE"]
+    self.assertRaises(TypeError, lambda: city_present_in_country(city, country))
