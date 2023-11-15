@@ -60,7 +60,7 @@ class TestUserProfile(TestCase):
 
 class TestLoggedInViews(TestCase):
     def setUp(self):
-        client = Client() # noqa
+        client = Client()  # noqa
         user_name = "testuser" + str(time.time())
         email = user_name + "@nyu.edu"
         self.credentials = {"username": user_name, "email": email, "password": "secret"}
