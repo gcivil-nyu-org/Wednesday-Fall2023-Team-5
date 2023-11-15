@@ -3,7 +3,11 @@ from django.test import TestCase  # noqa
 # Create your tests here.
 from datetime import datetime, timedelta
 
-from trip.helpers import start_date_in_future, end_date_after_start_date, city_present_in_country
+from trip.helpers import (
+    start_date_in_future,
+    end_date_after_start_date,
+    city_present_in_country,
+)
 
 
 class TestTrip(TestCase):
@@ -42,57 +46,48 @@ class TestTrip(TestCase):
         )
 
     def test_city_present_in_country(self):
-        city = ['Bangalore']
-        country = ['India']
+        city = ["Bangalore"]
+        country = ["India"]
         x = city_present_in_country(city, country)
         self.assertTrue(x)
 
-        city = ['Chicago']
-        country = ['United States']
+        city = ["Chicago"]
+        country = ["United States"]
         x = city_present_in_country(city, country)
         self.assertTrue(x)
 
-        city = ['London']
-        country = ['United Kingdom']
+        city = ["London"]
+        country = ["United Kingdom"]
         x = city_present_in_country(city, country)
         self.assertTrue(x)
 
-        city = ['Cancun']
-        country = ['Mexico']
+        city = ["Cancun"]
+        country = ["Mexico"]
         x = city_present_in_country(city, country)
         self.assertTrue(x)
 
-        city = ['Toronto']
-        country = ['Canada']
+        city = ["Toronto"]
+        country = ["Canada"]
         x = city_present_in_country(city, country)
         self.assertTrue(x)
 
-        city = ['Paris']
-        country = ['France']
+        city = ["Paris"]
+        country = ["France"]
         x = city_present_in_country(city, country)
         self.assertTrue(x)
 
-        city = ['Florence']
-        country = ['Italy']
+        city = ["Florence"]
+        country = ["Italy"]
         x = city_present_in_country(city, country)
         self.assertTrue(x)
 
     def test_city_not_present_in_country(self):
-        city = ['Bangalore']
-        country = ['United States']
+        city = ["Bangalore"]
+        country = ["United States"]
         x = city_present_in_country(city, country)
         self.assertFalse(x)
 
-        city = ['BLR']
-        country = ['United States']
+        city = ["BLR"]
+        country = ["United States"]
         x = city_present_in_country(city, country)
         self.assertFalse(x)
-
-
-
-
-
-
-
-
-
