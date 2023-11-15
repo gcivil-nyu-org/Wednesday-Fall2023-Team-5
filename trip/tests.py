@@ -1,7 +1,8 @@
 # import json
 
 from django.contrib.auth.models import User
-from django.db.models import Choices
+
+# from django.db.models import Choices
 from django.test import TestCase  # noqa
 
 # Create your tests here.
