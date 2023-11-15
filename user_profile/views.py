@@ -118,14 +118,8 @@ def edit_profile(request):
             profile_form.save()
             messages.success(request, "Profile successfully edited")
             return redirect(reverse("user_profile:view_profile"))
-        else:
-            messages.error(
-                request,
-                "There was an error editing your profile instance\
-                Please verify your responses and try again",
-            )
-
-    profile_form = forms.ProfileUpdateForm(instance=user_profile_instance)
+    else:
+        profile_form = forms.ProfileUpdateForm(instance=user_profile_instance)
 
     return render(
         request,

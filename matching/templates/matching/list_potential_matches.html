@@ -3,26 +3,43 @@
 <div class="container">
     <h1>Your Potential Matches:</h1>
     {% if matching_users %}
-        {% for user in matching_users %}
+        {% for matching_user in matching_users %}
             <div class="col-3">
                 <div class="row-gap-3">
-                    <h4>FirstName: <i>{{ user.first_name }}</i></h4>
-                    <h4>LastName: <i>{{ user.last_name }}</i></h4>
-                    <h4>Email: <i>{{ user.email }}</i></h4>
-                    {% if user.userprofile.bio %}
-                        <h5>Bio: {{ user.userprofile.bio }}</h5>
+                    <h4>FirstName: <i>{{ matching_user.user.first_name }}</i></h4>
+                    <h4>LastName: <i>{{ matching_user.user.last_name }}</i></h4>
+                    <h4>Email: <i>{{ matching_user.user.email }}</i></h4>
+                    {% if matching_user.user.userprofile.bio %}
+                        <h5>Bio: {{ matching_user.user.userprofile.bio }}</h5>
                     {% endif %}
                 </div>
-{#                <div>#}
-{#                    <button type="button" class="btn btn-info btn-rounded">Send Request</button>#}
-{#                    <button type="button" class="btn btn-rounded btn-secondary">Cancel Request</button>#}
-{#                </div>#}
+                <div>
+                    <form action="
+                            {% if not matching_user.sent_match %}
+                                {% url 'matching:send_request' utrip_id=utrip_id %}
+                            {% else %}
+                                {% url 'matching:cancel_request' utrip_id=utrip_id %}
+                            {% endif %}"
+                        method="post"
+                    >
+                        {% csrf_token %}
+                        <input type="hidden" name="receiver_uid" value="{{ matching_user.user.id }}">
+                        <input type="hidden" name="receiver_utrip_id" value="{{ matching_user.receiver_utrip_id }}">
+                        {% if not matching_user.sent_match %}
+                             <button type="submit" class="btn btn-info btn-rounded">Send Request</button>
+                        {% else %}
+                            <button type="submit" class="btn btn-rounded btn-secondary">Cancel Request</button>
+                        {% endif %}
+                    </form>
+                </div>
                 <br><br>
             </div>
         {% endfor %}
     {% else %}
         <h2>No potential matching user as per your matching preferences,
             try softening the preferences a bit</h2>
+        <br>
+        <h4>Also, please check your pending requests, some might have already sent you a matching request.</h4>
     {% endif %}
 </div>
 
