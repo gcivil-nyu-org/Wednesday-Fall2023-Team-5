@@ -1,7 +1,11 @@
+from django.contrib.auth.models import User
 from django.test import TestCase  # noqa
 
 # Create your tests here.
 from datetime import datetime, timedelta
+import time
+from django.test import Client
+from django.urls import reverse
 
 from trip.helpers import (
     start_date_in_future,
@@ -11,6 +15,14 @@ from trip.helpers import (
 
 
 class TestTrip(TestCase):
+    def setUp(self):
+        user_name = "testuser" + str(time.time())
+        email = user_name + "@nyu.edu"
+        self.credentials = {"username": user_name, "email": email, "password": "secret"}
+        User.objects.create_user(**self.credentials)
+
+    client = Client()
+
     def test_start_date_not_in_future(self):
         date = datetime.today().date()
         x = start_date_in_future(date)
@@ -96,3 +108,13 @@ class TestTrip(TestCase):
         city = ["Florence"]
         country = ["UAE"]
         self.assertRaises(TypeError, lambda: city_present_in_country(city, country))
+
+    def test_form_input(self):
+        # response = self.client.get("/trip/create/")
+        #
+        response = self.client.login(**self.credentials)
+        response = self.client.get("/trip/view/")
+        # self.assertTemplateUsed(response=response, template_name='/backstage/account/list_accounts.html')
+        self.assertEqual(response.status_code, 200)
+        
+        # self.assertContains(response, "<h1>Your Trips<h1>", html=True)
