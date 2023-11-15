@@ -178,12 +178,16 @@ def show_pending_requests(request, utrip_id):
         return redirect(reverse("trip:view_trips"))
 
     pending_matches = UserTripMatches.objects.filter(
-        receiver=request.user, match_status=MatchStatusEnum.PENDING.value
+        receiver=request.user,
+        receiver_user_trip_id=utrip_id,
+        match_status=MatchStatusEnum.PENDING.value
     )
-    print(f"{pending_matches = }")
     pending_matches_senders = [pm.sender for pm in pending_matches]
+    context = {
+        "pending_matching_users": pending_matches_senders,
+    }
     return render(
         request,
         "matching/list_pending_requests.html",
-        {"pending_senders": pending_matches_senders},
+        context
     )
