@@ -14,15 +14,23 @@
                     {% endif %}
                 </div>
                 <div>
-                    {% if not matching_user.sent_match %}
-                        <a href="{% url 'matching:send_request' trip_id=trip_id receiver_uid=matching_user.user.id %}">
-                            <button type="button" class="btn btn-info btn-rounded">Send Request</button>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'matching:cancel_request' trip_id=trip_id receiver_uid=matching_user.user.id %}">
-                            <button type="button" class="btn btn-rounded btn-secondary">Cancel Request</button>
-                        </a>
-                    {% endif %}
+                    <form action="
+                            {% if not matching_user.sent_match %}
+                                {% url 'matching:send_request' utrip_id=utrip_id %}
+                            {% else %}
+                                {% url 'matching:cancel_request' utrip_id=utrip_id %}
+                            {% endif %}"
+                        method="post"
+                    >
+                        {% csrf_token %}
+                        <input type="hidden" name="receiver_uid" value="{{ matching_user.user.id }}">
+                        <input type="hidden" name="receiver_utrip_id" value="{{ matching_user.receiver_utrip_id }}">
+                        {% if not matching_user.sent_match %}
+                             <button type="submit" class="btn btn-info btn-rounded">Send Request</button>
+                        {% else %}
+                            <button type="submit" class="btn btn-rounded btn-secondary">Cancel Request</button>
+                        {% endif %}
+                    </form>
                 </div>
                 <br><br>
             </div>
