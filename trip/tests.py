@@ -1,17 +1,24 @@
+# import json
+
 from django.contrib.auth.models import User
+from django.db.models import Choices
 from django.test import TestCase  # noqa
 
 # Create your tests here.
 from datetime import datetime, timedelta
 import time
 from django.test import Client
-from django.urls import reverse # noqa
+from django.urls import reverse  # noqa
 
+# from constants import TRAVEL_TYPE, INDIAN_CITIES
+from trip.forms import UserTripCreationForm  # noqa
 from trip.helpers import (
     start_date_in_future,
     end_date_after_start_date,
     city_present_in_country,
 )
+
+# from trip.models import UserTrip, Trip
 
 
 class TestTrip(TestCase):
@@ -109,11 +116,52 @@ class TestTrip(TestCase):
         country = ["UAE"]
         self.assertRaises(TypeError, lambda: city_present_in_country(city, country))
 
-    def test_form_input(self):
-        # response = self.client.get("/trip/create/")
-        #
+    def test_view_trips(self):
         response = self.client.login(**self.credentials)
         response = self.client.get("/trip/view/")
         self.assertEqual(response.status_code, 200)
-        # self.assertContains(response, "<h1>Your Trips<h1>", h
-        # tml=True)
+        self.assertTemplateUsed(response=None, template_name="trip/view_trips.html")
+
+    # def test_user_trip_create_form(self):
+    #     response = self.client.login(**self.credentials)
+    #
+    #     user = User.objects.get_by_natural_key(self.credentials["username"])
+    #     trip = Trip.objects.create(
+    #         destination_city=[INDIAN_CITIES[0]],
+    #         destination_country=[("India", "India")],
+    #     )
+    #
+    #     # user_trip = UserTrip.objects.create(
+    #     #     start_trip=(datetime.today() + timedelta(24)).date,
+    #     #     end_trip=(datetime.today() + timedelta(48)).date,
+    #     #     travel_type=TRAVEL_TYPE[1],
+    #     #     user=user,
+    #     #     trip=trip,
+    #     # )
+    #     # print(json.dumps(user_trip))
+    #     date_start = datetime.today() + timedelta(24)
+    #     date_end = datetime.today() + timedelta(48)
+    #     sd = date_start.date()
+    #     ed = date_end.date()
+    #     user_trip = {
+    #         "start_trip": sd,
+    #         "end_trip": ed,
+    #         "travel_type": TRAVEL_TYPE[1],
+    #         "user": user,
+    #         "trip": trip,
+    #     }
+    #     print(user_trip)
+    #     form = UserTripCreationForm(
+    #         {
+    #             "start_trip": sd,
+    #             "end_trip": ed,
+    #             "travel_type": TRAVEL_TYPE[1],
+    #             "user": user,
+    #             "trip": trip,
+    #         }
+    #     )
+    #     # print(form.is_valid())
+    #
+    #     # response = self.client.post("/trip/create/", data=user_trip)
+    #     # self.assertEqual(response.status_code, 200)
+    #     # self.assertTemplateUsed(response=None, template_name="trip/view_trips.html")
