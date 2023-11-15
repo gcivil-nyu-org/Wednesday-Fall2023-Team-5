@@ -2,37 +2,37 @@ from trip.helpers import city_present_in_country
 
 
 def test_city_present_in_country(self):
-    city = ['Bangalore']
-    country = ['India']
+    city = ["Bangalore"]
+    country = ["India"]
     x = city_present_in_country(city, country)
     self.assertTrue(x)
 
-    city = ['Chicago']
-    country = ['United States']
+    city = ["Chicago"]
+    country = ["United States"]
     x = city_present_in_country(city, country)
     self.assertTrue(x)
 
-    city = ['London']
-    country = ['United Kingdom']
+    city = ["London"]
+    country = ["United Kingdom"]
     x = city_present_in_country(city, country)
     self.assertTrue(x)
 
-    city = ['Cancun']
-    country = ['Mexico']
+    city = ["Cancun"]
+    country = ["Mexico"]
     x = city_present_in_country(city, country)
     self.assertTrue(x)
 
-    city = ['Toronto']
-    country = ['Canada']
+    city = ["Toronto"]
+    country = ["Canada"]
     x = city_present_in_country(city, country)
     self.assertTrue(x)
 
-    city = ['Paris']
-    country = ['France']
+    city = ["Paris"]
+    country = ["France"]
     x = city_present_in_country(city, country)
     self.assertTrue(x)
 
-    city = ['Florence']
-    country = ['Italy']
+    city = ["Florence"]
+    country = ["Italy"]
     x = city_present_in_country(city, country)
     self.assertTrue(x)

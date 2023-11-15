@@ -1,5 +1,4 @@
 # Create your tests here.
-import sys
 import time
 from unittest import TestCase
 
