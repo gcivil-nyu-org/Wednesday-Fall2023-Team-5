@@ -1,5 +1,4 @@
 from functools import reduce
-
 from django.db.models import Q
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
@@ -26,11 +25,9 @@ def show_potential_matches(request, utrip_id):
 
     # applying dynamic filter to generate match pool
     matching_trips = UserTrip.objects.filter(
-        start_trip=current_usertrip.start_trip,
-        end_trip=current_usertrip.end_trip,
+        start_trip__lt=current_usertrip.end_trip,
         travel_type=current_usertrip.travel_type,
-        trip__destination_city=current_usertrip.trip.destination_city,
-        trip__destination_country=current_usertrip.trip.destination_country,
+        trip=current_usertrip.trip,
         user__userprofile__dob__lt=date.today()
         - timedelta(days=365.25 * current_user.userprofile.age_lower),
         user__userprofile__dob__gt=date.today()
