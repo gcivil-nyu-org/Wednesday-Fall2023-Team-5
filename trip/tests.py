@@ -12,6 +12,7 @@ from django.test import Client
 from django.urls import reverse  # noqa
 
 from constants import INDIAN_CITIES, TRAVEL_TYPE
+
 # from constants import TRAVEL_TYPE, INDIAN_CITIES
 from trip.forms import UserTripCreationForm  # noqa
 from trip.helpers import (
@@ -158,6 +159,6 @@ class TestTrip(TestCase):
         form = UserTripCreationForm()
         print(form.is_valid())
 
-        #response = self.client.post("/trip/create/", data=user_trip)
+        # response = self.client.post("/trip/create/", data=user_trip)
         self.assertFalse(form.is_valid())
         self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
