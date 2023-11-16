@@ -128,7 +128,7 @@ class TestTrip(TestCase):
         self.assertTemplateUsed(response=None, template_name="trip/view_trips.html")
 
     def test_user_trip_create_form(self):
-        response = self.client.login(**self.credentials)
+        response = self.client.login(**self.credentials) # noqa
 
         user = User.objects.get_by_natural_key(self.credentials["username"])
         trip = Trip.objects.create(
@@ -158,7 +158,7 @@ class TestTrip(TestCase):
         print(user_trip)
         form = UserTripCreationForm()
         print(form.is_valid())
-
+        # self.assertEqual(respo)
         # response = self.client.post("/trip/create/", data=user_trip)
         self.assertFalse(form.is_valid())
         self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
