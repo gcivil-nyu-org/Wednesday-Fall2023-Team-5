@@ -1,6 +1,7 @@
 # Create your models here.
 
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from PIL import Image
 import os
@@ -29,11 +30,13 @@ class UserProfile(models.Model):
         default=18,
         verbose_name="Age(lower bound)",
         help_text="Enter lower bound for age filter",
+        validators=[MinValueValidator(18), MaxValueValidator(99)],
     )
     age_upper = models.IntegerField(
         default=99,
         verbose_name="Age(upper bound)",
         help_text="Enter upper bound for age filter",
+        validators=[MinValueValidator(18), MaxValueValidator(99)],
     )
     verified_prof = models.BooleanField(
         default=False, verbose_name="Verified profiles only?"
