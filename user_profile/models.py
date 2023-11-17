@@ -14,7 +14,7 @@ from constants import (
     INTEREST_CHOICES,
     LANG_CHOICES,
 )
-from .helpers import return_lang_tuple
+from .helpers import get_default_lang_tuple
 
 
 class UserProfile(models.Model):
@@ -64,7 +64,7 @@ class UserProfile(models.Model):
         models.CharField(max_length=50, choices=INTEREST_CHOICES), default=list
     )
     languages = ChoiceArrayField(
-        models.CharField(max_length=30, choices=LANG_CHOICES), default=return_lang_tuple
+        models.CharField(max_length=30, choices=LANG_CHOICES), default=get_default_lang_tuple
     )
 
     def __str__(self):
