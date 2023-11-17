@@ -154,3 +154,4 @@ class TestTrip(TestCase):
         self.assertTrue(mock_form.is_valid())
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
+        self.assertRedirects(response, "/trip/view/")
