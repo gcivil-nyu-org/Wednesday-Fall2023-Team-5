@@ -35,3 +35,7 @@ def dob_gte18_and_lt100(dob):
                 False,
                 "The age you entered is over 99. Please verify your inputs and try again",
             )
+
+
+def return_lang_tuple():
+    return ("English", "English")
