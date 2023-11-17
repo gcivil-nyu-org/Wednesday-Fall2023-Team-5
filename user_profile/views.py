@@ -26,10 +26,13 @@ def create_user_account(request):
             reg_form_data = registration_form.cleaned_data
             logger.info("Saved form")
             # Authenticate and log in user
-            user_auth = authenticate(username=reg_form_data["username"], password=reg_form_data["password1"])
+            user_auth = authenticate(
+                username=reg_form_data["username"], password=reg_form_data["password1"]
+            )
             login(request, user_auth)
             messages.success(
-                request, "Successfully created your account and logged you in. Please create your profile."
+                request,
+                "Successfully created your account and logged you in. Please create your profile.",
             )
             return redirect(reverse("user_profile:edit_profile"))
     else:
