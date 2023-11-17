@@ -145,9 +145,14 @@ class TestTrip(TestCase):
             "end_trip": ed,
             "travel_type": TRAVEL_TYPE[1],
             "user": user,
-            "trip": trip,
+            "destination_city": [INDIAN_CITIES[0]],
+            "destination_country": [("India", "India")]
+            # "trip": {
+            #     "destination_city": [INDIAN_CITIES[0]],
+            #     "destination_country": [("India", "India")],
+            # },
         }
-        # mock_form.return_value_is_valid = True
+
         mock_form.return_value.cleaned_data = user_trip
         mock_form.return_value.usertrip_data = user_trip
         response = self.client.post("/trip/create/", data=user_trip, follow=True)
