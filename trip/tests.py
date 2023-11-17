@@ -136,7 +136,7 @@ class TestTrip(TestCase):
         sd = date_start.date()
         ed = date_end.date()
         user = User.objects.get_by_natural_key(self.credentials["username"])
-        trip = Trip.objects.create(
+        trip = Trip.objects.create( # noqa F841
             destination_city=[INDIAN_CITIES[0]],
             destination_country=[("India", "India")],
         )
