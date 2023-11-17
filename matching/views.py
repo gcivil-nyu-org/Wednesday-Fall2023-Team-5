@@ -30,7 +30,7 @@ def show_potential_matches(request, utrip_id):
     # user's age is in defined range
     matching_trips = UserTrip.objects.filter(
         start_trip__lte=current_usertrip.end_trip,
-        end_trip_gte=current_usertrip.start_trip,
+        end_trip__gte=current_usertrip.start_trip,
         travel_type=current_usertrip.travel_type,
         trip=current_usertrip.trip,
         user__userprofile__dob__lt=date.today()
