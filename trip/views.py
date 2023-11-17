@@ -30,14 +30,17 @@ def create_trip(request):
                 start_trip=usertrip_data["start_trip"],
                 end_trip=usertrip_data["end_trip"],
                 user=request.user,
-                trip=trip_instance
+                trip=trip_instance,
             )
 
             if created:
                 messages.success(request, "Successfully created your trip")
             else:
-                messages.info(request, "You already have an existing trip with same details, "
-                                       "might wanna update the trip?")
+                messages.info(
+                    request,
+                    "You already have an existing trip with same details, "
+                    "might wanna update the trip?",
+                )
             return redirect(reverse("trip:view_trips"))
     else:
         usertrip_creation_form = forms.UserTripCreationForm()
