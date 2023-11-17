@@ -1,4 +1,5 @@
 # import json
+from unittest import mock
 
 from django.contrib.auth.models import User
 
@@ -127,27 +128,18 @@ class TestTrip(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response=None, template_name="trip/view_trips.html")
 
-    def test_user_trip_create_form(self):
+    @mock.patch("trip.forms.UserTripCreationForm")
+    def test_user_trip_create_form(self, mock_form):
         response = self.client.login(**self.credentials)  # noqa
-
+        date_start = datetime.today() + timedelta(24)
+        date_end = datetime.today() + timedelta(48)
+        sd = date_start.date()
+        ed = date_end.date()
         user = User.objects.get_by_natural_key(self.credentials["username"])
         trip = Trip.objects.create(
             destination_city=[INDIAN_CITIES[0]],
             destination_country=[("India", "India")],
         )
-
-        # user_trip = UserTrip.objects.create(
-        #     start_trip=(datetime.today() + timedelta(24)).date,
-        #     end_trip=(datetime.today() + timedelta(48)).date,
-        #     travel_type=TRAVEL_TYPE[1],
-        #     user=user,
-        #     trip=trip,
-        # )
-        # print(json.dumps(user_trip))
-        date_start = datetime.today() + timedelta(24)
-        date_end = datetime.today() + timedelta(48)
-        sd = date_start.date()
-        ed = date_end.date()
         user_trip = {
             "start_trip": sd,
             "end_trip": ed,
@@ -155,10 +147,9 @@ class TestTrip(TestCase):
             "user": user,
             "trip": trip,
         }
-        print(user_trip)
-        form = UserTripCreationForm()
-        print(form.is_valid())
-        # self.assertEqual(respo)
-        # response = self.client.post("/trip/create/", data=user_trip)
-        self.assertFalse(form.is_valid())
+        # mock_form.return_value_is_valid = True
+        mock_form.return_value.cleaned_data = user_trip
+        mock_form.return_value.usertrip_data = user_trip
+        request = self.client.post("/trip/create/", data=user_trip)
+        self.assertTrue(mock_form.is_valid())
         self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
