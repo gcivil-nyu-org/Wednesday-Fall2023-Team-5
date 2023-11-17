@@ -37,5 +37,5 @@ def dob_gte18_and_lt100(dob):
             )
 
 
-def return_lang_tuple():
+def get_default_lang_tuple():
     return ("English", "English")
