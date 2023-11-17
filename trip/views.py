@@ -16,14 +16,14 @@ def create_trip(request):
             usertrip_data = usertrip_creation_form.cleaned_data
 
             usertrip_instance = usertrip_creation_form.save(commit=False)
-            print(usertrip_data.keys())
-            usertrip = usertrip_data["trip"]
+
+            # usertrip = usertrip_data["trip"]
             # print(usertrip.keys())
-            print(usertrip)
-            dest_city_raw = usertrip.destination_city
+            print(usertrip_data)
+            dest_city_raw = usertrip_data["destination_city"]
             dest_city = dest_city_raw[0]
 
-            dest_country_raw = usertrip.destination_country
+            dest_country_raw = usertrip_data["destination_country"]
             dest_country = dest_country_raw[0]
 
             trip_instance, _ = Trip.objects.get_or_create(
