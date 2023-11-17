@@ -20,12 +20,18 @@ def create_user_account(request):
     if request.method == "POST":
         registration_form = forms.AccountRegistrationForm(request.POST)
         if registration_form.is_valid():
+            # Save the registration form
             registration_form.save()
+            # Retrieve cleaned data from registration form
+            reg_form_data = registration_form.cleaned_data
             logger.info("Saved form")
+            # Authenticate and log in user
+            user_auth = authenticate(username=reg_form_data["username"], password=reg_form_data["password1"])
+            login(request, user_auth)
             messages.success(
-                request, "Successfully created your account. Please log in."
+                request, "Successfully created your account and logged you in. Please create your profile."
             )
-            return redirect(reverse("user_profile:login"))
+            return redirect(reverse("user_profile:edit_profile"))
     else:
         registration_form = forms.AccountRegistrationForm()
 
