@@ -15,8 +15,6 @@ def create_trip(request):
         if usertrip_creation_form.is_valid():
             usertrip_data = usertrip_creation_form.cleaned_data
 
-            usertrip_instance = usertrip_creation_form.save(commit=False)
-
             dest_city_raw = usertrip_data["destination_city_ef"]
             dest_city = dest_city_raw[0]
 
@@ -28,10 +26,18 @@ def create_trip(request):
                 destination_country=dest_country,
             )
 
-            usertrip_instance.trip = trip_instance
-            usertrip_instance.user = request.user
-            usertrip_instance.save()
-            messages.success(request, "Successfully created your trip")
+            usertrip_instance, created = UserTrip.objects.get_or_create(
+                start_trip=usertrip_data["start_trip"],
+                end_trip=usertrip_data["end_trip"],
+                user=request.user,
+                trip=trip_instance
+            )
+
+            if created:
+                messages.success(request, "Successfully created your trip")
+            else:
+                messages.info(request, "You already have an existing trip with same details, "
+                                       "might wanna update the trip?")
             return redirect(reverse("trip:view_trips"))
     else:
         usertrip_creation_form = forms.UserTripCreationForm()
