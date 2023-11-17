@@ -150,7 +150,7 @@ class TestTrip(TestCase):
         # mock_form.return_value_is_valid = True
         mock_form.return_value.cleaned_data = user_trip
         mock_form.return_value.usertrip_data = user_trip
-        response = self.client.post("/trip/create/", data=user_trip)
+        response = self.client.post("/trip/create/", data=user_trip, follow=True)
         self.assertTrue(mock_form.is_valid())
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
