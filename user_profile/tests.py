@@ -232,7 +232,7 @@ class TestHelperFunctions(TestCase):
 
     def test_dob_gte18_and_lt100_invalid_too_old(self):
         dob = self.fake.date_between(
-            start_date=datetime.date(0, 1, 1), end_date="-100y"
+            start_date=datetime.date(1, 1, 1), end_date="-100y"
         )
         res = dob_gte18_and_lt100(dob)
         self.assertFalse(res[0])
