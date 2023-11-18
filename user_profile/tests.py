@@ -1,5 +1,6 @@
 # Create your tests here.
 import time
+from faker import Faker
 import datetime  # noqa
 from unittest import mock
 
@@ -8,10 +9,12 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.test import Client
 
-from user_profile.helpers import email_is_valid
+from user_profile.helpers import email_is_valid, dob_gte18_and_lt100
+
+# Testing View Functions
 
 
-class TestUserProfile(TestCase):
+class TestLoginViews(TestCase):
     client = Client()
 
     def setUp(self):
@@ -38,24 +41,6 @@ class TestUserProfile(TestCase):
         response = self.client.post("/login/", credentials, follow=True)
         # should be logged in now
         self.assertFalse(response.context["user"].is_active)
-
-    def test_valid_email(self):
-        email = "test@nyu.edu"
-        x = email_is_valid(email)
-        self.assertTrue(x)
-
-    def test_in_valid_email(self):
-        email = "123@nyu.edu"
-        x = email_is_valid(email)
-        self.assertFalse(x)
-
-        email = "alpha"
-        x = email_is_valid(email)
-        self.assertFalse(x)
-
-        email = "1233333333333333333333333@nyu.edu"
-        x = email_is_valid(email)
-        self.assertFalse(x)
 
 
 class TestRegistrationViews(TestCase):
@@ -200,3 +185,54 @@ class TestLoggedInViews(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "user_profile/detail_profile_inactive.html")
+
+
+# Testing Helper Functions
+
+
+class TestHelperFunctions(TestCase):
+    def setUp(self):
+        self.fake = Faker()
+        Faker.seed(2433)
+
+    # Testing email validator
+    def test_email_is_valid_valid(self):
+        emails = ["test@nyu.edu", "mikey12@harvard.edu", "mz1233@princeton.edu"]
+        for email in emails:
+            x = email_is_valid(email)
+            self.assertTrue(x)
+
+    def test_email_is_valid_invalid_numeric(self):
+        emails = ["123@nyu.edu", "alpha", "1233333333333333@nyu.edu"]
+        for email in emails:
+            x = email_is_valid(email)
+            self.assertFalse(x)
+
+    def test_email_is_valid_invalid_non_edu(self):
+        emails = [
+            "alpha@gmail.com",
+            "beta@yahoo.com",
+            "chi@whitehouse.gov",
+            "delta@d.net",
+        ]
+        for email in emails:
+            x = email_is_valid(email)
+            self.assertFalse(x)
+
+    # Testing dob_gte18_and_lt100
+    def test_dob_gte18_and_lt100_valid(self):
+        dob = self.fake.date_between(start_date="-99y", end_date="-18y")
+        res = dob_gte18_and_lt100(dob)
+        self.assertTrue(res[0])
+
+    def test_dob_gte18_and_lt100_invalid_too_young(self):
+        dob = self.fake.date_between(start_date="-17y", end_date="+100y")
+        res = dob_gte18_and_lt100(dob)
+        self.assertFalse(res[0])
+
+    def test_dob_gte18_and_lt100_invalid_too_old(self):
+        dob = self.fake.date_between(
+            start_date=datetime.date(0, 1, 1), end_date="-100y"
+        )
+        res = dob_gte18_and_lt100(dob)
+        self.assertFalse(res[0])
