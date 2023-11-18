@@ -13,7 +13,7 @@ from constants import (
 
 def start_date_in_future(std):
     if isinstance(std, datetime.date):
-        return std > datetime.date.today()
+        return std >= datetime.date.today()
     else:
         raise TypeError("Arguments must be of type datetime.date")
 

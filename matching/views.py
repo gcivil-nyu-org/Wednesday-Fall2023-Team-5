@@ -23,15 +23,24 @@ def show_potential_matches(request, utrip_id):
         messages.error(request, "Please select a valid trip")
         return redirect(reverse("trip:view_trips"))
 
-    # applying dynamic filter to generate match pool
+    # applying dynamic filter to generate match pool where
+    # usertrip is active AND
+    # travel_type = companion AND
+    # destination is matching AND
+    # trip dates are overlapping (for at least 1 day) AND
+    # user is not deactivated AND
+    # user's age is in defined range
     matching_trips = UserTrip.objects.filter(
-        start_trip__lt=current_usertrip.end_trip,
+        is_active=True,
+        start_trip__lte=current_usertrip.end_trip,
+        end_trip__gte=current_usertrip.start_trip,
         travel_type=current_usertrip.travel_type,
         trip=current_usertrip.trip,
-        user__userprofile__dob__lt=date.today()
+        user__is_active=True,
+        user__userprofile__dob__lte=date.today()
         - timedelta(days=365.25 * current_user.userprofile.age_lower),
         user__userprofile__dob__gt=date.today()
-        - timedelta(days=365.25 * current_user.userprofile.age_upper),
+        - timedelta(days=365.25 * current_user.userprofile.age_upper + 1),
     )
 
     try:
