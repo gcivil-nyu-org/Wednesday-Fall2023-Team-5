@@ -130,6 +130,43 @@ class TestLoggedInViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "user_profile/edit_profile.html")
 
+    @mock.patch("user_profile.forms.ProfileUpdateForm")
+    def test_edit_profile_POST(self, mock_form):
+        dob = datetime.date.today() - datetime.timedelta(days=365.25 * 20)
+        uni = "NYU"
+        age_lb = 18
+        age_ub = 25
+        drink_pref = [("Socially", "Socially")]
+        smoke_pref = [("Socially", "Socially")]
+        edu_level = [("In college", "In college")]
+        interests = [("hiking", "hiking")]
+        lang = [("English", "English")]
+
+        mf_clean = {
+            "dob": dob,
+            "university": uni,
+            "age_lower": age_lb,
+            "age_upper": age_ub,
+            "drink_pref": drink_pref,
+            "smoke_pref": smoke_pref,
+            "edu_level": edu_level,
+            "interests": interests,
+            "languages": lang,
+        }
+
+        mock_form.return_value.cleaned_data = mf_clean
+
+        response = self.client.post(
+            reverse("user_profile:edit_profile"), data=mf_clean, follow=True
+        )
+
+        self.assertTrue(mock_form.is_valid())
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response=None, template_name="user_profile/edit_profile.html"
+        )
+        self.assertRedirects(response, reverse("user_profile:view_profile"))
+
     # View profile coverage
     def test_view_profile_GET(self):
         response = self.client.get(reverse("user_profile:view_profile"))
