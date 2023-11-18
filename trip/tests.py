@@ -1,4 +1,5 @@
 # import json
+import random
 from unittest import mock
 
 from django.contrib.auth.models import User
@@ -21,7 +22,7 @@ from trip.helpers import (
     end_date_after_start_date,
     city_present_in_country,
 )
-from trip.models import Trip
+from trip.models import UserTrip, Trip
 
 
 # from trip.models import UserTrip, Trip
@@ -168,3 +169,10 @@ class TestTripViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
         self.assertRedirects(response, "/trip/view/")
+
+    def test_detail_trip_GET(self):
+        ut_id = random.randrange(1, len(UserTrip.objects.all()))
+        response = self.client.get(reverse("trip:detail_trip", kwargs={"ut_id": ut_id}))
+        valid_results = [403, 200]
+        self.assertIn(response.status_code, valid_results)
+        self.assertTemplateUsed(response=None, template_name="trip/detail_trip.html")
