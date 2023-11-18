@@ -27,14 +27,9 @@ from trip.models import Trip
 # from trip.models import UserTrip, Trip
 
 
-class TestTrip(TestCase):
+class TestHelpers(TestCase):
     def setUp(self):
-        user_name = "testuser" + str(time.time())
-        email = user_name + "@nyu.edu"
-        self.credentials = {"username": user_name, "email": email, "password": "secret"}
-        User.objects.create_user(**self.credentials)
-
-    client = Client()
+        self.client = Client()
 
     def test_start_date_not_in_future(self):
         date = datetime.today().date()
@@ -122,15 +117,28 @@ class TestTrip(TestCase):
         country = ["UAE"]
         self.assertRaises(TypeError, lambda: city_present_in_country(city, country))
 
-    def test_view_trips(self):
-        response = self.client.login(**self.credentials)
+
+class TestTripViews(TestCase):
+    def setUp(self):
+        self.client = Client()
+        user_name = "testuser" + str(time.time())
+        email = user_name + "@nyu.edu"
+        self.credentials = {"username": user_name, "email": email, "password": "secret"}
+        User.objects.create_user(**self.credentials)
+        self.client.post("/login/", self.credentials, follow=True)
+
+    def test_view_trips_GET(self):
         response = self.client.get("/trip/view/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response=None, template_name="trip/view_trips.html")
 
+    def test_create_trip_GET(self):
+        response = self.client.get(reverse("trip:create_trip"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
+
     @mock.patch("trip.forms.UserTripCreationForm")
-    def test_user_trip_create_form(self, mock_form):
-        response = self.client.login(**self.credentials)  # noqa
+    def test_create_trip_POST_valid(self, mock_form):
         date_start = datetime.today() + timedelta(24)
         date_end = datetime.today() + timedelta(48)
         sd = date_start.date()
