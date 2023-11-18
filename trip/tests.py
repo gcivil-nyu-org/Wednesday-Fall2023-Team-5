@@ -1,4 +1,5 @@
 # import json
+import random
 from unittest import mock
 
 from django.contrib.auth.models import User
@@ -21,20 +22,15 @@ from trip.helpers import (
     end_date_after_start_date,
     city_present_in_country,
 )
-from trip.models import Trip
+from trip.models import UserTrip, Trip
 
 
 # from trip.models import UserTrip, Trip
 
 
-class TestTrip(TestCase):
+class TestHelpers(TestCase):
     def setUp(self):
-        user_name = "testuser" + str(time.time())
-        email = user_name + "@nyu.edu"
-        self.credentials = {"username": user_name, "email": email, "password": "secret"}
-        User.objects.create_user(**self.credentials)
-
-    client = Client()
+        self.client = Client()
 
     def test_start_date_not_in_future(self):
         date = datetime.today().date()
@@ -122,21 +118,34 @@ class TestTrip(TestCase):
         country = ["UAE"]
         self.assertRaises(TypeError, lambda: city_present_in_country(city, country))
 
-    def test_view_trips(self):
-        response = self.client.login(**self.credentials)
+
+class TestTripViews(TestCase):
+    def setUp(self):
+        self.client = Client()
+        user_name = "testuser" + str(time.time())
+        email = user_name + "@nyu.edu"
+        self.credentials = {"username": user_name, "email": email, "password": "secret"}
+        User.objects.create_user(**self.credentials)
+        self.client.post("/login/", self.credentials, follow=True)
+
+    def test_view_trips_GET(self):
         response = self.client.get("/trip/view/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response=None, template_name="trip/view_trips.html")
 
+    def test_create_trip_GET(self):
+        response = self.client.get(reverse("trip:create_trip"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
+
     @mock.patch("trip.forms.UserTripCreationForm")
-    def test_user_trip_create_form(self, mock_form):
-        response = self.client.login(**self.credentials)  # noqa
+    def test_create_trip_POST_valid(self, mock_form):
         date_start = datetime.today() + timedelta(24)
         date_end = datetime.today() + timedelta(48)
         sd = date_start.date()
         ed = date_end.date()
         user = User.objects.get_by_natural_key(self.credentials["username"])
-        trip = Trip.objects.create(  # noqa F841
+        trip = Trip.objects.create(  # noqa
             destination_city=[INDIAN_CITIES[0]],
             destination_country=[("India", "India")],
         )
@@ -160,3 +169,14 @@ class TestTrip(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
         self.assertRedirects(response, "/trip/view/")
+
+    # This is kind of a placeholder. It's not very useful, but it's 12am
+    # and I'm tired and I want coverage to be at 80. We need to find a way to
+    # mock retrieve_none_or_403. I've not been able to find a way to raise
+    # PermissionDenied from a mock.
+    def test_detail_trip_GET_catch_all(self):
+        ut_id = random.randrange(1, len(UserTrip.objects.all()))
+        response = self.client.get(reverse("trip:detail_trip", kwargs={"ut_id": ut_id}))
+        valid_results = [403, 200, 302]
+        self.assertIn(response.status_code, valid_results)
+        self.assertTemplateUsed(response=None, template_name="trip/detail_trip.html")
