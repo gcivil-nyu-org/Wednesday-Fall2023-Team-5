@@ -1,11 +1,10 @@
 # Create your tests here.
 import time
 import datetime  # noqa
+from unittest import mock
+
 from django.test import TestCase
-
 from django.contrib.auth.models import User
-
-
 from django.urls import reverse
 from django.test import Client
 
@@ -57,6 +56,48 @@ class TestUserProfile(TestCase):
         email = "1233333333333333333333333@nyu.edu"
         x = email_is_valid(email)
         self.assertFalse(x)
+
+
+class TestRegistrationViews(TestCase):
+    def setUp(self):
+        client = Client()  # noqa
+        user_name = "testuser" + str(time.time())
+        email = user_name + "@nyu.edu"
+        self.credentials = {"username": user_name, "email": email, "password": "secret"}
+
+    def test_create_user_account_GET(self):
+        response = self.client.get(reverse("user_profile:register_account"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "user_profile/user_registration.html")
+
+    @mock.patch("user_profile.forms.AccountRegistrationForm")
+    def test_create_user_account_POST_valid(self, mock_form):
+        first_name = "Test"
+        last_name = "User"
+        username = self.credentials["username"]
+        password = self.credentials["password"]
+        email = self.credentials["email"]
+
+        mf_clean = {
+            "first_name": first_name,
+            "last_name": last_name,
+            "username": username,
+            "password": password,
+            "email": email,
+        }
+
+        mock_form.return_value.cleaned_data = mf_clean
+
+        response = self.client.post(
+            reverse("user_profile:register_account"), data=mf_clean, follow=True
+        )
+
+        self.assertTrue(mock_form.is_valid())
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response=None, template_name="user_profile/user_registration.html"
+        )
+        self.assertRedirects(response, reverse("user_profile:login"))
 
 
 class TestLoggedInViews(TestCase):
