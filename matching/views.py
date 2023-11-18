@@ -37,7 +37,7 @@ def show_potential_matches(request, utrip_id):
         travel_type=current_usertrip.travel_type,
         trip=current_usertrip.trip,
         user__is_active=True,
-        user__userprofile__dob__lt=date.today()
+        user__userprofile__dob__lte=date.today()
         - timedelta(days=365.25 * current_user.userprofile.age_lower),
         user__userprofile__dob__gt=date.today()
         - timedelta(days=365.25 * current_user.userprofile.age_upper + 1),
