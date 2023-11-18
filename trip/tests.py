@@ -172,7 +172,8 @@ class TestTripViews(TestCase):
 
     # This is kind of a placeholder. It's not very useful, but it's 12am
     # and I'm tired and I want coverage to be at 80. We need to find a way to
-    # mock retrieve_none_or_403
+    # mock retrieve_none_or_403. I've not been able to find a way to raise
+    # PermissionDenied from a mock.
     def test_detail_trip_GET_catch_all(self):
         ut_id = random.randrange(1, len(UserTrip.objects.all()))
         response = self.client.get(reverse("trip:detail_trip", kwargs={"ut_id": ut_id}))
