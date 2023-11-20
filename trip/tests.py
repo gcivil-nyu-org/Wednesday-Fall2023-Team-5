@@ -26,7 +26,7 @@ from trip.helpers import (
 # from trip.models import UserTrip, Trip
 
 
-# from trip.models import UserTrip, Trip
+from trip.models import Trip
 
 
 class TestHelpers(TestCase):
