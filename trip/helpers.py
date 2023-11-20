@@ -26,6 +26,8 @@ def end_date_after_start_date(std, end):
 
 
 def city_present_in_country(city, country):
+    print("Here in helper!!!!!!")
+    print(city)
     city = city[0].title()
     country = country[0].title()
     city_tuple = (city, city)
@@ -43,3 +45,5 @@ def city_present_in_country(city, country):
         return True if city_tuple in FRANCE_CITIES else False
     elif country == "Italy":
         return True if city_tuple in ITALY_CITIES else False
+    else:
+        raise TypeError("Country not supported currently")

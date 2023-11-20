@@ -15,10 +15,10 @@ def create_trip(request):
         if usertrip_creation_form.is_valid():
             usertrip_data = usertrip_creation_form.cleaned_data
 
-            dest_city_raw = usertrip_data["destination_city_ef"]
+            dest_city_raw = usertrip_data["destination_city"]
             dest_city = dest_city_raw[0]
 
-            dest_country_raw = usertrip_data["destination_country_ef"]
+            dest_country_raw = usertrip_data["destination_country"]
             dest_country = dest_country_raw[0]
 
             trip_instance, _ = Trip.objects.get_or_create(
