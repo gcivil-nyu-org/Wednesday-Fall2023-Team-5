@@ -29,6 +29,9 @@ def create_user_account(request):
             user_auth = authenticate(
                 username=reg_form_data["username"], password=reg_form_data["password1"]
             )
+            print(reg_form_data["username"])
+            print(reg_form_data["password1"])
+            print(user_auth)
             login(request, user_auth)
             messages.success(
                 request,

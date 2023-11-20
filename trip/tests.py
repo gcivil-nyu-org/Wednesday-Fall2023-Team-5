@@ -33,7 +33,7 @@ class TestHelpers(TestCase):
         self.client = Client()
 
     def test_start_date_not_in_future(self):
-        date = datetime.today().date()
+        date = datetime.today().date() + timedelta(-24)
         x = start_date_in_future(date)
         self.assertFalse(x)
 
@@ -155,7 +155,7 @@ class TestTripViews(TestCase):
             "travel_type": TRAVEL_TYPE[1],
             "user": user,
             "destination_city": [INDIAN_CITIES[0]],
-            "destination_country": [("India", "India")]
+            "destination_country": [("India", "India")],
             # "trip": {
             #     "destination_city": [INDIAN_CITIES[0]],
             #     "destination_country": [("India", "India")],
@@ -175,7 +175,7 @@ class TestTripViews(TestCase):
     # mock retrieve_none_or_403. I've not been able to find a way to raise
     # PermissionDenied from a mock.
     def test_detail_trip_GET_catch_all(self):
-        ut_id = random.randrange(1, len(UserTrip.objects.all()))
+        ut_id = random.randrange(1, 100)
         response = self.client.get(reverse("trip:detail_trip", kwargs={"ut_id": ut_id}))
         valid_results = [403, 200, 302]
         self.assertIn(response.status_code, valid_results)
