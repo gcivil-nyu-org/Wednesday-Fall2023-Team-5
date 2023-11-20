@@ -88,13 +88,10 @@ WSGI_APPLICATION = "soloconnect.wsgi.application"
 DATABASES = {
     "default": {
         "PORT": os.getenv("RDS_PORT"),
-        # "USER": os.getenv("RDS_USERNAME"),
-        "USER": "scroot",
-        # "HOST": os.getenv("RDS_HOSTNAME"),
-        "HOST": "awseb-e-jxcdqsyak2-stack-awsebrdsdatabase-jg37moq5mxxu.cr5o1t6nblfb.us-east-1.rds.amazonaws.com",
-        # "NAME": os.getenv("RDS_DB_NAME"),
-        "NAME": "ebdb",
-        "PASSWORD": "s0l0c0nn3c7$",
+        "USER": os.getenv("RDS_USERNAME"),
+        "HOST": os.getenv("RDS_HOSTNAME"),
+        "NAME": os.getenv("RDS_DB_NAME"),
+        "PASSWORD": os.getenv("RDS_PASSWORD"),
         "ENGINE": "django.db.backends.postgresql",
         "TEST": {"NAME": "testdatabase2"},
     }

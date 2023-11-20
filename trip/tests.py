@@ -22,7 +22,8 @@ from trip.helpers import (
     end_date_after_start_date,
     city_present_in_country,
 )
-from trip.models import UserTrip, Trip
+
+# from trip.models import UserTrip, Trip
 
 
 # from trip.models import UserTrip, Trip

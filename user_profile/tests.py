@@ -1,6 +1,7 @@
 # Create your tests here.
 import time
-from unittest.mock import MagicMock
+
+# from unittest.mock import MagicMock
 
 from faker import Faker
 import datetime  # noqa
