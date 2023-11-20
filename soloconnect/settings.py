@@ -88,12 +88,15 @@ WSGI_APPLICATION = "soloconnect.wsgi.application"
 DATABASES = {
     "default": {
         "PORT": os.getenv("RDS_PORT"),
-        "USER": os.getenv("RDS_USERNAME"),
-        "HOST": os.getenv("RDS_HOSTNAME"),
-        "NAME": os.getenv("RDS_DB_NAME"),
-        "PASSWORD": os.getenv("RDS_PASSWORD"),
+        # "USER": os.getenv("RDS_USERNAME"),
+        "USER": "scroot",
+        # "HOST": os.getenv("RDS_HOSTNAME"),
+        "HOST": "awseb-e-jxcdqsyak2-stack-awsebrdsdatabase-jg37moq5mxxu.cr5o1t6nblfb.us-east-1.rds.amazonaws.com",
+        # "NAME": os.getenv("RDS_DB_NAME"),
+        "NAME": "ebdb",
+        "PASSWORD": "s0l0c0nn3c7$",
         "ENGINE": "django.db.backends.postgresql",
-        "TEST": {"NAME": "testdatabase2", "ENGINE": "django.db.backends.sqlite3"},
+        "TEST": {"NAME": "testdatabase2"},
     }
 }
 if "test" in sys.argv:
@@ -104,7 +107,7 @@ if "test" in sys.argv:
         "PASSWORD": os.getenv("TEST_RDS_PASSWORD"),
         "NAME": os.getenv("TEST_RDS_DB_NAME"),
         "PORT": os.getenv("TEST_RDS_DB_PORT"),
-        "TEST": {"NAME": os.environ.get("TEST_RDS_DB_NAME")},
+        "TEST": {"NAME": "testdatabase2"},
     }
 # if "test" in sys.argv:
 #     DATABASES = {
