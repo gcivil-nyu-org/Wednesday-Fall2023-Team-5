@@ -1,12 +1,12 @@
 {% extends 'home_default/base.html' %}
 {% load static %}
 {% block content %}
-<body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
+
+<textarea id="chat-log" cols="100" rows="20"></textarea><br>
+<input id="chat-message-input" type="text" size="100"><br>
+<input id="chat-message-submit" type="button" value="Send">
     {{ room_name|json_script:"room-name" }}
-    <script>
+<script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
         const chatSocket = new WebSocket(
@@ -41,5 +41,6 @@
             }));
             messageInputDom.value = '';
         };
-    </script>
-</body>
+</script>
+
+{% endblock content %}

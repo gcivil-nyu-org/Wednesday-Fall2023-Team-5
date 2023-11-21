@@ -25,4 +25,5 @@ urlpatterns = [
     path("", include("user_profile.urls")),
     path("", include("trip.urls")),
     path("trip/view/<int:utrip_id>/", include("matching.urls")),
+    path("chat/", include("chat.urls", namespace="chat")),
 ]
