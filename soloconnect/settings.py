@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap4",
     "matching.apps.MatchingConfig",
-    "chat.apps.ChatConfig"
+    "chat.apps.ChatConfig",
 ]
 
 MIDDLEWARE = [
