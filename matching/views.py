@@ -92,7 +92,7 @@ def show_potential_matches(request, utrip_id):
            and matching_trip.user.id not in matching_users
     ]
 
-    ## ADD
+    # Generate match pool:
     ''' Condition-1: If user has not changed the default filters (i.e. all knn attributes are blank), use only hard filters
                          Else, use KNN algorithm to generate match pool based on ranking
         Condition-2: If the number of potential matches generated using hard filters < number of neighbors required to 
@@ -123,8 +123,6 @@ def show_potential_matches(request, utrip_id):
         context = {"matching_users": matching_users,
                    "utrip_id": utrip_id,
                    }
-
-    ## END ADD
 
     return render(request, "matching/list_potential_matches.html", context)
 
