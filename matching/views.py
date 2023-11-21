@@ -6,11 +6,17 @@ from django.views.decorators.http import require_http_methods
 from datetime import date, timedelta
 from operator import or_
 from django.contrib import messages
-
 from common import retrieve_none_or_403
 from trip.models import UserTrip
 from .models import UserTripMatches, MatchStatusEnum
 from .utils import get_current_ut_and_receiver
+from django.contrib.auth.models import User
+import datetime
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+
+# Import ML libraries:
+import pandas as pd
+from matching.utilities import get_knn_recommendations
 
 
 @require_http_methods(["GET"])
@@ -43,7 +49,11 @@ def show_potential_matches(request, utrip_id):
         - timedelta(days=365.25 * current_user.userprofile.age_upper + 1),
     )
 
-    try:
+    # language filter that filters users with at least one common language
+    # apply this filter only if the current user has any language preferences
+    if len(current_user.userprofile.languages) != 0:
+        # following code combines successive calls to filter() using OR operator avoiding the explicit loop
+        # noinspection PyTypeChecker
         condition = reduce(
             or_,
             [
@@ -53,8 +63,6 @@ def show_potential_matches(request, utrip_id):
         )
         # additional condition to show matches with at least one common language
         matching_trips = matching_trips.filter(condition)
-    except Exception as e:
-        print(e)
 
     # users which have already being sent a matching request by current user, but not yet accepted
     current_matching_users = set(
@@ -81,13 +89,43 @@ def show_potential_matches(request, utrip_id):
         }
         for matching_trip in matching_trips
         if matching_trip.user != current_user
-        and matching_trip.user.id not in matching_users
+           and matching_trip.user.id not in matching_users
     ]
 
-    context = {
-        "matching_users": matching_users,
-        "utrip_id": utrip_id,
-    }
+    ## ADD
+    ''' Condition-1: If user has not changed the default filters (i.e. all knn attributes are blank), use only hard filters
+                         Else, use KNN algorithm to generate match pool based on ranking
+        Condition-2: If the number of potential matches generated using hard filters < number of neighbors required to 
+                    train the KNN, we only use hard filters to generate match pool
+    '''
+    dynamic_filter_users = list(matching_users.values_list('userprofile__user', flat=True))
+    if ((current_user.id in dynamic_filter_users) and (len(dynamic_filter_users) >= 3)):
+        # Prepare data for KNN algorithm:
+        data = pd.DataFrame.from_records(matching_users.values('userprofile__user', 'userprofile__drink_pref',
+                                                               'userprofile__smoke_pref', 'userprofile__edu_level',
+                                                               'userprofile__interests'))
+        # get KNN user recommendations (ranked)
+        recommendations = get_knn_recommendations(data, current_user.id)
+
+        # filter for only knn recommended users
+        knn_users = User.objects.filter(id__in=recommendations)
+
+        # filter out the current user from match pool
+        knn_users = [user for user in knn_users if user != current_user]
+
+        context = {"matching_users": knn_users,
+                   "utrip_id": utrip_id,
+                   }
+    else:
+        # filter out the current user from match pool
+        matching_users = [user for user in matching_users if user != current_user]
+
+        context = {"matching_users": matching_users,
+                   "utrip_id": utrip_id,
+                   }
+
+    ## END ADD
+
     return render(request, "matching/list_potential_matches.html", context)
 
 
