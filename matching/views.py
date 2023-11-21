@@ -12,7 +12,6 @@ from .models import UserTripMatches, MatchStatusEnum
 from .utils import get_current_ut_and_receiver
 from django.contrib.auth.models import User
 import datetime
-from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 
 # Import ML libraries:
 import pandas as pd
