@@ -75,7 +75,8 @@ def show_potential_matches(request, utrip_id):
         receiver=current_user,
         match_status__in=[MatchStatusEnum.PENDING.value, MatchStatusEnum.MATCHED.value],
     ).values_list("sender", flat=True)
-
+    print(matching_users)
+    print(type(matching_users))
     # Setting the Send Request button off for those users who have already received a request
     # from current user
     matching_users = [
@@ -90,7 +91,8 @@ def show_potential_matches(request, utrip_id):
         if matching_trip.user != current_user
            and matching_trip.user.id not in matching_users
     ]
-
+    print(matching_users)
+    print(type(matching_users))
     # Generate match pool:
     ''' Condition-1: If user has not changed the default filters (i.e. all knn attributes are blank), use only hard filters
                          Else, use KNN algorithm to generate match pool based on ranking
