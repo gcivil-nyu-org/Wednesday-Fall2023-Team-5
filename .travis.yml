@@ -39,6 +39,6 @@ deploy:
     region: $REGION_UE1
     app: $APP_NAME
     bucket: $BUCKET_NAME_UE1
-    env: soloconnect-integration
+    env: soloconnect-chat-integration
     on:
-      branch: feature-trip-model
+      branch: feature-chat-integration-deploy
