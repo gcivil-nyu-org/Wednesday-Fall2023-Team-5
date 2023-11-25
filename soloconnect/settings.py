@@ -33,7 +33,7 @@ ALLOWED_HOSTS = [
     "soloconnect-db-final.us-west-2.elasticbeanstalk.com",
     "soloconnect-production.us-east-1.elasticbeanstalk.com",
     "testserver",
-    "soloconnect-chat-integration.us-east-1.elasticbeanstalk.com"
+    "soloconnect-chat-integration.us-east-1.elasticbeanstalk.com",
 ]
 
 # Application definition
@@ -178,9 +178,9 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379),
-
-                      ],
+            "hosts": [
+                ("127.0.0.1", 6379),
+            ],
         },
     },
 }
