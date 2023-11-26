@@ -91,6 +91,7 @@ def show_potential_matches(request, utrip_id):
         if matching_trip.user != current_user
            and matching_trip.user.id not in matching_users
     ]
+    # knn_users_input = matching_trips.values('user')
     print(matching_users)
     print(type(matching_users))
     # Generate match pool:
@@ -105,6 +106,7 @@ def show_potential_matches(request, utrip_id):
         data = pd.DataFrame.from_records(matching_users.values('userprofile__user', 'userprofile__drink_pref',
                                                                'userprofile__smoke_pref', 'userprofile__edu_level',
                                                                'userprofile__interests'))
+        print(data)
         # get KNN user recommendations (ranked)
         recommendations = get_knn_recommendations(data, current_user.id)
 
