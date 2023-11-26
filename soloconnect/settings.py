@@ -179,11 +179,10 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
-                ("127.0.0.1", 6379),
-                # (
-                #     "soloconnect-chat-redis.45ncis.clustercfg.use1.cache.amazonaws.com",
-                #     6379,
-                # )
+                (
+                    "redis://soloconnect-redis.45ncis.clustercfg.use1.cache.amazonaws.com",
+                    6379,
+                )
             ],
         },
     },
