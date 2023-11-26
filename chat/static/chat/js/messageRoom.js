@@ -1,7 +1,5 @@
 
-
-
-const USER_ID = document.getElementById("uid").value
+const USER_ID = document.getElementById("uid").value;
 let url = `ws://${window.location.host}/ws/socket-server/`;
 
 const chatSocket = new WebSocket(url);
