@@ -91,9 +91,9 @@ def show_potential_matches(request, utrip_id):
         if matching_trip.user != current_user
            and matching_trip.user.id not in matching_users
     ]
-    # knn_users_input = matching_trips.values('user')
-    print(matching_users)
-    print(type(matching_users))
+    knn_users_input = matching_trips.values('user')
+    print(knn_users_input)
+    print(type(knn_users_input))
     # Generate match pool:
     ''' Condition-1: If user has not changed the default filters (i.e. all knn attributes are blank), use only hard filters
                          Else, use KNN algorithm to generate match pool based on ranking
