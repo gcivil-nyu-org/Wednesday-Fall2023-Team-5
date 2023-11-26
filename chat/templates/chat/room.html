@@ -3,16 +3,28 @@
 {% block content %}
 
 <div class="container">
-    <div class="row justify-content-center" id="chat-area-row">
-        <div class="col">
-            <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+    <div class="row">
+        <div class="col-3">
+            <div id="chat-threads-list">
+                <ul>
+                {% for thread in threads %}
+                   {% if thread.first_user.username == request.user %}
+                       <li class="chat-logs" chat-id="chat_{{ thread.id }}" other-user-id="{{ thread.second_user.id }}">
+                           Chat with {{ thread.second_user.username }}
+                       </li>
+                   {% else %}
+                       <li class="chat-logs" chat-id="chat_{{ thread.id }}" other-user-id="{{ thread.first_user.id }}">
+                           Chat with {{ thread.first_user.username }}
+                       </li>
+                   {% endif %}
+                {% endfor %}
+                </ul>
+            </div>
         </div>
-    </div>
-    <div class="row justify-content-center" id="input-area-row">
-        <div class="col">
-            <input id="chat-message-input" type="text" size="100"><br>
-            <input id="chat-message-submit" type="button" value="Send">
-            <input id="uid" type="hidden" value="{{ request.user.id }}">
+        <div class="col-9">
+            <div id="messages-wrapper">
+
+            </div>
         </div>
     </div>
 </div>
