@@ -44,6 +44,7 @@ def retrieve_none_or_403(
 
     return instance
 
+
 def db_retrieve_or_none(target_model, identifier):
     qs = target_model.objects.filter(id=identifier)
     if qs.exists():

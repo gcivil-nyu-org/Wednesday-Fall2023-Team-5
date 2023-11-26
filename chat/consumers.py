@@ -57,6 +57,7 @@ from .models import Thread, ChatMessage
 #             self.room_group_name, self.channel_name
 #         )
 
+
 class ChatConsumer(WebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(args, kwargs)
@@ -65,10 +66,8 @@ class ChatConsumer(WebsocketConsumer):
 
     def connect(self):
         self.user = self.scope["user"]
-        self.chat_room = f'user_chatroom_{self.user.id}'
-        async_to_sync(self.channel_layer.group_add)(
-            self.chat_room, self.channel_layer
-        )
+        self.chat_room = f"user_chatroom_{self.user.id}"
+        async_to_sync(self.channel_layer.group_add)(self.chat_room, self.channel_layer)
         self.accept()
 
     def receive(self, text_data):
@@ -96,7 +95,7 @@ class ChatConsumer(WebsocketConsumer):
 
         self.create_chat_message(thread_instance, sending_user_instance, message)
 
-        target_chat_room = f'user_chatroom_{receiving_user_id}'
+        target_chat_room = f"user_chatroom_{receiving_user_id}"
 
         response_object = {
             "type": "chat.message",
@@ -107,24 +106,22 @@ class ChatConsumer(WebsocketConsumer):
 
         # Send to self chat room
 
-        self.channel_layer.group_send(
-            self.chat_room,
-            response_object
-        )
+        self.channel_layer.group_send(self.chat_room, response_object)
 
         # Send to target chat room
-        self.channel_layer.group_send(
-            target_chat_room,
-            response_object
-        )
+        self.channel_layer.group_send(target_chat_room, response_object)
 
     def chat_message(self, event):
-        self.send(text_data=json.dumps({
-            "type": "chat",
-            "message": event["message"],
-            "sent_by": event["sent_by"],
-            "thread_id": event["thread_id"]
-        }))
+        self.send(
+            text_data=json.dumps(
+                {
+                    "type": "chat",
+                    "message": event["message"],
+                    "sent_by": event["sent_by"],
+                    "thread_id": event["thread_id"],
+                }
+            )
+        )
 
     def disconnect(self, close_code):
         pass
@@ -137,10 +134,3 @@ class ChatConsumer(WebsocketConsumer):
 
     def create_chat_message(self, thread, user, message):
         ChatMessage.objects.create(thread=thread, user=user, message=message)
-
-
-
-
-
-
-
