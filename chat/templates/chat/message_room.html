@@ -1,0 +1,72 @@
+{% extends 'home_default/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center" id="chat-area-row">
+        <div class="col">
+            <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+        </div>
+    </div>
+    <div class="row justify-content-center" id="input-area-row">
+        <div class="col">
+            <input id="chat-message-input" type="text" size="100"><br>
+            <input id="chat-message-submit" type="button" value="Send">
+        </div>
+    </div>
+</div>
+<script>
+    let jsonData = {{ json_data|safe }};
+    let threadId = jsonData.get("thread_id");
+    let selfUserId = jsonData.get("self_user_id");
+    let otherUserId = jsonData.get("other_user_id");
+
+    let url = `ws://${window.location.host}/ws/socket-server`;
+
+    let chatSocket = new WebSocket(url);
+
+    chatSocket.onopen = function(e) {
+        console.log('open', e);
+    }
+
+    chatSocket.onmessage = function(e) {
+        let data = JSON.parse(e.data)
+        if (data.type === 'chat') {
+            let messageStr = `${data.user.username}: ${data.message} \n`
+            document.getElementById("chat-log").value += messageStr;
+        }
+    }
+
+    chatSocket.onerror = function(e) {
+        console.error('error', e);
+    }
+
+    chatSocket.onclose = function(e) {
+        console.log('close', e);
+    }
+
+    document.querySelector('#chat-message-input').focus();
+
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.key === 'Enter') {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        let messageInputDom = document.querySelector('#chat-message-input');
+        let message = messageInputDom.value;
+
+        let data = {
+            'message': messageInputDom.value,
+            'sent_by': selfUserId,
+            'thread_id': threadId,
+            'send_to': otherUserId
+        }
+
+        chatSocket.send(JSON.stringify(data));
+
+        messageInputDom.value = '';
+    };
+
+</script>
+{% endblock content %}

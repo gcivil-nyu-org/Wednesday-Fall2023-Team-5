@@ -1,8 +1,9 @@
 from django.urls import path
 
-from .views import trip_messages_page
+from . import views
 
 app_name = "chat"
 urlpatterns = [
-    path("", trip_messages_page, name="trip_messages_page"),
+    path("", views.threads_page, name="threads_page"),
+    path("thread/<int:thread_id>/<int:other_user_id>", views.messages_page, name="messages_page")
 ]
