@@ -13,14 +13,13 @@ def threads_page(request):
     )
     return render(request, "chat/threads.html", {"threads": threads})
 
+
 @login_required
 def messages_page(request, thread_id, other_user_id):
     json_data = {
         "thread_id": thread_id,
         "other_user_id": other_user_id,
-        "self_user_id": request.user.id
+        "self_user_id": request.user.id,
     }
-    context = {
-        "jsonData": json.dumps(json_data)
-    }
-    return render(request, "chat/")
+    context = {"jsonData": json.dumps(json_data)}
+    return render(request, "chat/", context)
