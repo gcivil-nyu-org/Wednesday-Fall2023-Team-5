@@ -123,7 +123,7 @@ def show_potential_matches(request, utrip_id):
                 matching_trip = matching_trips[ind_in_pool]
                 matching_user_pool.append(
                     {
-                        "user": matching_trips.user,
+                        "user": matching_trip.user,
                         "sent_match": True
                         if matching_trip.user.id in already_sent_request_users
                         else False,
