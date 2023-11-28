@@ -29,6 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "172.31.31.138",
     "soloconnect-integration.us-east-1.elasticbeanstalk.com",
     "soloconnect-db-final.us-west-2.elasticbeanstalk.com",
     "soloconnect-production.us-east-1.elasticbeanstalk.com",
