@@ -50,7 +50,8 @@ def show_potential_matches(request, utrip_id):
     # language filter that filters users with at least one common language
     # apply this filter only if the current user has any language preferences
     if len(current_user.userprofile.languages) != 0:
-        # following code combines successive calls to filter() using OR operator avoiding the explicit loop
+        # following code combines successive calls to filter() using OR operator avoiding the
+        # explicit loop
         # noinspection PyTypeChecker
         condition = reduce(
             or_,
@@ -69,7 +70,8 @@ def show_potential_matches(request, utrip_id):
         ).values_list("receiver", flat=True)
     )
 
-    # excluding users (from matching pool) who have sent a matching request to current user, pending/accepted as a match
+    # excluding users (from matching pool) who have sent a matching request to current user,
+    # pending/accepted as a match
     excluding_users = UserTripMatches.objects.filter(
         receiver=current_user,
         match_status__in=[MatchStatusEnum.PENDING.value, MatchStatusEnum.MATCHED.value],
@@ -93,10 +95,12 @@ def show_potential_matches(request, utrip_id):
     ]
 
     # Generate match pool:
-    """ Condition-1: If user has not changed the default filters (i.e. all knn attributes are blank), use only hard 
-                    filters Else, use KNN algorithm to generate match pool based on ranking
-        Condition-2: If the number of potential matches generated using hard filters < number of neighbors required to 
-                    train the KNN, we only use hard filters to generate match pool
+    """ Condition-1: If user has not changed the default filters (i.e. all knn attributes are
+            blank), use only hard filters Else, use KNN algorithm to generate match pool
+            based on ranking
+        Condition-2: If the number of potential matches generated using hard filters <
+            number of neighbors required to train the KNN, we only use hard filters
+            to generate match pool
     """
 
     current_pool_user_ids = list(matching_trips.values_list("user_id", flat=True))
