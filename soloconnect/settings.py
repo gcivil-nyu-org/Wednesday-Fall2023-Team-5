@@ -180,7 +180,7 @@ CHANNEL_LAYERS = {
         "CONFIG": {
             "hosts": [
                 (
-                    "redis://soloconnect-redis.45ncis.clustercfg.use1.cache.amazonaws.com",
+                    "redis://sc-redis.45ncis.ng.0001.use1.cache.amazonaws.com",
                     6379,
                 )
             ],
