@@ -185,5 +185,11 @@ CHANNEL_LAYERS = {
                 )
             ],
         },
+        "CACHES": {
+            "default": {
+                "BACKEND": "django.core.cache.backends.redis.RedisCache",
+                "LOCATION": "redis://sc-redis.45ncis.ng.0001.use1.cache.amazonaws.com:6379/1",
+            }
+        },
     },
 }
