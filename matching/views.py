@@ -318,10 +318,13 @@ def react_pending_request(request, utrip_id):
         # Need to check following conditions:
         # If there is a matching request with the given sender, receiver
         # 1. If the matching request still holds i.e, status is still Pending -> Accept
-        # 2. If the matching request is cancelled i.e, status is Cancelled -> Inform with proper msg
+        # 2. If the matching request is cancelled i.e, status is Cancelled
+        #        -> Inform with proper msg
         # 3. If the matching request is Matched/Rejected -> Inform with proper msg
-        # 4. If the matching request does not exist, some malfunction, ideally should not happen
-        # 5. If there are more than 1 entry of match available, could be due to repetition of user, utrip
+        # 4. If the matching request does not exist, some malfunction,
+        #       ideally should not happen
+        # 5. If there are more than 1 entry of match available,
+        #       could be due to repetition of user, utrip
 
         matching_request = UserTripMatches.objects.get(
             receiver=request.user,
@@ -333,7 +336,8 @@ def react_pending_request(request, utrip_id):
         if matching_request.match_status == MatchStatusEnum.CANCELLED.value:
             messages.error(
                 request,
-                "The sender might have cancelled the matching request, hence could not accept/reject"
+                "The sender might have cancelled the matching request, "
+                "hence could not accept/reject"
                 " the current matching request anymore.",
             )
         elif matching_request.match_status == MatchStatusEnum.MATCHED.value:
@@ -362,7 +366,8 @@ def react_pending_request(request, utrip_id):
 
     except UserTrip.MultipleObjectsReturned:
         print(
-            "Ideally code should not reach here, as user_id, and utrip_id should be unique for any utrip"
+            "Ideally code should not reach here, as user_id, "
+            "and utrip_id should be unique for any utrip"
         )
         messages.error(
             request, "There are multiple trips, not sure for which to accept"
