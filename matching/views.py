@@ -77,6 +77,13 @@ def show_potential_matches(request, utrip_id):
         match_status__in=[MatchStatusEnum.PENDING.value, MatchStatusEnum.MATCHED.value],
     ).values_list("sender", flat=True))
 
+    # excluding users (from matching pool) who have received a matching request
+    # from current user and matched with current user,
+    excluding_users += list(UserTripMatches.objects.filter(
+        sender=current_user,
+        match_status=MatchStatusEnum.MATCHED.value,
+    ).values_list("receiver", flat=True))
+
     # Setting the Send Request button off for those users who have already received a request
     # from current user and filtering the excluding users from the match pool
 
