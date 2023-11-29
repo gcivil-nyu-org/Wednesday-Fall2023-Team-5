@@ -72,17 +72,24 @@ def show_potential_matches(request, utrip_id):
 
     # excluding users (from matching pool) who have sent a matching request
     # to current user, pending/accepted as a match
-    excluding_users = list(UserTripMatches.objects.filter(
-        receiver=current_user,
-        match_status__in=[MatchStatusEnum.PENDING.value, MatchStatusEnum.MATCHED.value],
-    ).values_list("sender", flat=True))
+    excluding_users = list(
+        UserTripMatches.objects.filter(
+            receiver=current_user,
+            match_status__in=[
+                MatchStatusEnum.PENDING.value,
+                MatchStatusEnum.MATCHED.value,
+            ],
+        ).values_list("sender", flat=True)
+    )
 
     # excluding users (from matching pool) who have received a matching request
     # from current user and matched with current user,
-    excluding_users += list(UserTripMatches.objects.filter(
-        sender=current_user,
-        match_status=MatchStatusEnum.MATCHED.value,
-    ).values_list("receiver", flat=True))
+    excluding_users += list(
+        UserTripMatches.objects.filter(
+            sender=current_user,
+            match_status=MatchStatusEnum.MATCHED.value,
+        ).values_list("receiver", flat=True)
+    )
 
     # Setting the Send Request button off for those users who have already received a request
     # from current user and filtering the excluding users from the match pool
@@ -163,7 +170,9 @@ def send_matching_request(request, utrip_id):
     receiver_utrip = UserTrip.objects.get(id=receiver_utrip_id)
     if not receiver_utrip.is_active or not receiver_utrip.user.is_active:
         messages.error(request, "The receiver or their trip is not active anymore.")
-        return redirect(reverse("matching:show_potential_matches", kwargs={"utrip_id": utrip_id}))
+        return redirect(
+            reverse("matching:show_potential_matches", kwargs={"utrip_id": utrip_id})
+        )
 
     try:
         _ = UserTripMatches.objects.get(
@@ -260,7 +269,9 @@ def show_pending_requests(request, utrip_id):
         return redirect(reverse("trip:view_trips"))
 
     if not usertrip.is_active:
-        messages.error(request, "The trip is not active anymore, cannot show pending request")
+        messages.error(
+            request, "The trip is not active anymore, cannot show pending request"
+        )
         return redirect(reverse("trip:view_trips"))
 
     pending_matches = UserTripMatches.objects.filter(
@@ -270,10 +281,7 @@ def show_pending_requests(request, utrip_id):
         sender_user_trip__is_active=True,
         match_status=MatchStatusEnum.PENDING.value,
     )
-    context = {
-        "pending_matches": pending_matches,
-        "utrip_id": utrip_id
-    }
+    context = {"pending_matches": pending_matches, "utrip_id": utrip_id}
     return render(request, "matching/list_pending_requests.html", context)
 
 
@@ -284,19 +292,28 @@ def react_pending_request(request, utrip_id):
     sender_utrip_id = request.POST.get("sender_utrip_id")
     sender_id = request.POST.get("sender_id")
     sender_utrip = UserTrip.objects.get(id=sender_utrip_id, user_id=sender_id)
-    pending_request: MatchStatusEnum = MatchStatusEnum.get_match_status(request.POST.get("pending_request"))
+    pending_request: MatchStatusEnum = MatchStatusEnum.get_match_status(
+        request.POST.get("pending_request")
+    )
 
     if not current_usertrip.is_active:
-        messages.error(request, "Cannot accept/reject you with other user, as your current trip is inactive.")
+        messages.error(
+            request,
+            "Cannot accept/reject you with other user, as your current trip is inactive.",
+        )
         return redirect(reverse("trip:view_trips"))
 
     if not sender_utrip.is_active or not sender_utrip.user.is_active:
-        messages.error(request, "The sender trip or the sender itself is not active anymore, "
-                                "cannot accept/reject the request.")
-        return redirect(reverse("matching:show_pending_requests", kwargs={"utrip_id": utrip_id}))
+        messages.error(
+            request,
+            "The sender trip or the sender itself is not active anymore, "
+            "cannot accept/reject the request.",
+        )
+        return redirect(
+            reverse("matching:show_pending_requests", kwargs={"utrip_id": utrip_id})
+        )
 
     try:
-
         # Both current usertrip and the sender's usertrip exists and are active
         # Need to check following conditions:
         # If there is a matching request with the given sender, receiver
@@ -322,16 +339,20 @@ def react_pending_request(request, utrip_id):
         elif matching_request.match_status == MatchStatusEnum.MATCHED.value:
             messages.info(request, "This matching request has already been accepted")
         elif matching_request.match_status == MatchStatusEnum.REJECTED.value:
-            messages.info(request, 'This matching request has already been rejected')
+            messages.info(request, "This matching request has already been rejected")
         elif matching_request.match_status == MatchStatusEnum.PENDING.value:
             matching_request.match_status = pending_request.value
             matching_request.save()
             if pending_request == MatchStatusEnum.MATCHED:
                 messages.info(request, "You are successfully matched with the sender")
             else:
-                messages.info(request, "You have rejected the match request from the sender")
+                messages.info(
+                    request, "You have rejected the match request from the sender"
+                )
 
-        return redirect(reverse("matching:show_pending_requests", kwargs={"utrip_id": utrip_id}))
+        return redirect(
+            reverse("matching:show_pending_requests", kwargs={"utrip_id": utrip_id})
+        )
     except UserTrip.DoesNotExist:
         messages.error(
             request,
@@ -367,8 +388,8 @@ def show_matches(request, utrip_id):
             receiver__is_active=True,
             receiver_user_trip__is_active=True,
             match_status=MatchStatusEnum.MATCHED.value,
-        ) |
-        Q(
+        )
+        | Q(
             receiver=request.user,
             receiver_user_trip=current_usertrip,
             sender__is_active=True,
@@ -376,7 +397,10 @@ def show_matches(request, utrip_id):
             match_status=MatchStatusEnum.MATCHED.value,
         )
     )
-    match_users = [match.receiver if match.sender == request.user else match.sender for match in matches]
+    match_users = [
+        match.receiver if match.sender == request.user else match.sender
+        for match in matches
+    ]
     context = {
         "match_users": match_users,
         "utrip_id": utrip_id,
@@ -388,7 +412,7 @@ def show_matches(request, utrip_id):
 @login_required
 def unmatch(request, utrip_id):
     current_usertrip: UserTrip = retrieve_none_or_403(request, UserTrip, utrip_id)
-    other_matched_user_id = request.POST.get('other_uid')
+    other_matched_user_id = request.POST.get("other_uid")
 
     if current_usertrip is None or not current_usertrip.is_active:
         messages.error(request, "Please select a valid trip")
@@ -401,8 +425,8 @@ def unmatch(request, utrip_id):
                 receiver_id=other_matched_user_id,
                 sender_user_trip=current_usertrip,
                 match_status=MatchStatusEnum.MATCHED.value,
-            ) |
-            Q(
+            )
+            | Q(
                 receiver=request.user,
                 receiver_user_trip=current_usertrip,
                 sender_id=other_matched_user_id,
