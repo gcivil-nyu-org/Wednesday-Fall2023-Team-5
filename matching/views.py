@@ -6,11 +6,15 @@ from django.views.decorators.http import require_http_methods
 from datetime import date, timedelta
 from operator import or_
 from django.contrib import messages
-
 from common import retrieve_none_or_403
 from trip.models import UserTrip
 from .models import UserTripMatches, MatchStatusEnum
 from .utils import get_current_ut_and_receiver
+from django.contrib.auth.models import User
+
+# Import ML libraries:
+import pandas as pd
+from matching.utilities import get_knn_recommendations
 
 
 @require_http_methods(["GET"])
@@ -35,7 +39,7 @@ def show_potential_matches(request, utrip_id):
         start_trip__lte=current_usertrip.end_trip,
         end_trip__gte=current_usertrip.start_trip,
         travel_type=current_usertrip.travel_type,
-        trip=current_usertrip.trip,
+        trip=current_usertrip.trip,  # destination matching
         user__is_active=True,
         user__userprofile__dob__lte=date.today()
         - timedelta(days=365.25 * current_user.userprofile.age_lower),
@@ -43,7 +47,12 @@ def show_potential_matches(request, utrip_id):
         - timedelta(days=365.25 * current_user.userprofile.age_upper + 1),
     )
 
-    try:
+    # language filter that filters users with at least one common language
+    # apply this filter only if the current user has any language preferences
+    if len(current_user.userprofile.languages) != 0:
+        # following code combines successive calls to filter() using OR operator avoiding the
+        # explicit loop
+        # noinspection PyTypeChecker
         condition = reduce(
             or_,
             [
@@ -53,41 +62,84 @@ def show_potential_matches(request, utrip_id):
         )
         # additional condition to show matches with at least one common language
         matching_trips = matching_trips.filter(condition)
-    except Exception as e:
-        print(e)
 
     # users which have already being sent a matching request by current user, but not yet accepted
-    current_matching_users = set(
+    already_sent_request_users = set(
         UserTripMatches.objects.filter(
             sender=current_user, match_status=MatchStatusEnum.PENDING.value
         ).values_list("receiver", flat=True)
     )
 
-    # users who have sent a matching request to current user, pending/accepted as a match
-    matching_users = UserTripMatches.objects.filter(
+    # excluding users (from matching pool) who have sent a matching request to current user,
+    # pending/accepted as a match
+    excluding_users = UserTripMatches.objects.filter(
         receiver=current_user,
         match_status__in=[MatchStatusEnum.PENDING.value, MatchStatusEnum.MATCHED.value],
     ).values_list("sender", flat=True)
 
     # Setting the Send Request button off for those users who have already received a request
-    # from current user
-    matching_users = [
+    # from current user and filtering the excluding users from the match pool
+
+    matching_trips = matching_trips.exclude(user_id__in=excluding_users)
+
+    matching_user_pool = [
         {
             "user": matching_trip.user,
             "sent_match": True
-            if matching_trip.user.id in current_matching_users
+            if matching_trip.user.id in already_sent_request_users
             else False,
             "receiver_utrip_id": matching_trip.id,
         }
         for matching_trip in matching_trips
         if matching_trip.user != current_user
-        and matching_trip.user.id not in matching_users
     ]
 
+    # Generate match pool:
+    """ Condition-1: If user has not changed the default filters (i.e. all knn attributes are
+            blank), use only hard filters Else, use KNN algorithm to generate match pool
+            based on ranking
+        Condition-2: If the number of potential matches generated using hard filters <
+            number of neighbors required to train the KNN, we only use hard filters
+            to generate match pool
+    """
+
+    current_pool_user_ids = list(matching_trips.values_list("user_id", flat=True))
+    if current_user.id in current_pool_user_ids and len(current_pool_user_ids) >= 3:
+        # Prepare data for KNN algorithm:
+        current_pool_users = User.objects.filter(id__in=current_pool_user_ids)
+        data = pd.DataFrame.from_records(
+            current_pool_users.values(
+                "userprofile__user",
+                "userprofile__drink_pref",
+                "userprofile__smoke_pref",
+                "userprofile__edu_level",
+                "userprofile__interests",
+            )
+        )
+        print(data)
+        # get KNN user recommendations (ranked)
+        recommendations = get_knn_recommendations(data, current_user.id)
+        # TODO need to find the new matching_user_pool
+        matching_user_pool = []
+        for user_id in recommendations:
+            if user_id in current_pool_user_ids and user_id != current_user.id:
+                ind_in_pool = current_pool_user_ids.index(user_id)
+                matching_trip = matching_trips[ind_in_pool]
+                matching_user_pool.append(
+                    {
+                        "user": matching_trip.user,
+                        "sent_match": True
+                        if matching_trip.user.id in already_sent_request_users
+                        else False,
+                        "receiver_utrip_id": matching_trip.id,
+                    }
+                )
+
     context = {
-        "matching_users": matching_users,
+        "matching_users": matching_user_pool,
         "utrip_id": utrip_id,
     }
+
     return render(request, "matching/list_potential_matches.html", context)
 
 
