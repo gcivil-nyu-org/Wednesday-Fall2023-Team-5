@@ -276,3 +276,77 @@ def show_pending_requests(request, utrip_id):
     }
     return render(request, "matching/list_pending_requests.html", context)
 
+
+@require_http_methods(["POST"])
+@login_required
+def react_pending_request(request, utrip_id):
+    current_usertrip: UserTrip = retrieve_none_or_403(request, UserTrip, utrip_id)
+    sender_utrip_id = request.POST.get("sender_utrip_id")
+    sender_id = request.POST.get("sender_id")
+    sender_utrip = UserTrip.objects.get(id=sender_utrip_id, user_id=sender_id)
+    pending_request: MatchStatusEnum = MatchStatusEnum.get_match_status(request.POST.get("pending_request"))
+
+    if not current_usertrip.is_active:
+        messages.error(request, "Cannot accept/reject you with other user, as your current trip is inactive.")
+        return redirect(reverse("trip:view_trips"))
+
+    if not sender_utrip.is_active or not sender_utrip.user.is_active:
+        messages.error(request, "The sender trip or the sender itself is not active anymore, "
+                                "cannot accept/reject the request.")
+        return redirect(reverse("matching:show_pending_requests", kwargs={"utrip_id": utrip_id}))
+
+    try:
+
+        # Both current usertrip and the sender's usertrip exists and are active
+        # Need to check following conditions:
+        # If there is a matching request with the given sender, receiver
+        # 1. If the matching request still holds i.e, status is still Pending -> Accept
+        # 2. If the matching request is cancelled i.e, status is Cancelled -> Inform with proper msg
+        # 3. If the matching request is Matched/Rejected -> Inform with proper msg
+        # 4. If the matching request does not exist, some malfunction, ideally should not happen
+        # 5. If there are more than 1 entry of match available, could be due to repetition of user, utrip
+
+        matching_request = UserTripMatches.objects.get(
+            receiver=request.user,
+            sender_id=sender_id,
+            receiver_user_trip=current_usertrip,
+            sender_user_trip_id=sender_utrip_id,
+        )
+
+        if matching_request.match_status == MatchStatusEnum.CANCELLED.value:
+            messages.error(
+                request,
+                "The sender might have cancelled the matching request, hence could not accept/reject"
+                " the current matching request anymore.",
+            )
+        elif matching_request.match_status == MatchStatusEnum.MATCHED.value:
+            messages.info(request, "This matching request has already been accepted")
+        elif matching_request.match_status == MatchStatusEnum.REJECTED.value:
+            messages.info(request, 'This matching request has already been rejected')
+        elif matching_request.match_status == MatchStatusEnum.PENDING.value:
+            matching_request.match_status = pending_request.value
+            matching_request.save()
+            if pending_request == MatchStatusEnum.MATCHED:
+                messages.info(request, "You are successfully matched with the sender")
+            else:
+                messages.info(request, "You have rejected the match request from the sender")
+
+        return redirect(reverse("matching:show_pending_requests", kwargs={"utrip_id": utrip_id}))
+    except UserTrip.DoesNotExist:
+        messages.error(
+            request,
+            "The sender utrip does not exists anymore, sender might"
+            "have changed their plans. Sorry you can not accept/reject this request anymore",
+        )
+
+    except UserTrip.MultipleObjectsReturned:
+        print(
+            "Ideally code should not reach here, as user_id, and utrip_id should be unique for any utrip"
+        )
+        messages.error(
+            request, "There are multiple trips, not sure for which to accept"
+        )
+
+    return redirect(
+        reverse("matching:show_pending_requests", kwargs={"utrip_id": utrip_id})
+    )
