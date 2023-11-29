@@ -5,11 +5,13 @@ from .views import (
     cancel_matching_request,
     show_pending_requests,
     react_pending_request,
+    show_matches,
+    unmatch
 )
 
 app_name = "matching"
 urlpatterns = [
-    path("show_matches/", show_potential_matches, name="show_potential_matches"),
+    path("show_potential_matches/", show_potential_matches, name="show_potential_matches"),
 
     path("show_pending_requests/", show_pending_requests, name="show_pending_requests"),
 
@@ -19,7 +21,7 @@ urlpatterns = [
 
     path("react_match_req/", react_pending_request, name="react_request"),
 
-    path("show_matches/", name="show_matches"),
+    path("show_matches/", show_matches, name="show_matches"),
 
-    path("unmatch/", name="unmatch"),
+    path("unmatch/", unmatch, name="unmatch"),
 ]
