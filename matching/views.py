@@ -382,3 +382,35 @@ def show_matches(request, utrip_id):
         "utrip_id": utrip_id,
     }
     return render(request, "matching/list_matches.html", context=context)
+
+
+@require_http_methods(["POST"])
+@login_required
+def unmatch(request, utrip_id):
+    current_usertrip: UserTrip = retrieve_none_or_403(request, UserTrip, utrip_id)
+    other_matched_user_id = request.POST.get('other_uid')
+
+    if current_usertrip is None or not current_usertrip.is_active:
+        messages.error(request, "Please select a valid trip")
+        return redirect(reverse("trip:view_trips"))
+
+    try:
+        matching_utrip = UserTripMatches.objects.get(
+            Q(
+                sender=request.user,
+                receiver_id=other_matched_user_id,
+                sender_user_trip=current_usertrip,
+                match_status=MatchStatusEnum.MATCHED.value,
+            ) |
+            Q(
+                receiver=request.user,
+                receiver_user_trip=current_usertrip,
+                sender_id=other_matched_user_id,
+                match_status=MatchStatusEnum.MATCHED.value,
+            )
+        )
+        matching_utrip.match_status = MatchStatusEnum.UNMATCHED.value
+        matching_utrip.save()
+    except UserTripMatches.DoesNotExist:
+        messages.error(request, "No such match found for unmatch")
+    return redirect(reverse("matching:show_matches", kwargs={"utrip_id": utrip_id}))
