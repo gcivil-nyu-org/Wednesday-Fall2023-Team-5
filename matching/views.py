@@ -350,3 +350,35 @@ def react_pending_request(request, utrip_id):
     return redirect(
         reverse("matching:show_pending_requests", kwargs={"utrip_id": utrip_id})
     )
+
+
+@require_http_methods(["GET"])
+@login_required
+def show_matches(request, utrip_id):
+    current_usertrip: UserTrip = retrieve_none_or_403(request, UserTrip, utrip_id)
+    if current_usertrip is None or not current_usertrip.is_active:
+        messages.error(request, "Please select a valid trip")
+        return redirect(reverse("trip:view_trips"))
+
+    matches = UserTripMatches.objects.filter(
+        Q(
+            sender=request.user,
+            sender_user_trip=current_usertrip,
+            receiver__is_active=True,
+            receiver_user_trip__is_active=True,
+            match_status=MatchStatusEnum.MATCHED.value,
+        ) |
+        Q(
+            receiver=request.user,
+            receiver_user_trip=current_usertrip,
+            sender__is_active=True,
+            sender_user_trip__is_active=True,
+            match_status=MatchStatusEnum.MATCHED.value,
+        )
+    )
+    match_users = [match.receiver if match.sender == request.user else match.sender for match in matches]
+    context = {
+        "match_users": match_users,
+        "utrip_id": utrip_id,
+    }
+    return render(request, "matching/list_matches.html", context=context)
