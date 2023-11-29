@@ -46,7 +46,7 @@ class UserTripMatches(models.Model):
         (MatchStatusEnum.CANCELLED.value, MatchStatusEnum.CANCELLED.value),
         (MatchStatusEnum.MATCHED.value, MatchStatusEnum.MATCHED.value),
         (MatchStatusEnum.UNMATCHED.value, MatchStatusEnum.UNMATCHED.value),
-        (MatchStatusEnum.REJECTED.value, MatchStatusEnum.REJECTED.value)
+        (MatchStatusEnum.REJECTED.value, MatchStatusEnum.REJECTED.value),
     ]
 
     match_status = models.CharField(
