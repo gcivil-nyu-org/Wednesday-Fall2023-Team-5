@@ -21,4 +21,5 @@ urlpatterns = [
 
     path("react_match_req/", react_pending_request, name="react_request"),
 
+    path("show_matches/", show_matches, name="show_matches"),
 ]
