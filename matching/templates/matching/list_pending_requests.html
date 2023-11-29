@@ -2,20 +2,37 @@
 {% block content %}
 <div class="container">
     <h1>Your Pending Matching Requests:</h1>
-    {% if pending_matching_users %}
-        {% for pending_matching_user in pending_matching_users %}
+    {% if pending_matches %}
+        {% for pending_match in pending_matches %}
             <div class="col-3">
                 <div class="row-gap-3">
-                    <h4>FirstName: <i>{{ pending_matching_user.first_name }}</i></h4>
-                    <h4>LastName: <i>{{ pending_matching_user.last_name }}</i></h4>
-                    <h4>Email: <i>{{ pending_matching_user.email }}</i></h4>
-                    {% if pending_matching_user.userprofile.bio %}
-                        <h5>Bio: {{ pending_matching_user.userprofile.bio }}</h5>
+                    <h4>FirstName: <i>{{ pending_match.sender.first_name }}</i></h4>
+                    <h4>LastName: <i>{{ pending_match.sender.last_name }}</i></h4>
+                    <h4>Email: <i>{{ pending_match.sender.email }}</i></h4>
+                    {% if pending_match.sender.userprofile.bio %}
+                        <h5>Bio: {{ pending_match.sender.userprofile.bio }}</h5>
                     {% endif %}
                 </div>
                 <div>
-                    <button type="button" class="btn btn-rounded btn-info">Accept</button>
-                    <button type="button" class="btn btn-rounded btn-danger">Reject</button>
+                    <form action="{% url 'matching:react_request' utrip_id=utrip_id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="sender_utrip_id" value="{{ pending_match.sender_user_trip.id }}">
+                        <input type="hidden" name="sender_id" value="{{ pending_match.sender.id }}">
+                        <button
+                                type="submit"
+                                name="pending_request"
+                                value="Matched"
+                                class="btn btn-rounded btn-info">
+                            Match
+                        </button>
+                        <button
+                                type="submit"
+                                name="pending_request"
+                                value="Rejected"
+                                class="btn btn-rounded btn-danger">
+                            Reject
+                        </button>
+                    </form>
                 </div>
                 <br><br>
             </div>
