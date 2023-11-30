@@ -173,7 +173,11 @@ def send_matching_request(request, utrip_id):
         return redirect(
             reverse("matching:show_potential_matches", kwargs={"utrip_id": utrip_id})
         )
-
+    # Cases to be checked before sending request:
+    # 1. If the user has already sent a matching request -> just give the info
+    # 2. If the receiver has already sent a matching request -> then just inform
+    # 3. If there's already any history of sender/receiver, then just update that status
+    # 4. If there's no history, then we need to create a fresh one.
     try:
         _ = UserTripMatches.objects.get(
             sender_user_trip_id=utrip_id,
