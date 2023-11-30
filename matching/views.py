@@ -277,6 +277,7 @@ def cancel_matching_request(request, utrip_id):
     )
 
 
+@require_http_methods(["GET"])
 @login_required
 def show_pending_requests(request, utrip_id):
     usertrip: UserTrip = retrieve_none_or_403(request, UserTrip, utrip_id)
