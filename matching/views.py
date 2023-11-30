@@ -190,6 +190,17 @@ def send_matching_request(request, utrip_id):
     except Exception as e:
         print(e)
         try:
+            # check if other user has sent any matching request to the current user
+            _ = UserTripMatches.objects.get(
+                receiver=request.user,
+                sender=receiver.user,
+                receiver_user_trip_id=utrip_id,
+                sender_user_trip_id=receiver_utrip_id,
+                match_status=MatchStatusEnum.PENDING.value,
+            )
+            messages.warning(request, "The receiver might already have sent a matching "
+                                      "request to you, please check your pending matches")
+        except UserTripMatches.DoesNotExist:
             user_trip_match = UserTripMatches.objects.get(
                 sender=request.user,
                 receiver=receiver.user,
