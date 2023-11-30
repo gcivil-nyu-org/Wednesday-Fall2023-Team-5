@@ -198,8 +198,11 @@ def send_matching_request(request, utrip_id):
                 sender_user_trip_id=receiver_utrip_id,
                 match_status=MatchStatusEnum.PENDING.value,
             )
-            messages.warning(request, "The receiver might already have sent a matching "
-                                      "request to you, please check your pending matches")
+            messages.warning(
+                request,
+                "The receiver might already have sent a matching "
+                "request to you, please check your pending matches",
+            )
         except UserTripMatches.DoesNotExist:
             user_trip_match = UserTripMatches.objects.get(
                 sender=request.user,
@@ -459,5 +462,7 @@ def unmatch(request, utrip_id):
         matching_utrip.match_status = MatchStatusEnum.UNMATCHED.value
         matching_utrip.save()
     except UserTripMatches.DoesNotExist:
-        messages.error(request, "No match found, other user might have already unmatched")
+        messages.error(
+            request, "No match found, other user might have already unmatched"
+        )
     return redirect(reverse("matching:show_matches", kwargs={"utrip_id": utrip_id}))
