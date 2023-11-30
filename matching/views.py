@@ -262,7 +262,9 @@ def cancel_matching_request(request, utrip_id):
             messages.error(
                 request,
                 "Your matching request might have already been responded, and hence"
-                " cannot cancel anymore, please try to unmatch.",
+                " cannot cancel anymore, "
+                "please try to unmatch, if matched or "
+                "try sending the request again",
             )
     except UserTripMatches.MultipleObjectsReturned:
         print("This ideally should never happen")
@@ -456,5 +458,5 @@ def unmatch(request, utrip_id):
         matching_utrip.match_status = MatchStatusEnum.UNMATCHED.value
         matching_utrip.save()
     except UserTripMatches.DoesNotExist:
-        messages.error(request, "No such match found for unmatch")
+        messages.error(request, "No match found, other user might have already unmatched")
     return redirect(reverse("matching:show_matches", kwargs={"utrip_id": utrip_id}))
