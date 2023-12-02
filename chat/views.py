@@ -2,12 +2,12 @@ import json
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Thread
-
+from django.db.models import Q
 
 @login_required
 def threads_page(request):
     threads = (
-        Thread.objects.by_user(user=request.user)
+        Thread.objects.filter(Q(first_user=request.user) | Q(second_user=request.user))
         .prefetch_related("chat_message")
         .order_by("timestamp")
     )
@@ -22,4 +22,4 @@ def messages_page(request, thread_id, other_user_id):
         "self_user_id": request.user.id,
     }
     context = {"jsonData": json.dumps(json_data)}
-    return render(request, "chat/", context)
+    return render(request, "chat/message_room.html", context)
