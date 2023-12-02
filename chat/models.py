@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+
 class Thread(models.Model):
     first_user = models.ForeignKey(
         User,
