@@ -95,7 +95,6 @@ class ChatConsumer(WebsocketConsumer):
 
         target_chat_room = f"user_chatroom_{receiving_user_id}"
 
-
         async_to_sync(self.channel_layer.group_send)(
             self.chat_room,
             {
@@ -103,7 +102,7 @@ class ChatConsumer(WebsocketConsumer):
                 "message": message,
                 "sent_by": self.user.id,
                 "thread_id": thread_id,
-                "send_to": receiving_user_id
+                "send_to": receiving_user_id,
             },
         )
 
@@ -114,7 +113,7 @@ class ChatConsumer(WebsocketConsumer):
                 "message": message,
                 "sent_by": self.user.id,
                 "thread_id": thread_id,
-                "send_to": receiving_user_id
+                "send_to": receiving_user_id,
             },
         )
 
@@ -126,7 +125,7 @@ class ChatConsumer(WebsocketConsumer):
                     "message": event["message"],
                     "sent_by": event["sent_by"],
                     "thread_id": event["thread_id"],
-                    "send_to": event["send_to"]
+                    "send_to": event["send_to"],
                 }
             )
         )
