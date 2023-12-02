@@ -67,15 +67,15 @@ class ChatConsumer(WebsocketConsumer):
     def connect(self):
         self.user = self.scope["user"]
         self.chat_room = f"user_chatroom_{self.user.id}"
-        async_to_sync(self.channel_layer.group_add)(self.chat_room, self.channel_layer)
+        async_to_sync(self.channel_layer.group_add)(self.chat_room, self.channel_name)
         self.accept()
 
     def receive(self, text_data):
         received_json = json.loads(text_data)
-        message = received_json.get("message")
-        sending_user_id = received_json.get("sent_by")
-        receiving_user_id = received_json.get("send_to")
-        thread_id = received_json.get("thread_id")
+        message = received_json["message"]
+        sending_user_id = received_json["sent_by"]
+        receiving_user_id = received_json["send_to"]
+        thread_id = received_json["thread_id"]
 
         if not message:
             print("Error: empty message")
@@ -93,23 +93,30 @@ class ChatConsumer(WebsocketConsumer):
         if not thread_instance:
             print("Error: thread instance is incorrect")
 
-        self.create_chat_message(thread_instance, sending_user_instance, message)
-
         target_chat_room = f"user_chatroom_{receiving_user_id}"
 
-        response_object = {
-            "type": "chat.message",
-            "message": message,
-            "sent_by": self.user.id,
-            "thread_id": thread_id,
-        }
 
-        # Send to self chat room
+        async_to_sync(self.channel_layer.group_send)(
+            self.chat_room,
+            {
+                "type": "chat.message",
+                "message": message,
+                "sent_by": self.user.id,
+                "thread_id": thread_id,
+                "send_to": receiving_user_id
+            },
+        )
 
-        self.channel_layer.group_send(self.chat_room, response_object)
-
-        # Send to target chat room
-        self.channel_layer.group_send(target_chat_room, response_object)
+        async_to_sync(self.channel_layer.group_send)(
+            target_chat_room,
+            {
+                "type": "chat.message",
+                "message": message,
+                "sent_by": self.user.id,
+                "thread_id": thread_id,
+                "send_to": receiving_user_id
+            },
+        )
 
     def chat_message(self, event):
         self.send(
@@ -119,6 +126,7 @@ class ChatConsumer(WebsocketConsumer):
                     "message": event["message"],
                     "sent_by": event["sent_by"],
                     "thread_id": event["thread_id"],
+                    "send_to": event["send_to"]
                 }
             )
         )
@@ -131,6 +139,3 @@ class ChatConsumer(WebsocketConsumer):
 
     def get_thread(self, thread_id):
         return db_retrieve_or_none(Thread, thread_id)
-
-    def create_chat_message(self, thread, user, message):
-        ChatMessage.objects.create(thread=thread, user=user, message=message)

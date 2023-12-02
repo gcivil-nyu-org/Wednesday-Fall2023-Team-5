@@ -8,16 +8,16 @@
             <div id="chat-threads-list">
                 <ul>
                 {% for thread in threads %}
-                   {% if thread.first_user.username == request.user %}
+                   {% if thread.first_user == request.user %}
                             <script>
                                 console.log("Chat with second user");
                             </script>
-                           <a href="{% url 'messages_page' thread_id=thread.id other_user_id=thread.first_user.id %}" class="chat-logs-links" id="chat_link_{{ thread.id }}">
+                           <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.second_user.id %}" class="chat-logs-links" id="chat_link_{{ thread.id }}">
                                Chat with {{ thread.second_user.username }}
                            </a>
                    {% else %}
-                           <a class="chat-logs-links" id="chat_link_{{ thread.id }}" href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.first_user.id %}">
-                                Chat with {{ thread.first_user.username }}
+                           <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.first_user.id %}" class="chat-logs-links" id="chat_link_{{ thread.id }}">
+                               Chat with {{ thread.first_user.username }}
                            </a>
                             <script>
                                 console.log("Chat with first user");

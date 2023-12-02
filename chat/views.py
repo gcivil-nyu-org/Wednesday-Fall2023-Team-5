@@ -21,5 +21,7 @@ def messages_page(request, thread_id, other_user_id):
         "other_user_id": other_user_id,
         "self_user_id": request.user.id,
     }
-    context = {"jsonData": json.dumps(json_data)}
+    print(request.user.id)
+    print(other_user_id)
+    context = {"dump": json.dumps(json_data)}
     return render(request, "chat/message_room.html", context)

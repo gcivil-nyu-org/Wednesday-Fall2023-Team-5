@@ -3,8 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="row justify-content-center" id="chat-area-row">
-        <div class="col">
-            <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+        <div id="chat-log" class="col">
         </div>
     </div>
     <div class="row justify-content-center" id="input-area-row">
@@ -14,11 +13,13 @@
         </div>
     </div>
 </div>
+
 <script>
-    let jsonData = {{ json_data|safe }};
-    let threadId = jsonData.get("thread_id");
-    let selfUserId = jsonData.get("self_user_id");
-    let otherUserId = jsonData.get("other_user_id");
+    let jsonData = {{ dump|safe }}
+
+    let threadId = jsonData["thread_id"];
+    let selfUserId = jsonData["self_user_id"];
+    let otherUserId = jsonData["other_user_id"];
 
     let url = `ws://${window.location.host}/ws/socket-server`;
 
@@ -29,10 +30,14 @@
     }
 
     chatSocket.onmessage = function(e) {
-        let data = JSON.parse(e.data)
+        console.log('message', e);
+        console.log('yeaaaaaaa');
+        let data = JSON.parse(e.data);
         if (data.type === 'chat') {
-            let messageStr = `${data.user.username}: ${data.message} \n`
-            document.getElementById("chat-log").value += messageStr;
+            console.log(data.message);
+            document.querySelector("#chat-log").insertAdjacentHTML('beforeend', `
+                <p>${data.message}</p>
+            `)
         }
     }
 
@@ -56,14 +61,12 @@
         let messageInputDom = document.querySelector('#chat-message-input');
         let message = messageInputDom.value;
 
-        let data = {
-            'message': messageInputDom.value,
+        chatSocket.send(JSON.stringify({
+            'message': message,
             'sent_by': selfUserId,
             'thread_id': threadId,
             'send_to': otherUserId
-        }
-
-        chatSocket.send(JSON.stringify(data));
+        }));
 
         messageInputDom.value = '';
     };
