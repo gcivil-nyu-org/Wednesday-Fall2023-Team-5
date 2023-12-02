@@ -9,17 +9,19 @@
                 <ul>
                 {% for thread in threads %}
                    {% if thread.first_user.username == request.user %}
-                       <li class="chat-logs" chat-id="chat_{{ thread.id }}">
+                            <script>
+                                console.log("Chat with second user");
+                            </script>
                            <a href="{% url 'messages_page' thread_id=thread.id other_user_id=thread.first_user.id %}" class="chat-logs-links" id="chat_link_{{ thread.id }}">
                                Chat with {{ thread.second_user.username }}
                            </a>
-                       </li>
                    {% else %}
-                       <li class="chat-logs" chat-id="chat_{{ thread.id }}">
-                           <a class="chat-logs-links" id="chat_link_{{ thread.id }} href="{% url 'messages_page' thread_id=thread.id other_user_id=thread.first_user.id %}">
+                           <a class="chat-logs-links" id="chat_link_{{ thread.id }}" href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.first_user.id %}">
                                 Chat with {{ thread.first_user.username }}
                            </a>
-                       </li>
+                            <script>
+                                console.log("Chat with first user");
+                            </script>
                    {% endif %}
                 {% endfor %}
                 </ul>
