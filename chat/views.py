@@ -1,12 +1,12 @@
 import json
-import logging
+# import logging
 
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from common import db_retrieve_or_none
-from matching.models import UserTripMatches
+# from common import db_retrieve_or_none
+# from matching.models import UserTripMatches
 from .models import Thread
 from django.db.models import Q
 
