@@ -4,7 +4,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import User
 from common import db_retrieve_or_none
-from .models import Thread, ChatMessage # noqa
+from .models import Thread, ChatMessage  # noqa
 
 # class ChatConsumer(WebsocketConsumer):
 #     def __init__(self, *args, **kwargs):

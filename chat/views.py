@@ -1,9 +1,15 @@
 import json
+
+# from django.contrib.auth.models import User
+
 # import logging
 
 # from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+
+# from common import db_retrieve_or_none
+# from matching.models import UserTripMatches
 
 # from common import db_retrieve_or_none
 # from matching.models import UserTripMatches
@@ -22,23 +28,28 @@ def threads_page(request):
     #     print("No threads present")
     #     first_user = request.user
     #     print(first_user)
-    #     matches = (
-    #         UserTripMatches.objects.values()
-    #         .filter(Q(match_status="Pending") | Q(match_status="Matched"))
-    #     )
-    # print(matches)
-    # for match in matches:
-    #     print("receiver id: " + match["receiver_id"])
-    #     second_user = db_retrieve_or_none(User, match["receiver_id"])
-    #     print(second_user.id)
-    #     if second_user:
-    #         # t = Thread.objects.get_or_create(
-    #         #     first_user=first_user, second_user=second_user
-    #         # )
-    #         # print(t)
-    #         # print("Created thread for")
-    #         print(first_user)
-    #         print(second_user)
+    #     matches = UserTripMatches.objects.values().filter(Q(match_status="Matched"))
+    #     print(matches)
+    #     for match in matches:
+    #         print("sender id: ")
+    #         print(match["sender_id"])
+    #         print("receiver id: ")
+    #         print(match["receiver_id"])
+    #         print("request_id: ")
+    #         print(request.user.id)
+    #         if request.user.id == match["sender_id"]:
+    #             second_user = db_retrieve_or_none(User, match["receiver_id"])
+    #             print("second_user: ")
+    #             print(second_user.id)
+    #             if second_user:
+    #                 if second_user.id != first_user.id:
+    #                     t = Thread.objects.get_or_create(
+    #                         first_user=first_user, second_user=second_user
+    #                     )
+    #                 #         # print(t)
+    #                     print("Created thread for")
+    #                     print(first_user)
+    #                     print(second_user)
 
     # Thread.objects.create()
     return render(request, "chat/threads.html", {"threads": threads})
