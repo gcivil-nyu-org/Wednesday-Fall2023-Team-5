@@ -41,4 +41,4 @@ deploy:
     bucket: $BUCKET_NAME_UE1
     env: soloconnect-chat-integration
     on:
-      branch: feature-chat-integration-deploy
+      branch: feature-private-chat-1-copy
