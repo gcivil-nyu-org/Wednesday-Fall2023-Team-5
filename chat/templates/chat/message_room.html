@@ -3,8 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="row justify-content-center" id="chat-area-row">
-        <div id="chat-log" class="col">
-        </div>
+        <textarea id="chat-log" cols="100" rows="20"></textarea><br>
     </div>
     <div class="row justify-content-center" id="input-area-row">
         <div class="col">
@@ -31,13 +30,17 @@
 
     chatSocket.onmessage = function(e) {
         console.log('message', e);
-        console.log('yeaaaaaaa');
         let data = JSON.parse(e.data);
+        let concatMessage = "";
         if (data.type === 'chat') {
             console.log(data.message);
-            document.querySelector("#chat-log").insertAdjacentHTML('beforeend', `
-                <p>${data.user_name}: ${data.message}</p>
-            `)
+            user = data.user_name.concat(": ");
+            concatMessage += data.user_name + ": " + data.message;
+            console.log("concat - " + concatMessage);
+            document.querySelector('#chat-log').value += (concatMessage + '\n');
+<!--            .insertAdjacentHTML('beforeend', `-->
+<!--                <p>${data.user_name}: ${data.message}</p>-->
+<!--            `)-->
         }
     }
 
