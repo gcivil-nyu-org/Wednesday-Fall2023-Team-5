@@ -36,7 +36,7 @@
         if (data.type === 'chat') {
             console.log(data.message);
             document.querySelector("#chat-log").insertAdjacentHTML('beforeend', `
-                <p>${data.user_name}:${data.message}</p>
+                <p>${data.user_name}: ${data.message}</p>
             `)
         }
     }
