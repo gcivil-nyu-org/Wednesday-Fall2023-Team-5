@@ -10,6 +10,21 @@ class MatchStatusEnum(Enum):
     CANCELLED = "Cancelled"
     MATCHED = "Matched"
     UNMATCHED = "Unmatched"
+    REJECTED = "Rejected"
+
+    @classmethod
+    def get_match_status(cls, value):
+        if value == "Pending":
+            return MatchStatusEnum.PENDING
+        elif value == "Cancelled":
+            return MatchStatusEnum.CANCELLED
+        elif value == "Matched":
+            return MatchStatusEnum.MATCHED
+        elif value == "Unmatched":
+            return MatchStatusEnum.UNMATCHED
+        elif value == "Rejected":
+            return MatchStatusEnum.REJECTED
+        return None
 
 
 class UserTripMatches(models.Model):
@@ -31,8 +46,9 @@ class UserTripMatches(models.Model):
         (MatchStatusEnum.CANCELLED.value, MatchStatusEnum.CANCELLED.value),
         (MatchStatusEnum.MATCHED.value, MatchStatusEnum.MATCHED.value),
         (MatchStatusEnum.UNMATCHED.value, MatchStatusEnum.UNMATCHED.value),
+        (MatchStatusEnum.REJECTED.value, MatchStatusEnum.REJECTED.value),
     ]
 
     match_status = models.CharField(
-        max_length=10, choices=MatchStatus, default=MatchStatusEnum.PENDING.value
+        max_length=20, choices=MatchStatus, default=MatchStatusEnum.PENDING.value
     )

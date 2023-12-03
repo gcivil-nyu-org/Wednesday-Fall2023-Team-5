@@ -70,12 +70,26 @@ def show_potential_matches(request, utrip_id):
         ).values_list("receiver", flat=True)
     )
 
-    # excluding users (from matching pool) who have sent a matching request to current user,
-    # pending/accepted as a match
-    excluding_users = UserTripMatches.objects.filter(
-        receiver=current_user,
-        match_status__in=[MatchStatusEnum.PENDING.value, MatchStatusEnum.MATCHED.value],
-    ).values_list("sender", flat=True)
+    # excluding users (from matching pool) who have sent a matching request
+    # to current user, pending/accepted as a match
+    excluding_users = list(
+        UserTripMatches.objects.filter(
+            receiver=current_user,
+            match_status__in=[
+                MatchStatusEnum.PENDING.value,
+                MatchStatusEnum.MATCHED.value,
+            ],
+        ).values_list("sender", flat=True)
+    )
+
+    # excluding users (from matching pool) who have received a matching request
+    # from current user and matched with current user,
+    excluding_users += list(
+        UserTripMatches.objects.filter(
+            sender=current_user,
+            match_status=MatchStatusEnum.MATCHED.value,
+        ).values_list("receiver", flat=True)
+    )
 
     # Setting the Send Request button off for those users who have already received a request
     # from current user and filtering the excluding users from the match pool
@@ -104,6 +118,10 @@ def show_potential_matches(request, utrip_id):
     """
 
     current_pool_user_ids = list(matching_trips.values_list("user_id", flat=True))
+
+    if current_user.id not in current_pool_user_ids:
+        current_pool_user_ids.append(current_user.id)
+
     if current_user.id in current_pool_user_ids and len(current_pool_user_ids) >= 3:
         # Prepare data for KNN algorithm:
         current_pool_users = User.objects.filter(id__in=current_pool_user_ids)
@@ -116,10 +134,8 @@ def show_potential_matches(request, utrip_id):
                 "userprofile__interests",
             )
         )
-        print(data)
         # get KNN user recommendations (ranked)
         recommendations = get_knn_recommendations(data, current_user.id)
-        # TODO need to find the new matching_user_pool
         matching_user_pool = []
         for user_id in recommendations:
             if user_id in current_pool_user_ids and user_id != current_user.id:
@@ -151,7 +167,17 @@ def send_matching_request(request, utrip_id):
     current_usertrip, receiver = get_current_ut_and_receiver(
         request, utrip_id, receiver_uid
     )
-
+    receiver_utrip = UserTrip.objects.get(id=receiver_utrip_id)
+    if not receiver_utrip.is_active or not receiver_utrip.user.is_active:
+        messages.error(request, "The receiver or their trip is not active anymore.")
+        return redirect(
+            reverse("matching:show_potential_matches", kwargs={"utrip_id": utrip_id})
+        )
+    # Cases to be checked before sending request:
+    # 1. If the user has already sent a matching request -> just give the info
+    # 2. If the receiver has already sent a matching request -> then just inform
+    # 3. If there's already any history of sender/receiver, then just update that status
+    # 4. If there's no history, then we need to create a fresh one.
     try:
         _ = UserTripMatches.objects.get(
             sender_user_trip_id=utrip_id,
@@ -164,6 +190,20 @@ def send_matching_request(request, utrip_id):
     except Exception as e:
         print(e)
         try:
+            # check if other user has sent any matching request to the current user
+            _ = UserTripMatches.objects.get(
+                receiver=request.user,
+                sender=receiver.user,
+                receiver_user_trip_id=utrip_id,
+                sender_user_trip_id=receiver_utrip_id,
+                match_status=MatchStatusEnum.PENDING.value,
+            )
+            messages.warning(
+                request,
+                "The receiver might already have sent a matching "
+                "request to you, please check your pending matches",
+            )
+        except UserTripMatches.DoesNotExist:
             user_trip_match = UserTripMatches.objects.get(
                 sender=request.user,
                 receiver=receiver.user,
@@ -224,8 +264,10 @@ def cancel_matching_request(request, utrip_id):
             print(e)
             messages.error(
                 request,
-                "Your matching request might be accepted, and hence"
-                " cannot cancel anymore, please try to unmatch.",
+                "Your matching request might have already been responded, and hence"
+                " cannot cancel anymore, "
+                "please try to unmatch, if matched or "
+                "try sending the request again",
             )
     except UserTripMatches.MultipleObjectsReturned:
         print("This ideally should never happen")
@@ -238,21 +280,189 @@ def cancel_matching_request(request, utrip_id):
     )
 
 
+@require_http_methods(["GET"])
 @login_required
 def show_pending_requests(request, utrip_id):
-    usertrip = retrieve_none_or_403(request, UserTrip, utrip_id)
+    usertrip: UserTrip = retrieve_none_or_403(request, UserTrip, utrip_id)
 
     if usertrip is None:
         messages.error(request, "Please select a valid trip")
         return redirect(reverse("trip:view_trips"))
 
+    if not usertrip.is_active:
+        messages.error(
+            request, "The trip is not active anymore, cannot show pending request"
+        )
+        return redirect(reverse("trip:view_trips"))
+
     pending_matches = UserTripMatches.objects.filter(
         receiver=request.user,
-        receiver_user_trip_id=utrip_id,
+        receiver_user_trip=usertrip,
+        sender__is_active=True,
+        sender_user_trip__is_active=True,
         match_status=MatchStatusEnum.PENDING.value,
     )
-    pending_matches_senders = [pm.sender for pm in pending_matches]
-    context = {
-        "pending_matching_users": pending_matches_senders,
-    }
+    context = {"pending_matches": pending_matches, "utrip_id": utrip_id}
     return render(request, "matching/list_pending_requests.html", context)
+
+
+@require_http_methods(["POST"])
+@login_required
+def react_pending_request(request, utrip_id):
+    current_usertrip: UserTrip = retrieve_none_or_403(request, UserTrip, utrip_id)
+    sender_utrip_id = request.POST.get("sender_utrip_id")
+    sender_id = request.POST.get("sender_id")
+    sender_utrip = UserTrip.objects.get(id=sender_utrip_id, user_id=sender_id)
+    pending_request: MatchStatusEnum = MatchStatusEnum.get_match_status(
+        request.POST.get("pending_request")
+    )
+
+    if not current_usertrip.is_active:
+        messages.error(
+            request,
+            "Cannot accept/reject you with other user, as your current trip is inactive.",
+        )
+        return redirect(reverse("trip:view_trips"))
+
+    if not sender_utrip.is_active or not sender_utrip.user.is_active:
+        messages.error(
+            request,
+            "The sender trip or the sender itself is not active anymore, "
+            "cannot accept/reject the request.",
+        )
+        return redirect(
+            reverse("matching:show_pending_requests", kwargs={"utrip_id": utrip_id})
+        )
+
+    try:
+        # Both current usertrip and the sender's usertrip exists and are active
+        # Need to check following conditions:
+        # If there is a matching request with the given sender, receiver
+        # 1. If the matching request still holds i.e, status is still Pending -> Accept
+        # 2. If the matching request is cancelled i.e, status is Cancelled
+        #        -> Inform with proper msg
+        # 3. If the matching request is Matched/Rejected -> Inform with proper msg
+        # 4. If the matching request does not exist, some malfunction,
+        #       ideally should not happen
+        # 5. If there are more than 1 entry of match available,
+        #       could be due to repetition of user, utrip
+
+        matching_request = UserTripMatches.objects.get(
+            receiver=request.user,
+            sender_id=sender_id,
+            receiver_user_trip=current_usertrip,
+            sender_user_trip_id=sender_utrip_id,
+        )
+
+        if matching_request.match_status == MatchStatusEnum.CANCELLED.value:
+            messages.error(
+                request,
+                "The sender might have cancelled the matching request, "
+                "hence could not accept/reject"
+                " the current matching request anymore.",
+            )
+        elif matching_request.match_status == MatchStatusEnum.MATCHED.value:
+            messages.info(request, "This matching request has already been accepted")
+        elif matching_request.match_status == MatchStatusEnum.REJECTED.value:
+            messages.info(request, "This matching request has already been rejected")
+        elif matching_request.match_status == MatchStatusEnum.PENDING.value:
+            matching_request.match_status = pending_request.value
+            matching_request.save()
+            if pending_request == MatchStatusEnum.MATCHED:
+                messages.info(request, "You are successfully matched with the sender")
+            else:
+                messages.info(
+                    request, "You have rejected the match request from the sender"
+                )
+
+        return redirect(
+            reverse("matching:show_pending_requests", kwargs={"utrip_id": utrip_id})
+        )
+    except UserTrip.DoesNotExist:
+        messages.error(
+            request,
+            "The sender utrip does not exists anymore, sender might"
+            "have changed their plans. Sorry you can not accept/reject this request anymore",
+        )
+
+    except UserTrip.MultipleObjectsReturned:
+        print(
+            "Ideally code should not reach here, as user_id, "
+            "and utrip_id should be unique for any utrip"
+        )
+        messages.error(
+            request, "There are multiple trips, not sure for which to accept"
+        )
+
+    return redirect(
+        reverse("matching:show_pending_requests", kwargs={"utrip_id": utrip_id})
+    )
+
+
+@require_http_methods(["GET"])
+@login_required
+def show_matches(request, utrip_id):
+    current_usertrip: UserTrip = retrieve_none_or_403(request, UserTrip, utrip_id)
+    if current_usertrip is None or not current_usertrip.is_active:
+        messages.error(request, "Please select a valid trip")
+        return redirect(reverse("trip:view_trips"))
+
+    matches = UserTripMatches.objects.filter(
+        Q(
+            sender=request.user,
+            sender_user_trip=current_usertrip,
+            receiver__is_active=True,
+            receiver_user_trip__is_active=True,
+            match_status=MatchStatusEnum.MATCHED.value,
+        )
+        | Q(
+            receiver=request.user,
+            receiver_user_trip=current_usertrip,
+            sender__is_active=True,
+            sender_user_trip__is_active=True,
+            match_status=MatchStatusEnum.MATCHED.value,
+        )
+    )
+    match_users = [
+        match.receiver if match.sender == request.user else match.sender
+        for match in matches
+    ]
+    context = {
+        "match_users": match_users,
+        "utrip_id": utrip_id,
+    }
+    return render(request, "matching/list_matches.html", context=context)
+
+
+@require_http_methods(["POST"])
+@login_required
+def unmatch(request, utrip_id):
+    current_usertrip: UserTrip = retrieve_none_or_403(request, UserTrip, utrip_id)
+    other_matched_user_id = request.POST.get("other_uid")
+
+    if current_usertrip is None or not current_usertrip.is_active:
+        messages.error(request, "Please select a valid trip")
+        return redirect(reverse("trip:view_trips"))
+
+    try:
+        matching_utrip = UserTripMatches.objects.get(
+            Q(
+                sender=request.user,
+                receiver_id=other_matched_user_id,
+                sender_user_trip=current_usertrip,
+                match_status=MatchStatusEnum.MATCHED.value,
+            )
+            | Q(
+                receiver=request.user,
+                receiver_user_trip=current_usertrip,
+                sender_id=other_matched_user_id,
+                match_status=MatchStatusEnum.MATCHED.value,
+            )
+        )
+        matching_utrip.match_status = MatchStatusEnum.UNMATCHED.value
+        matching_utrip.save()
+    except UserTripMatches.DoesNotExist:
+        messages.error(
+            request, "No match found, other user might have already unmatched"
+        )
+    return redirect(reverse("matching:show_matches", kwargs={"utrip_id": utrip_id}))
