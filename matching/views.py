@@ -370,6 +370,7 @@ def react_pending_request(request, utrip_id):
             matching_request.save()
             if pending_request == MatchStatusEnum.MATCHED:
                 messages.info(request, "You are successfully matched with the sender")
+                # create new threads if they dont exist
             else:
                 messages.info(
                     request, "You have rejected the match request from the sender"
