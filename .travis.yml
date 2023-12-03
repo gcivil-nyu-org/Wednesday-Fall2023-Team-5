@@ -6,7 +6,7 @@ python:
 script:
   - black --check .
   - flake8 --exclude=migrations --max-line-length=99 .
-  # - python -m coverage run --source=soloconnect manage.py test --keepdb
+  - python -m coverage run --source=soloconnect manage.py test --keepdb
   # - coverage run --source=soloconnect manage.py test
 install:
   - pip install -r requirements.txt
