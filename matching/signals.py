@@ -11,7 +11,7 @@ def auto_create_threads(sender, instance, created, **kwargs):
     logger = logging.getLogger()
     if created:
         if instance.match_status == MatchStatusEnum.MATCHED.value:
-            t = Thread.objects.get_or_create(instance.sender.id, instance.receiver.id)
+            Thread.objects.get_or_create(instance.sender.id, instance.receiver.id)
             logger.info(
                 "Creating new thread between "
                 + instance.sender
