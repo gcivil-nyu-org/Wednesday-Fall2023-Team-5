@@ -4,7 +4,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import User
 from common import db_retrieve_or_none
-from .models import Thread, ChatMessage  # noqa
+from .models import Thread, ChatMessage
 
 # class ChatConsumer(WebsocketConsumer):
 #     def __init__(self, *args, **kwargs):
@@ -95,6 +95,8 @@ class ChatConsumer(WebsocketConsumer):
 
         target_chat_room = f"user_chatroom_{receiving_user_id}"
 
+        self.create_chatmessage_object(thread_instance, sending_user_instance, message)
+
         async_to_sync(self.channel_layer.group_send)(
             self.chat_room,
             {
@@ -141,3 +143,10 @@ class ChatConsumer(WebsocketConsumer):
 
     def get_thread(self, thread_id):
         return db_retrieve_or_none(Thread, thread_id)
+
+    def create_chatmessage_object(self, thread, sending_user, message):
+        ChatMessage.objects.create(
+            thread=thread,
+            sending_user=sending_user,
+            message=message
+        )
