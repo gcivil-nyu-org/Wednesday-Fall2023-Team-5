@@ -3,7 +3,9 @@
 {% block content %}
 <div class="container">
     <div class="row justify-content-center" id="chat-area-row">
-        <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+        {% for curr_message in message_history %}
+            <p>{{ curr_message.sending_user.username }}: {{ curr_message.message }}</p>
+        {% endfor %}
     </div>
     <div class="row justify-content-center" id="input-area-row">
         <div class="col">
@@ -37,7 +39,9 @@
             user = data.user_name.concat(": ");
             concatMessage += data.user_name + ": " + data.message;
             console.log("concat - " + concatMessage);
-            document.querySelector('#chat-log').value += (concatMessage + '\n');
+            document.querySelector('#chat-log').insertAdjacentHTML('beforeend', `
+                <p>${concatMessage}</p>
+            `);
         }
     }
 

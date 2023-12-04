@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 
 # from common import db_retrieve_or_none
 # from matching.models import UserTripMatches
-from .models import Thread
+from .models import Thread, ChatMessage
 from django.db.models import Q
 
 
@@ -57,6 +57,8 @@ def threads_page(request):
 
 @login_required
 def messages_page(request, thread_id, other_user_id):
+    message_history = ChatMessage.objects.filter(thread=thread_id)
+
     json_data = {
         "thread_id": thread_id,
         "other_user_id": other_user_id,
@@ -64,5 +66,10 @@ def messages_page(request, thread_id, other_user_id):
     }
     print(request.user.id)
     print(other_user_id)
-    context = {"dump": json.dumps(json_data)}
+
+    context = {
+        "dump": json.dumps(json_data),
+        "message_history": message_history
+    }
+
     return render(request, "chat/message_room.html", context)
