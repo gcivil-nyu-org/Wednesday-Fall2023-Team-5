@@ -146,7 +146,5 @@ class ChatConsumer(WebsocketConsumer):
 
     def create_chatmessage_object(self, thread, sending_user, message):
         ChatMessage.objects.create(
-            thread=thread,
-            sending_user=sending_user,
-            message=message
+            thread=thread, sending_user=sending_user, message=message
         )

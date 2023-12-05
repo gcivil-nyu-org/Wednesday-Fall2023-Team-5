@@ -67,9 +67,6 @@ def messages_page(request, thread_id, other_user_id):
     print(request.user.id)
     print(other_user_id)
 
-    context = {
-        "dump": json.dumps(json_data),
-        "message_history": message_history
-    }
+    context = {"dump": json.dumps(json_data), "message_history": message_history}
 
     return render(request, "chat/message_room.html", context)
