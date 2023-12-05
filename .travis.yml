@@ -6,7 +6,7 @@ python:
 script:
   - black --check .
   - flake8 --exclude=migrations --max-line-length=99 .
-  - python -m coverage run --source=soloconnect manage.py test --keepdb
+  - python -m coverage run manage.py test --keepdb
   # - coverage run --source=soloconnect manage.py test
 install:
   - pip install -r requirements.txt
@@ -39,6 +39,6 @@ deploy:
     region: $REGION_UE1
     app: $APP_NAME
     bucket: $BUCKET_NAME_UE1
-    env: soloconnect-integration
+    env: soloconnect-chat-integration
     on:
-      branch: feature-trip-model
+      branch: feature-private-chat-1-copy
