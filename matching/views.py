@@ -187,8 +187,7 @@ def send_matching_request(request, utrip_id):
             match_status=MatchStatusEnum.PENDING.value,
         )
         messages.info(request, "Matching request already sent to user")
-    except Exception as e:
-        print(e)
+    except UserTripMatches.DoesNotExist:
         try:
             # check if other user has sent any matching request to the current user
             _ = UserTripMatches.objects.get(
@@ -204,26 +203,27 @@ def send_matching_request(request, utrip_id):
                 "request to you, please check your pending matches",
             )
         except UserTripMatches.DoesNotExist:
-            user_trip_match = UserTripMatches.objects.get(
-                sender=request.user,
-                receiver=receiver.user,
-                sender_user_trip_id=utrip_id,
-                receiver_user_trip_id=receiver_utrip_id,
-            )
-            user_trip_match.match_status = MatchStatusEnum.PENDING.value
-            user_trip_match.save()
-            messages.info(request, "Matching request sent to user")
-        except UserTripMatches.DoesNotExist:
-            receiver_user_trip = UserTrip.objects.get(id=receiver_utrip_id)
-            new_user_trip_match = UserTripMatches.objects.create(
-                sender=request.user,
-                receiver=receiver.user,
-                sender_user_trip=current_usertrip,
-                receiver_user_trip=receiver_user_trip,
-                match_status=MatchStatusEnum.PENDING.value,
-            )
-            new_user_trip_match.save()
-            messages.info(request, "Matching request sent to user")
+            try:
+                user_trip_match = UserTripMatches.objects.get(
+                    sender=request.user,
+                    receiver=receiver.user,
+                    sender_user_trip_id=utrip_id,
+                    receiver_user_trip_id=receiver_utrip_id,
+                )
+                user_trip_match.match_status = MatchStatusEnum.PENDING.value
+                user_trip_match.save()
+                messages.info(request, "Matching request sent to user")
+            except UserTripMatches.DoesNotExist:
+                receiver_user_trip = UserTrip.objects.get(id=receiver_utrip_id)
+                new_user_trip_match = UserTripMatches.objects.create(
+                    sender=request.user,
+                    receiver=receiver.user,
+                    sender_user_trip=current_usertrip,
+                    receiver_user_trip=receiver_user_trip,
+                    match_status=MatchStatusEnum.PENDING.value,
+                )
+                new_user_trip_match.save()
+                messages.info(request, "Matching request sent to user")
 
     return redirect(
         reverse("matching:show_potential_matches", kwargs={"utrip_id": utrip_id})
