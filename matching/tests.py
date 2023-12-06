@@ -208,4 +208,16 @@ class TestMatchingViews(TestCase):
             messages[0].message,
             "Your matching request is cancelled successfully"
         )
+        response = self.client.post(
+            reverse("matching:cancel_request", kwargs={"utrip_id": self.utrip1.id}),
+            {
+                "receiver_uid": self.user2.id,
+                "receiver_utrip_id": self.utrip2.id,
+            },
+            follow=True
+        )
+        self.assertEqual(
+            list(get_messages(response.wsgi_request))[0].message,
+            "Your matching request has already been cancelled."
+        )
         
