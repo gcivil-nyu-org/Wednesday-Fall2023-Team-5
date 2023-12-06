@@ -1,6 +1,9 @@
+import logging
+
 from django.db import models
 from enum import Enum
 
+from chat.models import Thread
 from trip.models import UserTrip
 from user_profile.models import User
 
@@ -52,3 +55,14 @@ class UserTripMatches(models.Model):
     match_status = models.CharField(
         max_length=20, choices=MatchStatus, default=MatchStatusEnum.PENDING.value
     )
+
+    def save(self, *args, **kwargs):
+        logger = logging.getLogger()
+        logger.info("In the save function Match status:")
+        logger.info(self.match_status)
+        if self.match_status == MatchStatusEnum.MATCHED.value:
+            t, _ = Thread.objects.get_or_create(
+                first_user=self.sender, second_user=self.receiver
+            )
+            print(t)
+        return super().save(*args, **kwargs)
