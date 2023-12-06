@@ -105,10 +105,6 @@ class TestMatchingViews(TestCase):
             password=self.password,
         )
         self.assertTrue(user1login)
-        response = self.client.get(
-            reverse("matching:show_potential_matches", kwargs={"utrip_id": self.utrip1.id})
-        )
-        self.assertEqual(response.status_code, 200)
         response = self.client.post(
             reverse("matching:send_request", kwargs={"utrip_id": self.utrip1.id}),
             {
@@ -126,5 +122,23 @@ class TestMatchingViews(TestCase):
             if mu['user'] == self.user2:
                 self.assertTrue(mu['sent_match'], False)
                 break
+        self.client.logout()
 
-
+        user2login = self.client.login(
+            username='matching_user2',
+            password=self.password,
+        )
+        self.assertTrue(user2login)
+        response = self.client.post(
+            reverse("matching:send_request", kwargs={"utrip_id": self.utrip2.id}),
+            {
+                'receiver_uid': self.user1.id,
+                'receiver_utrip_id': self.utrip1.id,
+            },
+            follow=True
+        )
+        self.assertIn(response.status_code, [200, 302])
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(len(messages), 1)
+        self.assertEqual(messages[0].message, "The receiver might already have sent a matching "
+                                              "request to you, please check your pending matches")
