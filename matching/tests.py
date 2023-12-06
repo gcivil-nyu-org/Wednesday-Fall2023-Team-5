@@ -208,6 +208,7 @@ class TestMatchingViews(TestCase):
             messages[0].message,
             "Your matching request is cancelled successfully"
         )
+
         response = self.client.post(
             reverse("matching:cancel_request", kwargs={"utrip_id": self.utrip1.id}),
             {
@@ -220,4 +221,43 @@ class TestMatchingViews(TestCase):
             list(get_messages(response.wsgi_request))[0].message,
             "Your matching request has already been cancelled."
         )
-        
+
+        _ = self.client.post(
+            reverse("matching:send_request", kwargs={"utrip_id": self.utrip1.id}),
+            {"receiver_uid": self.user2.id, "receiver_utrip_id": self.utrip2.id},
+            follow=True,
+        )
+        self.client.logout()
+        self.client.login(
+            username="matching_user2",
+            password=self.password,
+        )
+        _ = self.client.post(
+            reverse("matching:react_request", kwargs={"utrip_id": self.utrip2.id}),
+            {
+                "sender_utrip_id": self.utrip1.id,
+                "sender_id": self.user1.id,
+                "pending_request": "Rejected"
+            },
+            follow=True
+        )
+        self.client.logout()
+        self.client.login(
+            username="matching_user",
+            password=self.password,
+        )
+        response = self.client.post(
+            reverse("matching:cancel_request", kwargs={"utrip_id": self.utrip1.id}),
+            {
+                "receiver_uid": self.user2.id,
+                "receiver_utrip_id": self.utrip2.id,
+            },
+            follow=True
+        )
+        self.assertEqual(
+            list(get_messages(response.wsgi_request))[0].message,
+            "Your matching request might have already been responded, "
+            "and hence cannot cancel anymore, "
+            "please try to unmatch, if matched or "
+            "try sending the request again"
+        )
