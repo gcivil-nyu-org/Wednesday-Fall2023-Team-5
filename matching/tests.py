@@ -183,3 +183,29 @@ class TestMatchingViews(TestCase):
             "You are not allowed to edit this.",
         )
         self.assertTemplateUsed(response=None, template_name="trip/view_trips.html")
+
+    def test_cancel_matching_request(self):
+        self.client.login(
+            username="matching_user",
+            password=self.password,
+        )
+        _ = self.client.post(
+            reverse("matching:send_request", kwargs={"utrip_id": self.utrip1.id}),
+            {"receiver_uid": self.user2.id, "receiver_utrip_id": self.utrip2.id},
+            follow=True,
+        )
+        response = self.client.post(
+            reverse("matching:cancel_request", kwargs={"utrip_id": self.utrip1.id}),
+            {
+                "receiver_uid": self.user2.id,
+                "receiver_utrip_id": self.utrip2.id,
+            },
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(
+            messages[0].message,
+            "Your matching request is cancelled successfully"
+        )
+        
