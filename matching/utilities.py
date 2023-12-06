@@ -61,15 +61,11 @@ def get_knn_recommendations(data, curr_user):
     user_index = data_encoded[
         data_encoded["userprofile__user"] == curr_user
     ].index.values.astype(int)[0]
-    print("user_index:", user_index)
     user_attributes = data_encoded.iloc[user_index]
     # print(user_attributes)
     recommendations, distances = get_recommendations(
         knn, data_encoded, user_attributes, num_recommendations=3
     )
     recommendations = recommendations["userprofile__user"].tolist()
-    print("Recommended people:")
-    print(recommendations)
-    print(distances)
 
     return recommendations
