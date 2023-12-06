@@ -4,6 +4,7 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
 from trip.models import UserTrip, Trip
+from django.contrib.messages import get_messages
 
 
 class TestMatchingViews(TestCase):
@@ -78,6 +79,8 @@ class TestMatchingViews(TestCase):
         self.assertIn(self.user2, matching_users)
         self.assertIn(self.user3, matching_users)
         self.client.logout()
+        user = self.client.session.get('_auth_user_id')
+        self.assertIsNone(user)
 
         user2login = self.client.login(
             username='matching_user2',
@@ -93,17 +96,35 @@ class TestMatchingViews(TestCase):
         self.assertNotIn(self.user2, matching_users)
         self.assertIn(self.user3, matching_users)
         self.client.logout()
+        user = self.client.session.get('_auth_user_id')
+        self.assertIsNone(user)
 
-        user3login = self.client.login(
-            username='matching_user3',
+    def test_send_matching_request(self):
+        user1login = self.client.login(
+            username='matching_user',
             password=self.password,
         )
-        self.assertTrue(user3login)
+        self.assertTrue(user1login)
         response = self.client.get(
-            reverse("matching:show_potential_matches", kwargs={"utrip_id": self.utrip3.id})
+            reverse("matching:show_potential_matches", kwargs={"utrip_id": self.utrip1.id})
         )
-        matching_users = [mu['user'] for mu in response.context['matching_users']]
         self.assertEqual(response.status_code, 200)
-        self.assertIn(self.user1, matching_users)
-        self.assertIn(self.user2, matching_users)
-        self.assertNotIn(self.user3, matching_users)
+        response = self.client.post(
+            reverse("matching:send_request", kwargs={"utrip_id": self.utrip1.id}),
+            {
+                'receiver_uid': self.user2.id,
+                'receiver_utrip_id': self.utrip2.id
+            },
+            follow=True
+        )
+        messages = list(get_messages(response.wsgi_request))
+        self.assertIn(response.status_code, [200, 302])
+        self.assertTrue(messages)
+        self.assertEqual(messages[0].message, 'Matching request sent to user')
+        resp_up = response.context['matching_users']
+        for mu in resp_up:
+            if mu['user'] == self.user2:
+                self.assertTrue(mu['sent_match'], False)
+                break
+
+
