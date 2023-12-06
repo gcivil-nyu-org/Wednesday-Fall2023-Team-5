@@ -102,7 +102,7 @@ class TestMatchingViews(TestCase):
             reverse(
                 "matching:show_potential_matches", kwargs={"utrip_id": self.utrip1.id}
             ),
-            follow=True
+            follow=True,
         )
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(template_name="trip/view_trips.html")
@@ -200,13 +200,12 @@ class TestMatchingViews(TestCase):
                 "receiver_uid": self.user2.id,
                 "receiver_utrip_id": self.utrip2.id,
             },
-            follow=True
+            follow=True,
         )
         self.assertEqual(response.status_code, 200)
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(
-            messages[0].message,
-            "Your matching request is cancelled successfully"
+            messages[0].message, "Your matching request is cancelled successfully"
         )
 
         response = self.client.post(
@@ -215,11 +214,11 @@ class TestMatchingViews(TestCase):
                 "receiver_uid": self.user2.id,
                 "receiver_utrip_id": self.utrip2.id,
             },
-            follow=True
+            follow=True,
         )
         self.assertEqual(
             list(get_messages(response.wsgi_request))[0].message,
-            "Your matching request has already been cancelled."
+            "Your matching request has already been cancelled.",
         )
 
         _ = self.client.post(
@@ -237,9 +236,9 @@ class TestMatchingViews(TestCase):
             {
                 "sender_utrip_id": self.utrip1.id,
                 "sender_id": self.user1.id,
-                "pending_request": "Rejected"
+                "pending_request": "Rejected",
             },
-            follow=True
+            follow=True,
         )
         self.client.logout()
         self.client.login(
@@ -252,14 +251,14 @@ class TestMatchingViews(TestCase):
                 "receiver_uid": self.user2.id,
                 "receiver_utrip_id": self.utrip2.id,
             },
-            follow=True
+            follow=True,
         )
         self.assertEqual(
             list(get_messages(response.wsgi_request))[0].message,
             "Your matching request might have already been responded, "
             "and hence cannot cancel anymore, "
             "please try to unmatch, if matched or "
-            "try sending the request again"
+            "try sending the request again",
         )
 
     def test_show_pending_requests(self):
@@ -270,11 +269,13 @@ class TestMatchingViews(TestCase):
         self.utrip1.is_active = False
         self.utrip1.save()
         response = self.client.get(
-            reverse("matching:show_pending_requests", kwargs={"utrip_id": self.utrip1.id}),
-            follow=True
+            reverse(
+                "matching:show_pending_requests", kwargs={"utrip_id": self.utrip1.id}
+            ),
+            follow=True,
         )
         self.assertEqual(
             list(get_messages(response.wsgi_request))[0].message,
-            "The trip is not active anymore, cannot show pending request"
+            "The trip is not active anymore, cannot show pending request",
         )
         self.assertTemplateUsed(template_name="trip/view_trips.html")
