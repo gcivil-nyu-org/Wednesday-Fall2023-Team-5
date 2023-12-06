@@ -61,7 +61,7 @@ class UserTripMatches(models.Model):
         logger.info("In the save function Match status:")
         logger.info(self.match_status)
         if self.match_status == MatchStatusEnum.MATCHED.value:
-            t = Thread.objects.get_or_create(
+            t, _ = Thread.objects.get_or_create(
                 first_user=self.sender, second_user=self.receiver
             )
             print(t)
