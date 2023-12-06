@@ -261,3 +261,20 @@ class TestMatchingViews(TestCase):
             "please try to unmatch, if matched or "
             "try sending the request again"
         )
+
+    def test_show_pending_requests(self):
+        self.client.login(
+            username="matching_user",
+            password=self.password,
+        )
+        self.utrip1.is_active = False
+        self.utrip1.save()
+        response = self.client.get(
+            reverse("matching:show_pending_requests", kwargs={"utrip_id": self.utrip1.id}),
+            follow=True
+        )
+        self.assertEqual(
+            list(get_messages(response.wsgi_request))[0].message,
+            "The trip is not active anymore, cannot show pending request"
+        )
+        self.assertTemplateUsed(template_name="trip/view_trips.html")
