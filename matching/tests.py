@@ -279,3 +279,56 @@ class TestMatchingViews(TestCase):
             "The trip is not active anymore, cannot show pending request",
         )
         self.assertTemplateUsed(template_name="trip/view_trips.html")
+
+    def test_react_pending_request(self):
+        self.client.login(username="matching_user2", password=self.password)
+        _ = self.client.post(
+            reverse("matching:send_request", kwargs={"utrip_id": self.utrip2.id}),
+            {
+                "receiver_utrip_id": self.utrip1.id,
+                "receiver_uid": self.user1.id,
+            },
+            follow=True,
+        )
+        self.client.logout()
+        self.client.login(username="matching_user", password=self.password)
+        self.utrip1.is_active = False
+        self.utrip1.save()
+        response = self.client.post(
+            reverse("matching:react_request", kwargs={"utrip_id": self.utrip1.id}),
+            {
+                "sender_utrip_id": self.utrip2.id,
+                "sender_id": self.user2.id,
+                "pending_request": "Matched",
+            },
+            follow=True,
+        )
+        self.assertEqual(
+            list(get_messages(response.wsgi_request))[0].message,
+            "Cannot accept/reject you with other user, as your current trip is inactive.",
+        )
+        self.utrip1.is_active = True
+        self.utrip1.save()
+
+        self.utrip2.is_active = False
+        self.utrip2.save()
+        response = self.client.post(
+            reverse("matching:react_request", kwargs={"utrip_id": self.utrip1.id}),
+            {
+                "sender_utrip_id": self.utrip2.id,
+                "sender_id": self.user2.id,
+                "pending_request": "Matched",
+            },
+            follow=True,
+        )
+        self.assertEqual(
+            list(get_messages(response.wsgi_request))[0].message,
+            "The sender trip or the sender itself is not active anymore, "
+            "cannot accept/reject the request.",
+        )
+
+    def test_show_matches(self):
+        pass
+
+    def test_unmatch(self):
+        pass
