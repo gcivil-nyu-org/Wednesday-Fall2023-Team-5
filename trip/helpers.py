@@ -13,7 +13,7 @@ from constants import (
 
 def start_date_in_future(std):
     if isinstance(std, datetime.date):
-        return std > datetime.date.today()
+        return std >= datetime.date.today()
     else:
         raise TypeError("Arguments must be of type datetime.date")
 
@@ -43,3 +43,5 @@ def city_present_in_country(city, country):
         return True if city_tuple in FRANCE_CITIES else False
     elif country == "Italy":
         return True if city_tuple in ITALY_CITIES else False
+    else:
+        raise TypeError("Country not supported currently")

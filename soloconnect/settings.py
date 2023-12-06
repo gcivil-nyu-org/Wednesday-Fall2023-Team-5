@@ -29,15 +29,19 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "172.31.31.138",
     "soloconnect-integration.us-east-1.elasticbeanstalk.com",
     "soloconnect-db-final.us-west-2.elasticbeanstalk.com",
     "soloconnect-production.us-east-1.elasticbeanstalk.com",
     "testserver",
+    "soloconnect-chat-integration.us-east-1.elasticbeanstalk.com",
 ]
 
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -50,6 +54,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap4",
     "matching.apps.MatchingConfig",
+    "chat.apps.ChatConfig",
 ]
 
 MIDDLEWARE = [
@@ -81,6 +86,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "soloconnect.wsgi.application"
+ASGI_APPLICATION = "soloconnect.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -93,7 +99,7 @@ DATABASES = {
         "NAME": os.getenv("RDS_DB_NAME"),
         "PASSWORD": os.getenv("RDS_PASSWORD"),
         "ENGINE": "django.db.backends.postgresql",
-        "TEST": {"NAME": "testdatabase2", "ENGINE": "django.db.backends.sqlite3"},
+        "TEST": {"NAME": "testdatabase2"},
     }
 }
 if "test" in sys.argv:
@@ -104,8 +110,15 @@ if "test" in sys.argv:
         "PASSWORD": os.getenv("TEST_RDS_PASSWORD"),
         "NAME": os.getenv("TEST_RDS_DB_NAME"),
         "PORT": os.getenv("TEST_RDS_DB_PORT"),
-        "TEST": {"NAME": os.environ.get("TEST_DATABASE_NAME")},
+        "TEST": {"NAME": "testdatabase2"},
     }
+# if "test" in sys.argv:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.sqlite3",
+#              "NAME": "testmemory",
+#         }
+#     }
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -161,3 +174,26 @@ EMAIL_USE_SSL = False
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                # todo Uncomment host and comment redis url if you want to run locally
+                # ("127.0.0.1", 6379)
+                (
+                    "sc-redis.45ncis.ng.0001.use1.cache.amazonaws.com",
+                    6379,
+                ),
+            ],
+        },
+        "CACHES": {
+            "default": {
+                "BACKEND": "django.core.cache.backends.redis.RedisCache",
+                "LOCATION": "redis://sc-redis.45ncis.ng.0001.use1.cache.amazonaws.com:6379/1",
+            }
+        },
+    },
+}

@@ -1,6 +1,9 @@
+import logging
+
 from django.db import models
 from enum import Enum
 
+from chat.models import Thread
 from trip.models import UserTrip
 from user_profile.models import User
 
@@ -10,6 +13,21 @@ class MatchStatusEnum(Enum):
     CANCELLED = "Cancelled"
     MATCHED = "Matched"
     UNMATCHED = "Unmatched"
+    REJECTED = "Rejected"
+
+    @classmethod
+    def get_match_status(cls, value):
+        if value == "Pending":
+            return MatchStatusEnum.PENDING
+        elif value == "Cancelled":
+            return MatchStatusEnum.CANCELLED
+        elif value == "Matched":
+            return MatchStatusEnum.MATCHED
+        elif value == "Unmatched":
+            return MatchStatusEnum.UNMATCHED
+        elif value == "Rejected":
+            return MatchStatusEnum.REJECTED
+        return None
 
 
 class UserTripMatches(models.Model):
@@ -31,8 +49,20 @@ class UserTripMatches(models.Model):
         (MatchStatusEnum.CANCELLED.value, MatchStatusEnum.CANCELLED.value),
         (MatchStatusEnum.MATCHED.value, MatchStatusEnum.MATCHED.value),
         (MatchStatusEnum.UNMATCHED.value, MatchStatusEnum.UNMATCHED.value),
+        (MatchStatusEnum.REJECTED.value, MatchStatusEnum.REJECTED.value),
     ]
 
     match_status = models.CharField(
-        max_length=10, choices=MatchStatus, default=MatchStatusEnum.PENDING.value
+        max_length=20, choices=MatchStatus, default=MatchStatusEnum.PENDING.value
     )
+
+    def save(self, *args, **kwargs):
+        logger = logging.getLogger()
+        logger.info("In the save function Match status:")
+        logger.info(self.match_status)
+        if self.match_status == MatchStatusEnum.MATCHED.value:
+            t, _ = Thread.objects.get_or_create(
+                first_user=self.sender, second_user=self.receiver
+            )
+            print(t)
+        return super().save(*args, **kwargs)

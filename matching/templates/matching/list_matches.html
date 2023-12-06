@@ -1,0 +1,29 @@
+{% extends "home_default/base.html" %}
+{% block content %}
+    <div class="container">
+        <h1>Your Matches:</h1>
+        {% if match_users %}
+            {% for match_user in match_users %}
+                <div class="col-3">
+                    <div class="row-gap-3">
+                        <h4>FirstName: <i>{{ match_user.first_name }}</i></h4>
+                        <h4>LastName: <i>{{ match_user.last_name }}</i></h4>
+                        <h4>Email: <i>{{ match_user.email }}</i></h4>
+                        {% if match_user.bio %}
+                        	<h5>Bio: {{ match_user.userprofile.bio }}</h5>
+                        {% endif %}
+                        <form action="{% url 'matching:unmatch' utrip_id=utrip_id %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="other_uid" value="{{ match_user.id }}">
+                            <button type="submit" class="btn btn-rounded btn-danger">Unmatch</button>
+                        </form>
+                        <br><br>
+                    </div>
+                </div>
+            {% endfor %}
+
+        {% else %}
+            <h2>Oops! Sorry! No matches currently</h2>
+        {% endif %}
+    </div>
+{% endblock content %}
