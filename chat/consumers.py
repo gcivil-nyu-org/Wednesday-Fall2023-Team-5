@@ -63,10 +63,12 @@ class ChatConsumer(WebsocketConsumer):
         super().__init__(args, kwargs)
         self.user = None
         self.chat_room = None
+        self.thread_for_room = None
 
     def connect(self):
         self.user = self.scope["user"]
-        self.chat_room = f"user_chatroom_{self.user.id}"
+        self.thread_for_room = self.scope["url_route"]["kwargs"]["thread_id"]
+        self.chat_room = f"user_chatroom_{self.user.id}_thread_{self.thread_for_room}"
         async_to_sync(self.channel_layer.group_add)(self.chat_room, self.channel_name)
         self.accept()
 
@@ -93,7 +95,7 @@ class ChatConsumer(WebsocketConsumer):
         if not thread_instance:
             print("Error: thread instance is incorrect")
 
-        target_chat_room = f"user_chatroom_{receiving_user_id}"
+        target_chat_room = f"user_chatroom_{receiving_user_id}_thread_{thread_id}"
 
         self.create_chatmessage_object(thread_instance, sending_user_instance, message)
 
