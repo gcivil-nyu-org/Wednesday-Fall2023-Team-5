@@ -24,7 +24,7 @@
     let selfUserId = jsonData["self_user_id"];
     let otherUserId = jsonData["other_user_id"];
 
-    let url = `ws://${window.location.host}/ws/socket-server`;
+    let url = `ws://${window.location.host}/ws/socket-server/${threadId}`;
 
     let chatSocket = new WebSocket(url);
 
