@@ -182,11 +182,11 @@ CHANNEL_LAYERS = {
         "CONFIG": {
             "hosts": [
                 # todo Uncomment host and comment redis url if you want to run locally
-                # ("127.0.0.1", 6379)
-                (
-                    "sc-redis.45ncis.ng.0001.use1.cache.amazonaws.com",
-                    6379,
-                ),
+                ("127.0.0.1", 6379)
+                # (
+                #     "sc-redis.45ncis.ng.0001.use1.cache.amazonaws.com",
+                #     6379,
+                # ),
             ],
         },
         "CACHES": {

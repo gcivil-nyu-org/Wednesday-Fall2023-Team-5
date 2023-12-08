@@ -41,6 +41,6 @@ class ChatMessage(models.Model):
 
     def save(self, *args, **kwargs):
         if self._state.adding:
-            self.thread.updated = datetime.now()
+            self.thread.updated = datetime.utcnow()
             self.thread.save()
         return super(ChatMessage, self).save(*args, **kwargs)
