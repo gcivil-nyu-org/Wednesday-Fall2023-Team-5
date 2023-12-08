@@ -64,6 +64,7 @@ def messages_page(request, thread_id, other_user_id):
         "other_user_id": other_user_id,
         "self_user_id": request.user.id,
     }
+
     print(request.user.id)
     print(other_user_id)
 
