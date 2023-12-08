@@ -1,6 +1,5 @@
 from django.db import models  # noqa
 from django.contrib.auth.models import User
-from django.utils import timezone
 from datetime import datetime
 
 # Create your models here.
@@ -45,5 +44,3 @@ class ChatMessage(models.Model):
             self.thread.updated = datetime.now()
             self.thread.save()
         return super(ChatMessage, self).save(*args, **kwargs)
-
-
