@@ -1,0 +1,81 @@
+{% extends 'home_default/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row" id="chat-area-row">
+        <div class="col-6" id="chat-log">
+        {% for curr_message in message_history %}
+            <p class="text-start">{{ curr_message.sending_user.username }}: {{ curr_message.message }}</p>
+        {% endfor %}
+        </div>
+    </div>
+    <div class="row justify-content-center" id="input-area-row">
+        <div class="col">
+            <input id="chat-message-input" type="text" size="100"><br>
+            <input id="chat-message-submit" type="button" value="Send">
+        </div>
+    </div>
+</div>
+
+<script>
+    let jsonData = {{ dump|safe }}
+
+    let threadId = jsonData["thread_id"];
+    let selfUserId = jsonData["self_user_id"];
+    let otherUserId = jsonData["other_user_id"];
+
+    let url = `ws://${window.location.host}/ws/socket-server/${threadId}`;
+
+    let chatSocket = new WebSocket(url);
+
+    chatSocket.onopen = function(e) {
+        console.log('open', e);
+    }
+
+    chatSocket.onmessage = function(e) {
+        console.log('message', e);
+        let data = JSON.parse(e.data);
+        let concatMessage = "";
+        if (data.type === 'chat') {
+            console.log(data.message);
+            user = data.user_name.concat(": ");
+            concatMessage += data.user_name + ": " + data.message;
+            console.log("concat - " + concatMessage);
+            document.querySelector('#chat-log').insertAdjacentHTML('beforeend', `
+                <p>${concatMessage}</p>
+            `);
+        }
+    }
+
+    chatSocket.onerror = function(e) {
+        console.error('error', e);
+    }
+
+    chatSocket.onclose = function(e) {
+        console.log('close', e);
+    }
+
+    document.querySelector('#chat-message-input').focus();
+
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.key === 'Enter') {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        let messageInputDom = document.querySelector('#chat-message-input');
+        let message = messageInputDom.value;
+
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'sent_by': selfUserId,
+            'thread_id': threadId,
+            'send_to': otherUserId
+        }));
+
+        messageInputDom.value = '';
+    };
+
+</script>
+{% endblock content %}
