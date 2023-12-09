@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect  # noqa
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
+from django.db.models import Q
 from . import forms
 from .models import Trip, UserTrip
 from common import retrieve_none_or_403
@@ -20,6 +21,26 @@ def create_trip(request):
 
             dest_country_raw = usertrip_data["destination_country"]
             dest_country = dest_country_raw[0]
+
+            # 1. Find all active trips of the user.
+            # 2. Exclude those trips which are not overlapping with current trip
+            overlapping_trips = UserTrip.objects.filter(
+                user=request.user,
+                is_active=True
+            ).exclude(
+                Q(end_trip__lt=usertrip_data["start_trip"]) |
+                Q(start_trip__gt=usertrip_data["end_trip"])
+            )
+
+            if overlapping_trips.exists():
+                utrip = overlapping_trips[0]
+                message = (f'You have a trip to {utrip.trip.destination_city}, '
+                           f'{utrip.trip.destination_country} within the current trip dates,'
+                           f' please update that trip or plan for {dest_city}, {dest_country}'
+                           f' another time!')
+                messages.error(request, message)
+                usertrip_creation_form = forms.UserTripCreationForm()
+                return render(request, "trip/create_trip.html", {"form": usertrip_creation_form})
 
             trip_instance, _ = Trip.objects.get_or_create(
                 destination_city=dest_city,
