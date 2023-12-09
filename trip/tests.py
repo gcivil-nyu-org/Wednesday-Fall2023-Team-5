@@ -1,21 +1,15 @@
-# import json
 import random
 from unittest import mock
 
 from django.contrib.auth.models import User
-
-# from django.db.models import Choices
+from django.contrib.messages import get_messages
 from django.test import TestCase  # noqa
-
-# Create your tests here.
 from datetime import datetime, timedelta
 import time
 from django.test import Client
 from django.urls import reverse  # noqa
 
-from constants import INDIAN_CITIES, TRAVEL_TYPE
-
-# from constants import TRAVEL_TYPE, INDIAN_CITIES
+from constants import INDIAN_CITIES, TRAVEL_TYPE, COUNTRY_CHOICES
 from trip.forms import UserTripCreationForm  # noqa
 from trip.helpers import (
     start_date_in_future,
@@ -23,10 +17,6 @@ from trip.helpers import (
     city_present_in_country,
     get_emergency_contacts,
 )
-
-# from trip.models import UserTrip, Trip
-
-
 from trip.models import Trip
 
 
@@ -158,10 +148,6 @@ class TestTripViews(TestCase):
             "user": user,
             "destination_city": [INDIAN_CITIES[0]],
             "destination_country": [("India", "India")],
-            # "trip": {
-            #     "destination_city": [INDIAN_CITIES[0]],
-            #     "destination_country": [("India", "India")],
-            # },
         }
 
         mock_form.return_value.cleaned_data = user_trip
@@ -171,6 +157,29 @@ class TestTripViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
         self.assertRedirects(response, "/trip/view/")
+
+        new_user_trip = {
+            "start_trip": ed,
+            "end_trip": (date_end + timedelta(days=1)).date(),
+            "travel_type": TRAVEL_TYPE[1],
+            "user": user,
+            "destination_city": [INDIAN_CITIES[-1]],
+            "destination_country": [("India", "India")],
+        }
+
+        mock_form.return_value.cleaned_data = new_user_trip
+        mock_form.return_value.usertrip_data = new_user_trip
+        response = self.client.post("/trip/create/", data=new_user_trip, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
+        message = list(get_messages(response.wsgi_request))[0].message
+        self.assertEqual(
+            message,
+            f"You have a trip to {INDIAN_CITIES[0]}, "
+            f"{COUNTRY_CHOICES[0]} within the current trip dates,"
+            f" please update that trip or plan for {INDIAN_CITIES[-1]}, "
+            f"{COUNTRY_CHOICES[0]} another time!",
+        )
 
     # This is kind of a placeholder. It's not very useful, but it's 12am
     # and I'm tired and I want coverage to be at 80. We need to find a way to
