@@ -45,3 +45,53 @@ def city_present_in_country(city, country):
         return True if city_tuple in ITALY_CITIES else False
     else:
         raise TypeError("Country not supported currently")
+
+
+def get_emergency_contacts(country):
+    if country == "India":
+        return {
+            'Medical': '102',
+            'Fire': '101',
+            'Police': '100, 103'
+        }
+    elif country == "United Kingdom":
+        return {
+            'Medical': '112, 999',
+            'Fire': '112, 999',
+            'Police': '112, 999'
+        }
+    elif country == "United States":
+        return {
+            'Medical': '911',
+            'Fire': '911',
+            'Police': '911'
+        }
+    elif country == "Canada":
+        return {
+            'Medical': '911',
+            'Fire': '911',
+            'Police': '911'
+        }
+    elif country == "Mexico":
+        return {
+            'Medical': '065',
+            'Fire': '068',
+            'Police': '060'
+        }
+    elif country == "Italy":
+        return {
+            'Medical': '112, 118',
+            'Fire': '112, 115',
+            'Police': '112, 113'
+        }
+    elif country == "France":
+        return {
+            'Medical': '112, 15',
+            'Fire': '112, 18',
+            'Police': '112, 17'
+        }
+    return {
+        'Medical': 'NA',
+        'Fire': 'NA',
+        'Police': 'NA'
+    }

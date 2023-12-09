@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.db.models import Q
 from . import forms
 from .models import Trip, UserTrip
+from .helpers import get_emergency_contacts
 from common import retrieve_none_or_403
 
 
@@ -80,7 +81,7 @@ def view_trips(request):
 
 @login_required
 def detail_trip(request, ut_id):
-    usertrip_instance = retrieve_none_or_403(
+    usertrip_instance: UserTrip = retrieve_none_or_403(
         request, UserTrip, ut_id, "You are not allowed to view this."
     )
 
@@ -88,7 +89,11 @@ def detail_trip(request, ut_id):
         messages.error(request, "Please select a valid trip")
         return redirect(reverse("trip:view_trips"))
 
-    context = {"usertrip_instance": usertrip_instance}
+    emergency_contacts = get_emergency_contacts(usertrip_instance.trip.destination_country)
+    context = {
+        "usertrip_instance": usertrip_instance,
+        "emergency_contacts": emergency_contacts
+    }
 
     return render(request, "trip/detail_trip.html", context)
 
