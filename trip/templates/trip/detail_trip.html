@@ -42,6 +42,24 @@
             <small><a href="{% url 'trip:view_trips' %}">View All Trips</a></small>
         </div>
     </div>
+    <br><br><br>
+    <div class="col-3">
+        <h3>Emergency Contact List</h3>
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-danger d-flex justify-content-between align-items-center">
+                Medical
+                <span class="badge bg-primary rounded-pill">{{ emergency_contacts.Medical }}</span>
+            </li>
+            <li class="list-group-item list-group-item-warning d-flex justify-content-between align-items-center">
+                Fire
+                <span class="badge bg-primary rounded-pill">{{ emergency_contacts.Fire }}</span>
+            </li>
+            <li class="list-group-item list-group-item-secondary d-flex justify-content-between align-items-center">
+                Police
+                <span class="badge bg-primary rounded-pill">{{ emergency_contacts.Police }}</span>
+            </li>
+        </ul>
+    </div>
 </div>
 
 
