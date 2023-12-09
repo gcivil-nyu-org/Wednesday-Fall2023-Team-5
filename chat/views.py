@@ -55,7 +55,6 @@ def threads_page(request):
 
 @login_required
 def messages_page(request, thread_id, other_user_id):
-
     threads = (
         Thread.objects.filter(Q(first_user=request.user) | Q(second_user=request.user))
         .prefetch_related("chat_message")
@@ -72,10 +71,7 @@ def messages_page(request, thread_id, other_user_id):
 
     other_user = User.objects.get(id=other_user_id)
 
-    chat_data = {
-        "thread_id": thread_id,
-        "other_user_instance": other_user
-    }
+    chat_data = {"thread_id": thread_id, "other_user_instance": other_user}
 
     print(request.user.id)
     print(other_user_id)
