@@ -89,10 +89,12 @@ def detail_trip(request, ut_id):
         messages.error(request, "Please select a valid trip")
         return redirect(reverse("trip:view_trips"))
 
-    emergency_contacts = get_emergency_contacts(usertrip_instance.trip.destination_country)
+    emergency_contacts = get_emergency_contacts(
+        usertrip_instance.trip.destination_country
+    )
     context = {
         "usertrip_instance": usertrip_instance,
-        "emergency_contacts": emergency_contacts
+        "emergency_contacts": emergency_contacts,
     }
 
     return render(request, "trip/detail_trip.html", context)

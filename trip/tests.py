@@ -21,7 +21,7 @@ from trip.helpers import (
     start_date_in_future,
     end_date_after_start_date,
     city_present_in_country,
-    get_emergency_contacts
+    get_emergency_contacts,
 )
 
 # from trip.models import UserTrip, Trip
@@ -185,68 +185,36 @@ class TestTripViews(TestCase):
 
     def test_emergency_contacts(self):
         self.assertEqual(
-            get_emergency_contacts('India'),
-            {
-                'Medical': '102',
-                'Fire': '101',
-                'Police': '100, 103'
-            }
+            get_emergency_contacts("India"),
+            {"Medical": "102", "Fire": "101", "Police": "100, 103"},
         )
         self.assertEqual(
-            get_emergency_contacts('United Kingdom'),
-            {
-                'Medical': '112, 999',
-                'Fire': '112, 999',
-                'Police': '112, 999'
-            }
+            get_emergency_contacts("United Kingdom"),
+            {"Medical": "112, 999", "Fire": "112, 999", "Police": "112, 999"},
         )
         self.assertEqual(
-            get_emergency_contacts('United States'),
-            {
-                'Medical': '911',
-                'Fire': '911',
-                'Police': '911'
-            }
+            get_emergency_contacts("United States"),
+            {"Medical": "911", "Fire": "911", "Police": "911"},
         )
         self.assertEqual(
-            get_emergency_contacts('Canada'),
-            {
-                'Medical': '911',
-                'Fire': '911',
-                'Police': '911'
-            }
+            get_emergency_contacts("Canada"),
+            {"Medical": "911", "Fire": "911", "Police": "911"},
         )
         self.assertEqual(
-            get_emergency_contacts('Mexico'),
-            {
-                'Medical': '065',
-                'Fire': '068',
-                'Police': '060'
-            }
+            get_emergency_contacts("Mexico"),
+            {"Medical": "065", "Fire": "068", "Police": "060"},
         )
         self.assertEqual(
-            get_emergency_contacts('Italy'),
-            {
-                'Medical': '112, 118',
-                'Fire': '112, 115',
-                'Police': '112, 113'
-            }
+            get_emergency_contacts("Italy"),
+            {"Medical": "112, 118", "Fire": "112, 115", "Police": "112, 113"},
         )
         self.assertEqual(
-            get_emergency_contacts('France'),
-            {
-                'Medical': '112, 15',
-                'Fire': '112, 18',
-                'Police': '112, 17'
-            }
+            get_emergency_contacts("France"),
+            {"Medical": "112, 15", "Fire": "112, 18", "Police": "112, 17"},
         )
         self.assertEqual(
-            get_emergency_contacts('Pakistan'),
-            {
-                'Medical': 'NA',
-                'Fire': 'NA',
-                'Police': 'NA'
-            }
+            get_emergency_contacts("Pakistan"),
+            {"Medical": "NA", "Fire": "NA", "Police": "NA"},
         )
 
     def test_city_present_in_country(self):
