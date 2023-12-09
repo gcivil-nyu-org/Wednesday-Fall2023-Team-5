@@ -1,4 +1,5 @@
 import json
+import logging
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
@@ -108,6 +109,8 @@ class ChatConsumer(WebsocketConsumer):
                 "thread_id": thread_id,
                 "send_to": receiving_user_id,
                 "user_name": sending_user_instance.username,
+                "first_name": sending_user_instance.first_name,
+                "last_initial": sending_user_instance.last_name[0]
             },
         )
         print("user name: " + sending_user_instance.username)
@@ -120,10 +123,14 @@ class ChatConsumer(WebsocketConsumer):
                 "thread_id": thread_id,
                 "send_to": receiving_user_id,
                 "user_name": sending_user_instance.username,
+                "first_name": sending_user_instance.first_name,
+                "last_initial": sending_user_instance.last_name[0]
             },
         )
 
     def chat_message(self, event):
+        logger = logging.getLogger()
+        logger.info(event["last_initial"])
         self.send(
             text_data=json.dumps(
                 {
@@ -133,6 +140,8 @@ class ChatConsumer(WebsocketConsumer):
                     "thread_id": event["thread_id"],
                     "send_to": event["send_to"],
                     "user_name": event["user_name"],
+                    "first_name": event["first_name"],
+                    "last_initial": event["last_initial"]
                 }
             )
         )

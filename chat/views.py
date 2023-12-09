@@ -1,10 +1,8 @@
 import json
 
-# from django.contrib.auth.models import User
-
 # import logging
 
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
@@ -57,6 +55,13 @@ def threads_page(request):
 
 @login_required
 def messages_page(request, thread_id, other_user_id):
+
+    threads = (
+        Thread.objects.filter(Q(first_user=request.user) | Q(second_user=request.user))
+        .prefetch_related("chat_message")
+        .order_by("timestamp")
+    )
+
     message_history = ChatMessage.objects.filter(thread=thread_id)
 
     json_data = {
@@ -65,9 +70,21 @@ def messages_page(request, thread_id, other_user_id):
         "self_user_id": request.user.id,
     }
 
+    other_user = User.objects.get(id=other_user_id)
+
+    chat_data = {
+        "thread_id": thread_id,
+        "other_user_instance": other_user
+    }
+
     print(request.user.id)
     print(other_user_id)
 
-    context = {"dump": json.dumps(json_data), "message_history": message_history}
+    context = {
+        "dump": json.dumps(json_data),
+        "chat_data": chat_data,
+        "message_history": message_history,
+        "threads": threads,
+    }
 
     return render(request, "chat/message_room.html", context)
