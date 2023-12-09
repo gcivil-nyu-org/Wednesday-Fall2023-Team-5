@@ -1,18 +1,87 @@
 {% extends 'home_default/base.html' %}
 {% load static %}
 {% block content %}
-<div class="container">
-    <div class="row" id="chat-area-row">
-        <div class="col-6" id="chat-log">
-        {% for curr_message in message_history %}
-            <p class="text-start">{{ curr_message.sending_user.username }}: {{ curr_message.message }}</p>
-        {% endfor %}
+
+<style>
+    a.nav-link {
+        color: gray;
+        font-size: 18px;
+        padding: 0;
+    }
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid #e84118;
+        padding: 2px;
+        flex: none;
+    }
+
+    input:focus {
+        outline: 0px !important;
+        box-shadow: none !important;
+    }
+
+    .card-text {
+        width: auto;
+        border: 3px solid #4d4d4d;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="container mt-6">
+    <div class="row" id="outermost-row">
+        <div class="col-2 bg-dark-subtle" id="threads-col-outer">
+            <div class="row" id="threads-row-header">
+                <div class="col bg-body-tertiary" id="threads-col-header">
+                    <h3>Chat With</h3>
+                </div>
+            </div>
+            <div class="row" id="threads-objects-list">
+                <div class="col" id="threads-objects-list-col">
+                {% for thread in threads %}
+                    <div class="row" id="individual-thread-row_{{ request.user.id }}_{{ forloop.counter }}">
+                   {% if thread.first_user == request.user %}
+                       <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.second_user.id %}" class="chat-logs-links" id="chat_link_{{ thread.id }}">
+                          {{ thread.second_user.first_name }} {{ thread.second_user.last_name|slice:":1" }}.
+                       </a>
+                   {% else %}
+                       <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.first_user.id %}" class="chat-logs-links" id="chat_link_{{ thread.id }}">
+                           {{ thread.first_user.first_name }} {{ thread.first_user.last_name|slice:":1" }}.
+                       </a>
+                   {% endif %}
+                    <br>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="row justify-content-center" id="input-area-row">
-        <div class="col">
-            <input id="chat-message-input" type="text" size="100"><br>
-            <input id="chat-message-submit" type="button" value="Send">
+        <div class="col-10 bg-body-secondary" id="chat-col-outer">
+            <div class="row" id="chat-row-header">
+                <div class="col bg-success-subtle" id="chat-col-header">
+                    <p>{{ chat_data.other_user_instance.first_name }} {{ chat_data.other_user_instance.last_name|slice:":1" }}.</p>
+                </div>
+            </div>
+            <div class="row" id="chat-row-log">
+                <div class="col bg-danger-subtle" id="chat-col-log">
+                    <div id="chat-log">
+                    {% for curr_message in message_history %}
+                        <div class="d-flex align-items-baseline text-end justify-content-end mb-4">
+                            <div class="card card-text p-2 px-3 m-1 d-inline-block">
+                                {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="chat-row-send">
+                <div class="col d-flex bg-info-subtle justify-content-between" id="chat-col-input">
+                    <input class="flex-grow-1" id="chat-message-input" type="text"><br>
+                    <button class="btn-primary" id="chat-message-submit" type="submit">Send</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -39,10 +108,14 @@
         if (data.type === 'chat') {
             console.log(data.message);
             user = data.user_name.concat(": ");
-            concatMessage += data.user_name + ": " + data.message;
+            concatMessage += data.first_name + " " + data.last_initial + ". : " + data.message;
             console.log("concat - " + concatMessage);
             document.querySelector('#chat-log').insertAdjacentHTML('beforeend', `
-                <p>${concatMessage}</p>
+                <div class="d-flex align-items-baseline text-end justify-content-end mb-4">
+                    <div class="card card-text d-flex p-2 px-3 m-1">
+                        ${concatMessage}
+                    </div>
+                </div>
             `);
         }
     }
@@ -76,6 +149,5 @@
 
         messageInputDom.value = '';
     };
-
 </script>
 {% endblock content %}
