@@ -1,31 +1,22 @@
-# import json
 import random
 from unittest import mock
 
 from django.contrib.auth.models import User
-
-# from django.db.models import Choices
+from django.contrib.messages import get_messages
 from django.test import TestCase  # noqa
-
-# Create your tests here.
 from datetime import datetime, timedelta
 import time
 from django.test import Client
 from django.urls import reverse  # noqa
 
-from constants import INDIAN_CITIES, TRAVEL_TYPE
-
-# from constants import TRAVEL_TYPE, INDIAN_CITIES
+from constants import INDIAN_CITIES, TRAVEL_TYPE, COUNTRY_CHOICES
 from trip.forms import UserTripCreationForm  # noqa
 from trip.helpers import (
     start_date_in_future,
     end_date_after_start_date,
     city_present_in_country,
+    get_emergency_contacts,
 )
-
-# from trip.models import UserTrip, Trip
-
-
 from trip.models import Trip
 
 
@@ -157,10 +148,6 @@ class TestTripViews(TestCase):
             "user": user,
             "destination_city": [INDIAN_CITIES[0]],
             "destination_country": [("India", "India")],
-            # "trip": {
-            #     "destination_city": [INDIAN_CITIES[0]],
-            #     "destination_country": [("India", "India")],
-            # },
         }
 
         mock_form.return_value.cleaned_data = user_trip
@@ -170,6 +157,29 @@ class TestTripViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
         self.assertRedirects(response, "/trip/view/")
+
+        new_user_trip = {
+            "start_trip": ed,
+            "end_trip": (date_end + timedelta(days=1)).date(),
+            "travel_type": TRAVEL_TYPE[1],
+            "user": user,
+            "destination_city": [INDIAN_CITIES[-1]],
+            "destination_country": [("India", "India")],
+        }
+
+        mock_form.return_value.cleaned_data = new_user_trip
+        mock_form.return_value.usertrip_data = new_user_trip
+        response = self.client.post("/trip/create/", data=new_user_trip, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
+        message = list(get_messages(response.wsgi_request))[0].message
+        self.assertEqual(
+            message,
+            f"You have a trip to {INDIAN_CITIES[0]}, "
+            f"{COUNTRY_CHOICES[0]} within the current trip dates,"
+            f" please update that trip or plan for {INDIAN_CITIES[-1]}, "
+            f"{COUNTRY_CHOICES[0]} another time!",
+        )
 
     # This is kind of a placeholder. It's not very useful, but it's 12am
     # and I'm tired and I want coverage to be at 80. We need to find a way to
@@ -181,3 +191,78 @@ class TestTripViews(TestCase):
         valid_results = [403, 200, 302]
         self.assertIn(response.status_code, valid_results)
         self.assertTemplateUsed(response=None, template_name="trip/detail_trip.html")
+
+    def test_emergency_contacts(self):
+        self.assertEqual(
+            get_emergency_contacts("India"),
+            {"Medical": "102", "Fire": "101", "Police": "100, 103"},
+        )
+        self.assertEqual(
+            get_emergency_contacts("United Kingdom"),
+            {"Medical": "112, 999", "Fire": "112, 999", "Police": "112, 999"},
+        )
+        self.assertEqual(
+            get_emergency_contacts("United States"),
+            {"Medical": "911", "Fire": "911", "Police": "911"},
+        )
+        self.assertEqual(
+            get_emergency_contacts("Canada"),
+            {"Medical": "911", "Fire": "911", "Police": "911"},
+        )
+        self.assertEqual(
+            get_emergency_contacts("Mexico"),
+            {"Medical": "065", "Fire": "068", "Police": "060"},
+        )
+        self.assertEqual(
+            get_emergency_contacts("Italy"),
+            {"Medical": "112, 118", "Fire": "112, 115", "Police": "112, 113"},
+        )
+        self.assertEqual(
+            get_emergency_contacts("France"),
+            {"Medical": "112, 15", "Fire": "112, 18", "Police": "112, 17"},
+        )
+        self.assertEqual(
+            get_emergency_contacts("Pakistan"),
+            {"Medical": "NA", "Fire": "NA", "Police": "NA"},
+        )
+
+    def test_city_present_in_country(self):
+        city = ["Bangalore"]
+        country = ["India"]
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+        city = ["Chicago"]
+        country = ["United States"]
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+        city = ["London"]
+        country = ["United Kingdom"]
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+        city = ["Cancun"]
+        country = ["Mexico"]
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+        city = ["Toronto"]
+        country = ["Canada"]
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+        city = ["Paris"]
+        country = ["France"]
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+        city = ["Florence"]
+        country = ["Italy"]
+        x = city_present_in_country(city, country)
+        self.assertTrue(x)
+
+    def test_city_not_present_in_country(self):
+        city = ["Florence"]
+        country = ["UAE"]
+        self.assertRaises(TypeError, lambda: city_present_in_country(city, country))
