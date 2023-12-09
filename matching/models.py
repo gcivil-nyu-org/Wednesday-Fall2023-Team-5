@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from django.db import models
@@ -61,8 +62,28 @@ class UserTripMatches(models.Model):
         logger.info("In the save function Match status:")
         logger.info(self.match_status)
         if self.match_status == MatchStatusEnum.MATCHED.value:
-            t, _ = Thread.objects.get_or_create(
-                first_user=self.sender, second_user=self.receiver
-            )
+            sender = User.objects.get(id=self.sender.id)
+            sender_two = User.objects.get(id=self.receiver.id)
+            t = Thread.objects.filter(first_user_id=sender.id)
+            u = Thread.objects.filter(first_user_id=sender_two.id)
+            if not t and not u:
+                Thread.objects.create(
+                    first_user=self.sender,
+                    second_user=self.receiver,
+                    updated=datetime.datetime.utcnow(),
+                )
+
             print(t)
+        elif self.match_status == MatchStatusEnum.UNMATCHED.value:
+            sender = User.objects.get(id=self.sender.id)
+            sender_two = User.objects.get(id=self.receiver.id)
+            t = Thread.objects.filter(first_user_id=sender.id)
+            u = Thread.objects.filter(first_user_id=sender_two.id)
+            if t:
+                print(t)
+                t.delete()
+            if u:
+                print(u)
+                u.delete()
+            print("Deleting thread if unmatched")
         return super().save(*args, **kwargs)
