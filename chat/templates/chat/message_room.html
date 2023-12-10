@@ -65,9 +65,18 @@
                 </div>
             </div>
             <div class="row" id="chat-row-log">
+
                 <div class="col bg-danger-subtle" id="chat-col-log">
                     <div id="chat-log">
                     {% for curr_message in message_history %}
+                        <div class="position-relative avatar">
+                        <img src="https://nextbootstrap.netlify.app/assets/images/profiles/1.jpg"
+                            class="img-fluid rounded-circle" alt="">
+                        <span
+                            class="position-absolute bottom-0 start-100 translate-middle p-1 bg-success border border-light rounded-circle">
+                            <span class="visually-hidden">New alerts</span>
+                        </span>
+                        </div>
                         <div class="d-flex align-items-baseline text-end justify-content-end mb-4">
                             <div class="card card-text p-2 px-3 m-1 d-inline-block">
                                 {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
