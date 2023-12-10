@@ -87,3 +87,6 @@ class UserImages(models.Model):
         output_size = (400, 400)
         existing_pic.thumbnail(output_size)
         existing_pic.save(self.image.path)
+
+    def __str__(self):
+        return f"Image: {self.image}"

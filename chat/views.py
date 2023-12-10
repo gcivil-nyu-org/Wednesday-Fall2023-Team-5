@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
+from user_profile.models import UserProfile, UserImages
+
 # from common import db_retrieve_or_none
 # from matching.models import UserTripMatches
 
@@ -62,16 +64,30 @@ def messages_page(request, thread_id, other_user_id):
     )
 
     message_history = ChatMessage.objects.filter(thread=thread_id)
+    print(message_history.values())
+    other_user = User.objects.get(id=other_user_id)
+    sender_image = UserImages.objects.filter(Q(user_profile_id=request.user.id))
+    sender_image_url = ""
+    receiver_image_url = ""
+    sender_instances = [UserImages(**item) for item in sender_image.values()]
+    if len(sender_instances) > 0:
+        sender_image_url = sender_instances[0].get_absolute_url()
+    receiver_image = UserImages.objects.filter(user_profile_id=other_user_id)
+    receiver_instances = [UserImages(**item) for item in receiver_image.values()]
+    if len(receiver_instances) > 0:
+        receiver_image_url = receiver_instances[0].get_absolute_url()
 
     json_data = {
         "thread_id": thread_id,
         "other_user_id": other_user_id,
         "self_user_id": request.user.id,
+        "sender_image_url": sender_image_url,
+        "receiver_image_url":receiver_image_url
     }
-
-    other_user = User.objects.get(id=other_user_id)
-
-    chat_data = {"thread_id": thread_id, "other_user_instance": other_user}
+    chat_data = {
+        "thread_id": thread_id,
+        "other_user_instance": other_user
+    }
 
     print(request.user.id)
     print(other_user_id)

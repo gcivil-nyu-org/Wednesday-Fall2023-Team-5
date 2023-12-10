@@ -124,7 +124,8 @@ class ChatConsumer(WebsocketConsumer):
                 "send_to": receiving_user_id,
                 "user_name": sending_user_instance.username,
                 "first_name": sending_user_instance.first_name,
-                "last_initial": sending_user_instance.last_name[0],
+                "last_initial": sending_user_instance.last_name[0]
+
             },
         )
 
@@ -141,7 +142,7 @@ class ChatConsumer(WebsocketConsumer):
                     "send_to": event["send_to"],
                     "user_name": event["user_name"],
                     "first_name": event["first_name"],
-                    "last_initial": event["last_initial"],
+                    "last_initial": event["last_initial"]
                 }
             )
         )

@@ -11,4 +11,5 @@ def slice_list(arr, start, end):
 
 @register.simple_tag(name="get_by_index")
 def get_by_index(arr, ind):
+    print("Accessed")
     return arr[ind]
