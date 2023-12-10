@@ -17,6 +17,7 @@
         border: 2px solid #e84118;
         padding: 2px;
         flex: none;
+        overflow: hidden;
     }
 
     input:focus {
@@ -71,13 +72,13 @@
                     {% for curr_message in message_history %}
 
                         <div class="d-flex align-items-baseline text-end justify-content-end mb-4">
-                        <div class="position-relative avatar">
-                        <img src="https://nextbootstrap.netlify.app/assets/images/profiles/1.jpg"
-                            class="img-fluid rounded-circle" alt="">
+                            <div class="position-relative avatar">
+                                <img src="{{curr_message.sending_image_url }}" class="img-fluid rounded-circle" alt="image">
                         <span
                             class="position-absolute bottom-0 start-100 translate-middle p-1 bg-success border border-light rounded-circle">
                             <span class="visually-hidden">New alerts</span>
                         </span>
+
                         </div>
                             <div class="card card-text p-2 px-3 m-1 d-inline-block">
                                 {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
@@ -103,7 +104,9 @@
     let threadId = jsonData["thread_id"];
     let selfUserId = jsonData["self_user_id"];
     let otherUserId = jsonData["other_user_id"];
-
+    let senderUrl = jsonData["sender_image_url"];
+    let receiverUrl = jsonData["receiver_image_url"];
+    console.log(senderUrl)
     let url = `ws://${window.location.host}/ws/socket-server/${threadId}`;
 
     let chatSocket = new WebSocket(url);
@@ -115,7 +118,9 @@
     chatSocket.onmessage = function(e) {
         console.log('message', e);
         let data = JSON.parse(e.data);
+        console.log(data)
         let concatMessage = "";
+        console.log(senderUrl)
         if (data.type === 'chat') {
             console.log(data.message);
             user = data.user_name.concat(": ");
@@ -124,7 +129,7 @@
             document.querySelector('#chat-log').insertAdjacentHTML('beforeend', `
                 <div class="d-flex align-items-baseline text-end justify-content-end mb-4">
                      <div class="position-relative avatar">
-                        <img src="https://nextbootstrap.netlify.app/assets/images/profiles/1.jpg"
+                        <img src = ${senderUrl}
                             class="img-fluid rounded-circle" alt="">
                         <span
                             class="position-absolute bottom-0 start-100 translate-middle p-1 bg-success border border-light rounded-circle">
