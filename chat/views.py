@@ -82,12 +82,9 @@ def messages_page(request, thread_id, other_user_id):
         "other_user_id": other_user_id,
         "self_user_id": request.user.id,
         "sender_image_url": sender_image_url,
-        "receiver_image_url":receiver_image_url
+        "receiver_image_url": receiver_image_url,
     }
-    chat_data = {
-        "thread_id": thread_id,
-        "other_user_instance": other_user
-    }
+    chat_data = {"thread_id": thread_id, "other_user_instance": other_user}
 
     print(request.user.id)
     print(other_user_id)

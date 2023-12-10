@@ -4,7 +4,10 @@ import logging
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import User
+from django.db.models import Q
+
 from common import db_retrieve_or_none
+from user_profile.models import UserImages
 from .models import Thread, ChatMessage
 
 # class ChatConsumer(WebsocketConsumer):
@@ -124,8 +127,7 @@ class ChatConsumer(WebsocketConsumer):
                 "send_to": receiving_user_id,
                 "user_name": sending_user_instance.username,
                 "first_name": sending_user_instance.first_name,
-                "last_initial": sending_user_instance.last_name[0]
-
+                "last_initial": sending_user_instance.last_name[0],
             },
         )
 
@@ -142,7 +144,7 @@ class ChatConsumer(WebsocketConsumer):
                     "send_to": event["send_to"],
                     "user_name": event["user_name"],
                     "first_name": event["first_name"],
-                    "last_initial": event["last_initial"]
+                    "last_initial": event["last_initial"],
                 }
             )
         )
@@ -157,6 +159,18 @@ class ChatConsumer(WebsocketConsumer):
         return db_retrieve_or_none(Thread, thread_id)
 
     def create_chatmessage_object(self, thread, sending_user, message):
-        ChatMessage.objects.create(
-            thread=thread, sending_user=sending_user, message=message
+        sending_image_url = ""
+        sender_image = UserImages.objects.filter(
+            Q(user_profile_id=sending_user.id)
         )
+        sender_instances = [UserImages(**item) for item in sender_image.values()]
+        if len(sender_instances) > 0:
+            sending_image_url = sender_instances[0].get_absolute_url()
+            print(sending_image_url)
+        ChatMessage.objects.create(
+            thread=thread,
+            sending_user=sending_user,
+            message=message,
+            sending_image_url=sending_image_url
+        )
+

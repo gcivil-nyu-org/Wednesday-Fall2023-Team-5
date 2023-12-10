@@ -49,11 +49,4 @@ class ChatMessage(models.Model):
         if self._state.adding:
             self.thread.updated = datetime.utcnow()
             self.thread.save()
-            sender_image_url = ""
-            sender_image = UserImages.objects.filter(Q(user_profile_id=self.thread.first_user.id))
-            sender_instances = [UserImages(**item) for item in sender_image.values()]
-            if len(sender_instances) > 0:
-                self.sending_image_url = sender_instances[0].get_absolute_url()
-            else:
-                self.sending_image_url = sender_image_url
         return super(ChatMessage, self).save(*args, **kwargs)
