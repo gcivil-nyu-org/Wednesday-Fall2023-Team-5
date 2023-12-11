@@ -101,7 +101,7 @@ class ChatConsumer(WebsocketConsumer):
 
         target_chat_room = f"user_chatroom_{receiving_user_id}_thread_{thread_id}"
 
-        self.create_chatmessage_object(thread_instance, sending_user_instance, message)
+        self.create_chatmessage_object(thread_instance, sending_user_instance, message, receiving_user_instance)
 
         async_to_sync(self.channel_layer.group_send)(
             self.chat_room,
@@ -158,19 +158,23 @@ class ChatConsumer(WebsocketConsumer):
     def get_thread(self, thread_id):
         return db_retrieve_or_none(Thread, thread_id)
 
-    def create_chatmessage_object(self, thread, sending_user, message):
+    def create_chatmessage_object(self, thread, sending_user, message, receiving_user):
         sending_image_url = ""
-        sender_image = UserImages.objects.filter(
-            Q(user_profile_id=sending_user.id)
-        )
+        receiving_image_url = ""
+        sender_image = UserImages.objects.filter(Q(user_profile_id=sending_user.id))
+        receiver_image = UserImages.objects.filter(Q(user_profile=receiving_user.id))
         sender_instances = [UserImages(**item) for item in sender_image.values()]
+        receiver_instances = [UserImages(**item) for item in receiver_image.values()]
         if len(sender_instances) > 0:
             sending_image_url = sender_instances[0].get_absolute_url()
             print(sending_image_url)
+        if len(receiver_instances) > 0:
+            receiving_image_url = receiver_instances[0].get_absolute_url()
+            print(receiving_image_url)
         ChatMessage.objects.create(
             thread=thread,
             sending_user=sending_user,
             message=message,
-            sending_image_url=sending_image_url
+            sending_image_url=sending_image_url,
+            receiving_image_url=receiving_image_url
         )
-
