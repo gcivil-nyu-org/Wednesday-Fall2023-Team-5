@@ -9,6 +9,7 @@
     <link rel="shortcut icon" href="{% static 'home_default/site_images/favicon.ico' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'home_default/css/bootstrap.css' %}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <link rel="stylesheet" href="{% static 'home_default/css/sc-custom-colors.css' %}" />
 </head>
 <body>
 <header>
@@ -38,10 +39,10 @@
                         <a class="nav-link active" href="{% url 'trip:create_trip' %}">Plan a Trip</a>
                     </li>
                     <li class ="nav-item">
-                        <a class="nav-link active" href="{% url 'user_profile:logout' %}">Log Out</a>
+                        <a class="nav-link active" href="{% url 'chat:threads_page' %}">Chat</a>
                     </li>
                     <li class ="nav-item">
-                        <a class="nav-link active" href="{% url 'chat:threads_page' %}">Chat</a>
+                        <a class="nav-link active" href="{% url 'user_profile:logout' %}">Log Out</a>
                     </li>
                 </ul>
             </div>
