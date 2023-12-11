@@ -2,10 +2,6 @@ from django.db import models  # noqa
 from django.contrib.auth.models import User
 from datetime import datetime
 
-from django.db.models import Q
-
-from user_profile.models import UserImages
-
 
 # Create your models here.
 
@@ -42,6 +38,7 @@ class ChatMessage(models.Model):
     )
     sending_user = models.ForeignKey(User, on_delete=models.CASCADE)
     sending_image_url = models.CharField(default="")
+    receiving_image_url = models.CharField(default="")
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 

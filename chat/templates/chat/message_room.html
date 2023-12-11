@@ -30,6 +30,15 @@
         border: 3px solid #4d4d4d;
         border-radius: 8px;
     }
+    .sent-to-client {
+    justify-content: flex-start;
+    align-items: baseline;
+    }
+
+    .sent-by-client {
+    justify-content: flex-end;
+    align-items: baseline;
+    }
 </style>
 
 <div class="container mt-6">
@@ -42,20 +51,22 @@
             </div>
             <div class="row" id="threads-objects-list">
                 <div class="col" id="threads-objects-list-col">
-                {% for thread in threads %}
+                    {% for thread in threads %}
                     <div class="row" id="individual-thread-row_{{ request.user.id }}_{{ forloop.counter }}">
-                   {% if thread.first_user == request.user %}
-                       <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.second_user.id %}" class="chat-logs-links" id="chat_link_{{ thread.id }}">
-                          {{ thread.second_user.first_name }} {{ thread.second_user.last_name|slice:":1" }}.
-                       </a>
-                   {% else %}
-                       <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.first_user.id %}" class="chat-logs-links" id="chat_link_{{ thread.id }}">
-                           {{ thread.first_user.first_name }} {{ thread.first_user.last_name|slice:":1" }}.
-                       </a>
-                   {% endif %}
-                    <br>
+                        {% if thread.first_user == request.user %}
+                        <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.second_user.id %}"
+                           class="chat-logs-links" id="chat_link_{{ thread.id }}">
+                            {{ thread.second_user.first_name }} {{ thread.second_user.last_name|slice:":1" }}.
+                        </a>
+                        {% else %}
+                        <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.first_user.id %}"
+                           class="chat-logs-links" id="chat_link_{{ thread.id }}">
+                            {{ thread.first_user.first_name }} {{ thread.first_user.last_name|slice:":1" }}.
+                        </a>
+                        {% endif %}
+                        <br>
                     </div>
-                {% endfor %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -69,25 +80,47 @@
 
                 <div class="col bg-danger-subtle" id="chat-col-log">
                     <div id="chat-log">
-                    {% for curr_message in message_history %}
 
-                        <div class="d-flex align-items-baseline text-end justify-content-end mb-4">
+                        {% for curr_message in message_history %}
+                        {% if curr_message.sending_user == request.user %}
+
+                            <div class="d-flex sent-by-client">
                             <div class="position-relative avatar">
-                                <img src="{{curr_message.sending_image_url }}" class="img-fluid rounded-circle" alt="image">
-                        <span
-                            class="position-absolute bottom-0 start-100 translate-middle p-1 bg-success border border-light rounded-circle">
-                            <span class="visually-hidden">New alerts</span>
-                        </span>
-
-                        </div>
-                            <div class="card card-text p-2 px-3 m-1 d-inline-block">
-                                {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
+                                <img src="{{curr_message.sending_image_url }}" class="img-fluid rounded-circle"
+                                     alt="image">
                             </div>
-                        </div>
-                    {% endfor %}
+                            </div>
+                              <div class="d-flex sent-by-client">
+                                <div class="card card-text p-2 px-3 m-1 d-inline-block">
+                                    {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
+                                </div>
+                            </div>
+
+
+                            {% else %}
+
+
+                            <div class="d-flex sent-to-client">
+                            <div class="position-relative avatar">
+                                <img src="{{curr_message.sending_image_url }}" class="img-fluid rounded-circle"
+                                     alt="image">
+                            </div>
+                            </div>
+
+                            <div class="d-flex sent-to-client">
+                                <div class="card card-text p-2 px-3 m-1 d-inline-block">
+                                    {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
+                                </div>
+                            </div>
+
+                            {% endif %}
+
+
+
+                        {% endfor %}
                     </div>
                 </div>
-            </div>
+                    </div>
             <div class="row" id="chat-row-send">
                 <div class="col d-flex bg-info-subtle justify-content-between" id="chat-col-input">
                     <input class="flex-grow-1" id="chat-message-input" type="text"><br>
@@ -106,7 +139,11 @@
     let otherUserId = jsonData["other_user_id"];
     let senderUrl = jsonData["sender_image_url"];
     let receiverUrl = jsonData["receiver_image_url"];
-    console.log(senderUrl)
+    let chatLog = document.querySelector('#chat-log');
+    console.log("Sender URL: ");
+    console.log(senderUrl);
+    console.log("Receiver URL: ");
+    console.log(receiverUrl);
     let url = `ws://${window.location.host}/ws/socket-server/${threadId}`;
 
     let chatSocket = new WebSocket(url);
@@ -121,27 +158,51 @@
         console.log(data)
         let concatMessage = "";
         console.log(senderUrl)
-
+        letInsert = ``;
         if (data.type === 'chat') {
             console.log(data.message);
             user = data.user_name.concat(": ");
             concatMessage += data.first_name + " " + data.last_initial + ". : " + data.message;
             console.log("concat - " + concatMessage);
-            document.querySelector('#chat-log').insertAdjacentHTML('beforeend', `
-                <div class="d-flex align-items-baseline text-end justify-content-end mb-4">
-                     <div class="position-relative avatar">
-                        <img src = ${senderUrl}
-                            class="img-fluid rounded-circle" alt="">
-                        <span
-                            class="position-absolute bottom-0 start-100 translate-middle p-1 bg-success border border-light rounded-circle">
-                            <span class="visually-hidden">New alerts</span>
-                        </span>
-                        </div>
-                    <div class="card card-text d-flex p-2 px-3 m-1">
-                        ${concatMessage}
-                    </div>
+            console.log(`Sent by: ${selfUserId}; data.sent_by: ${data.sent_by}`);
+            if (selfUserId === data.sent_by) {
+            toInsert = `
+
+               <div class="d-flex sent-by-client">
+               <div class="position-relative avatar">
+                        <img src = ${senderUrl} class="img-fluid rounded-circle" alt="">
                 </div>
-            `);
+                 </div>
+                <div class="d-flex sent-by-client">
+                <div class="card card-text p-2 px-3 m-1 d-inline-block">
+                    ${concatMessage}
+
+                </div>
+                </div>
+
+                 `;
+            } else {
+                toInsert = `
+
+                       <div class="d-flex sent-to-client">
+                       <div class="position-relative avatar">
+                            <img src = ${senderUrl} class="img-fluid rounded-circle" alt="">
+
+                       </div>
+                       </div>
+                       <div class="d-flex sent-to-client">
+                        <div class="card card-text p-2 px-3 m-1 d-inline-block">
+                            ${concatMessage}
+                        </div>
+                        </div>
+
+
+                    `;
+
+            }
+
+            chatLog.insertAdjacentHTML('beforeend', toInsert);
+
         }
     }
 
