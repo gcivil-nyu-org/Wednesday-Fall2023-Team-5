@@ -4,9 +4,11 @@ import logging
 from django.db import models
 from enum import Enum
 
+from django.db.models import Q
+
 from chat.models import Thread
 from trip.models import UserTrip
-from user_profile.models import User
+from user_profile.models import User, UserImages
 
 
 class MatchStatusEnum(Enum):
@@ -66,11 +68,24 @@ class UserTripMatches(models.Model):
             sender_two = User.objects.get(id=self.receiver.id)
             t = Thread.objects.filter(first_user_id=sender.id)
             u = Thread.objects.filter(first_user_id=sender_two.id)
+
             if not t and not u:
+                sender_image = UserImages.objects.filter(Q(user_profile_id=self.sender.id))
+                sender_image_url = ""
+                receiver_image_url = ""
+                sender_instances = [UserImages(**item) for item in sender_image.values()]
+                if len(sender_instances) > 0:
+                    sender_image_url = sender_instances[0].get_absolute_url()
+                receiver_image = UserImages.objects.filter(user_profile_id=self.receiver.id)
+                receiver_instances = [UserImages(**item) for item in receiver_image.values()]
+                if len(receiver_instances) > 0:
+                    receiver_image_url = receiver_instances[0].get_absolute_url()
                 Thread.objects.create(
                     first_user=self.sender,
                     second_user=self.receiver,
                     updated=datetime.datetime.utcnow(),
+                    first_user_image_url=sender_image_url,
+                    second_user_image_url=receiver_image_url
                 )
 
             print(t)

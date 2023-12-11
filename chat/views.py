@@ -64,18 +64,21 @@ def messages_page(request, thread_id, other_user_id):
     )
 
     message_history = ChatMessage.objects.filter(thread=thread_id)
+    thread_instances = [Thread(**item) for item in threads.values()]
+
     print(message_history.values())
     other_user = User.objects.get(id=other_user_id)
-    sender_image = UserImages.objects.filter(Q(user_profile_id=request.user.id))
+
     sender_image_url = ""
     receiver_image_url = ""
-    sender_instances = [UserImages(**item) for item in sender_image.values()]
-    if len(sender_instances) > 0:
-        sender_image_url = sender_instances[0].get_absolute_url()
-    receiver_image = UserImages.objects.filter(user_profile_id=other_user_id)
-    receiver_instances = [UserImages(**item) for item in receiver_image.values()]
-    if len(receiver_instances) > 0:
-        receiver_image_url = receiver_instances[0].get_absolute_url()
+
+    if len(thread_instances) > 0:
+        if thread_instances[0].first_user == request.user :
+            sender_image_url = thread_instances[0].first_user_image_url
+            receiver_image_url = thread_instances[0].second_user_image_url
+        else:
+            sender_image_url = thread_instances[0].second_user_image_url
+            receiver_image_url = thread_instances[0].first_user_image_url
 
     json_data = {
         "thread_id": thread_id,
@@ -87,8 +90,9 @@ def messages_page(request, thread_id, other_user_id):
     chat_data = {"thread_id": thread_id, "other_user_instance": other_user}
 
     print(request.user.id)
+    print(sender_image_url)
     print(other_user_id)
-
+    print(receiver_image_url)
     context = {
         "dump": json.dumps(json_data),
         "chat_data": chat_data,
