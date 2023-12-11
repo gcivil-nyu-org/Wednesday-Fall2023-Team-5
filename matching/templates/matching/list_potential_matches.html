@@ -1,40 +1,51 @@
 {% extends "home_default/base.html" %}
+{% load user_profile_custom_tags %}
+{% load static %}
 {% block content %}
 <div class="container">
     <h1>Your Potential Matches:</h1>
     {% if matching_users %}
-        {% for matching_user in matching_users %}
-            <div class="col-3">
-                <div class="row-gap-3">
-                    <h4>FirstName: <i>{{ matching_user.user.first_name }}</i></h4>
-                    <h4>LastName: <i>{{ matching_user.user.last_name }}</i></h4>
-                    <h4>Email: <i>{{ matching_user.user.email }}</i></h4>
-                    {% if matching_user.user.userprofile.bio %}
-                        <h5>Bio: {{ matching_user.user.userprofile.bio }}</h5>
-                    {% endif %}
-                </div>
-                <div>
-                    <form action="
-                            {% if not matching_user.sent_match %}
-                                {% url 'matching:send_request' utrip_id=utrip_id %}
+        <div class="container">
+            <div class="row justify-content-start">
+                {% for matching_user in matching_users %}
+                    <div class="col-md-3">
+                        <div class="card my-3">
+                            {% if images %}
+                                {% get_by_index images 0 as first_image %}
+                                <img src="{{ first_image.get_absolute_url }}" alt="image">
                             {% else %}
-                                {% url 'matching:cancel_request' utrip_id=utrip_id %}
-                            {% endif %}"
-                        method="post"
-                    >
-                        {% csrf_token %}
-                        <input type="hidden" name="receiver_uid" value="{{ matching_user.user.id }}">
-                        <input type="hidden" name="receiver_utrip_id" value="{{ matching_user.receiver_utrip_id }}">
-                        {% if not matching_user.sent_match %}
-                             <button type="submit" class="btn btn-info btn-rounded">Send Request</button>
-                        {% else %}
-                            <button type="submit" class="btn btn-rounded btn-secondary">Cancel Request</button>
-                        {% endif %}
-                    </form>
-                </div>
-                <br><br>
+                                <img src="/media/default_avatar.png" alt="image">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5>First Name: {{ matching_user.user.first_name }}</h5>
+                                <h5>Last Name: {{ matching_user.user.last_name }}</h5>
+                                <h5>Email: <i>{{ matching_user.user.email }}</i></h5>
+                                {% if matching_user.user.userprofile.bio %}
+                                    <h5>Bio: {{ matching_user.user.userprofile.bio }}</h5>
+                                {% endif %}
+                                <form action="
+                                    {% if not matching_user.sent_match %}
+                                        {% url 'matching:send_request' utrip_id=utrip_id %}
+                                    {% else %}
+                                        {% url 'matching:cancel_request' utrip_id=utrip_id %}
+                                    {% endif %}"
+                                method="post"
+                            >
+                                {% csrf_token %}
+                                <input type="hidden" name="receiver_uid" value="{{ matching_user.user.id }}">
+                                <input type="hidden" name="receiver_utrip_id" value="{{ matching_user.receiver_utrip_id }}">
+                                {% if not matching_user.sent_match %}
+                                     <button type="submit" class="btn btn-info btn-rounded">Send Request</button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-rounded btn-secondary">Cancel Request</button>
+                                {% endif %}
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+        </div>
     {% else %}
         <h2>No potential matching user as per your matching preferences,
             try softening the preferences a bit</h2>
