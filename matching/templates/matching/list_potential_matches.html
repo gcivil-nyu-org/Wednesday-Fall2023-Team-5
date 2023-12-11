@@ -12,9 +12,9 @@
                         <div class="card my-3">
                             {% if images %}
                                 {% get_by_index images 0 as first_image %}
-                                <img src="{{ first_image.get_absolute_url }}" alt="image">
+                                <img class="card-img-top" src="{{ first_image.get_absolute_url }}" alt="image">
                             {% else %}
-                                <img src="/media/default_avatar.png" alt="image">
+                                <img class="card-img-top" src="/media/default_avatar.png" alt="image">
                             {% endif %}
                             <div class="card-body">
                                 <h5>First Name: {{ matching_user.user.first_name }}</h5>
