@@ -30,11 +30,13 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     "172.31.31.138",
+    "172.31.35.113",
     "soloconnect-integration.us-east-1.elasticbeanstalk.com",
     "soloconnect-db-final.us-west-2.elasticbeanstalk.com",
     "soloconnect-production.us-east-1.elasticbeanstalk.com",
     "testserver",
     "soloconnect-chat-integration.us-east-1.elasticbeanstalk.com",
+    "soloconnect-chat-production.us-east-1.elasticbeanstalk.com",
 ]
 
 # Application definition
