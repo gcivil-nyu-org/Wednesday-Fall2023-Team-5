@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from user_profile.models import UserProfile, UserImages
+# from user_profile.models import UserProfile, UserImages
 
 # from common import db_retrieve_or_none
 # from matching.models import UserTripMatches
