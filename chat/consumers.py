@@ -4,10 +4,10 @@ import logging
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import User
-from django.db.models import Q
+# from django.db.models import Q
 
 from common import db_retrieve_or_none
-from user_profile.models import UserImages
+# from user_profile.models import UserImages
 from .models import Thread, ChatMessage
 
 # class ChatConsumer(WebsocketConsumer):
