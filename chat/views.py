@@ -73,7 +73,7 @@ def messages_page(request, thread_id, other_user_id):
     receiver_image_url = ""
 
     if len(thread_instances) > 0:
-        if thread_instances[0].first_user == request.user :
+        if thread_instances[0].first_user == request.user:
             sender_image_url = thread_instances[0].first_user_image_url
             receiver_image_url = thread_instances[0].second_user_image_url
         else:
