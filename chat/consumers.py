@@ -107,7 +107,9 @@ class ChatConsumer(WebsocketConsumer):
 
         target_chat_room = f"user_chatroom_{receiving_user_id}_thread_{thread_id}"
 
-        self.create_chatmessage_object(thread_instance, sending_user_instance, message, receiving_user_instance)
+        self.create_chatmessage_object(
+            thread_instance, sending_user_instance, message, receiving_user_instance
+        )
 
         async_to_sync(self.channel_layer.group_send)(
             self.chat_room,
@@ -120,7 +122,7 @@ class ChatConsumer(WebsocketConsumer):
                 "user_name": sending_user_instance.username,
                 "first_name": sending_user_instance.first_name,
                 "last_initial": sending_user_instance.last_name[0],
-                "sender_image_url": sender_image_url
+                "sender_image_url": sender_image_url,
             },
         )
         print("user name: " + sending_user_instance.username)
@@ -135,7 +137,7 @@ class ChatConsumer(WebsocketConsumer):
                 "user_name": sending_user_instance.username,
                 "first_name": sending_user_instance.first_name,
                 "last_initial": sending_user_instance.last_name[0],
-                "sender_image_url": sender_image_url
+                "sender_image_url": sender_image_url,
             },
         )
 
@@ -153,7 +155,7 @@ class ChatConsumer(WebsocketConsumer):
                     "user_name": event["user_name"],
                     "first_name": event["first_name"],
                     "last_initial": event["last_initial"],
-                    "sender_image_url": event["sender_image_url"]
+                    "sender_image_url": event["sender_image_url"],
                 }
             )
         )
@@ -181,7 +183,5 @@ class ChatConsumer(WebsocketConsumer):
         #     receiving_image_url = receiver_instances[0].get_absolute_url()
         #     print(receiving_image_url)
         ChatMessage.objects.create(
-            thread=thread,
-            sending_user=sending_user,
-            message=message
+            thread=thread, sending_user=sending_user, message=message
         )
