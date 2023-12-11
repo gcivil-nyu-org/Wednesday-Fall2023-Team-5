@@ -83,38 +83,65 @@
 
                         {% for curr_message in message_history %}
                         {% if curr_message.sending_user == request.user %}
-
-                            <div class="d-flex sent-by-client">
+                            {% if curr_message.thread.first_user == curr_message.sending_user %}
+                                <div class="d-flex sent-by-client">
                             <div class="position-relative avatar">
-                                <img src="{{curr_message.sending_image_url }}" class="img-fluid rounded-circle"
+                                <img src="{{ curr_message.thread.first_user_image_url }}" class="img-fluid rounded-circle"
                                      alt="image">
                             </div>
                             </div>
-                              <div class="d-flex sent-by-client">
+                                <div class="d-flex sent-by-client">
                                 <div class="card card-text p-2 px-3 m-1 d-inline-block">
                                     {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
                                 </div>
                             </div>
-
-
                             {% else %}
-
-
-                            <div class="d-flex sent-to-client">
-                            <div class="position-relative avatar">
-                                <img src="{{curr_message.sending_image_url }}" class="img-fluid rounded-circle"
+                             <div class="d-flex sent-by-client">
+                                <div class="position-relative avatar">
+                                <img src="{{ curr_message.thread.second_user_image_url }}" class="img-fluid rounded-circle"
                                      alt="image">
-                            </div>
-                            </div>
-
-                            <div class="d-flex sent-to-client">
+                                </div>
+                             </div>
+                             <div class="d-flex sent-by-client">
                                 <div class="card card-text p-2 px-3 m-1 d-inline-block">
                                     {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
                                 </div>
                             </div>
-
                             {% endif %}
 
+
+
+
+                        {% else %}
+
+                            {% if curr_message.thread.first_user == curr_message.sending_user %}
+                            <div class="d-flex sent-to-client">
+                            <div class="position-relative avatar">
+                                <img src="{{ curr_message.thread.first_user_image_url }}" class="img-fluid rounded-circle"
+                                     alt="image">
+                            </div>
+                            </div>
+
+                            <div class="d-flex sent-to-client">
+                                <div class="card card-text p-2 px-3 m-1 d-inline-block">
+                                    {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
+                                </div>
+                            </div>
+                            {% else %}
+                        <div class="d-flex sent-to-client">
+                            <div class="position-relative avatar">
+                                <img src="{{ curr_message.thread.second_user_image_url }}" class="img-fluid rounded-circle"
+                                     alt="image">
+                            </div>
+                            </div>
+
+                            <div class="d-flex sent-to-client">
+                                <div class="card card-text p-2 px-3 m-1 d-inline-block">
+                                    {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endif %}
 
 
                         {% endfor %}
@@ -130,7 +157,7 @@
         </div>
     </div>
 </div>
-
+</div>
 <script>
     let jsonData = {{ dump|safe }}
 
@@ -170,7 +197,7 @@
 
                <div class="d-flex sent-by-client">
                <div class="position-relative avatar">
-                        <img src = ${senderUrl} class="img-fluid rounded-circle" alt="">
+                        <img src = ${data.sender_image_url} class="img-fluid rounded-circle" alt="">
                 </div>
                  </div>
                 <div class="d-flex sent-by-client">
@@ -186,7 +213,7 @@
 
                        <div class="d-flex sent-to-client">
                        <div class="position-relative avatar">
-                            <img src = ${senderUrl} class="img-fluid rounded-circle" alt="">
+                            <img src = ${data.sender_image_url} class="img-fluid rounded-circle" alt="">
 
                        </div>
                        </div>
