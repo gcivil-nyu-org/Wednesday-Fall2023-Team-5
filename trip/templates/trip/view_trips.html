@@ -15,9 +15,9 @@
                     <div class="card my-3">
                         <img class="card-img-top" src="{% static 'trip/images/vacation_card_img.jpeg' %}" alt="Vacation image">
                         <div class="card-body">
-                            <h5 class="card-title">Your planned trip to</h5>
-                            <p class="card-text">{{ ut.trip.destination_city }}, {{ ut.trip.destination_country }}</p>
-                            <a href="{% url 'trip:detail_trip' ut_id=ut.id %}" class="btn btn-primary">View Trip</a>
+                            <h5 class="card-title ">Your trip to</h5>
+                            <p class="card-text fw-bold">{{ ut.trip.destination_city }}, {{ ut.trip.destination_country }}</p>
+                            <a href="{% url 'trip:detail_trip' ut_id=ut.id %}" class="btn btn-outline-info">View Trip</a>
                         <br><br>
                         </div>
                     </div>
