@@ -64,7 +64,10 @@ def detail_profile(request, id):
             else:
                 qs_range = None
 
-            age = get_age(target_user.userprofile.dob)
+            if target_user.userprofile.dob is not None:
+                age = get_age(target_user.userprofile.dob)
+            else:
+                age = None
 
             context = {
                 "first_name": target_user.first_name,
@@ -101,7 +104,10 @@ def view_profile(request):
     else:
         qs_range = None
 
-    age = get_age(request.user.userprofile.dob)
+    if request.user.userprofile.dob is not None:
+        age = get_age(request.user.userprofile.dob)
+    else:
+        age = None
 
     context = {
         "first_name": request.user.first_name,
