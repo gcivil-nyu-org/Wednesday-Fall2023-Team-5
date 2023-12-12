@@ -1,12 +1,12 @@
 import json
 
-# from django.contrib.auth.models import User
-
 # import logging
 
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+
+# from user_profile.models import UserProfile, UserImages
 
 # from common import db_retrieve_or_none
 # from matching.models import UserTripMatches
@@ -57,16 +57,47 @@ def threads_page(request):
 
 @login_required
 def messages_page(request, thread_id, other_user_id):
+    threads = (
+        Thread.objects.filter(Q(first_user=request.user) | Q(second_user=request.user))
+        .prefetch_related("chat_message")
+        .order_by("timestamp")
+    )
+
     message_history = ChatMessage.objects.filter(thread=thread_id)
+    thread_instances = [Thread(**item) for item in threads.values()]
+
+    print(message_history.values())
+    other_user = User.objects.get(id=other_user_id)
+
+    sender_image_url = ""
+    receiver_image_url = ""
+
+    if len(thread_instances) > 0:
+        if thread_instances[0].first_user == request.user:
+            sender_image_url = thread_instances[0].first_user_image_url
+            receiver_image_url = thread_instances[0].second_user_image_url
+        else:
+            sender_image_url = thread_instances[0].second_user_image_url
+            receiver_image_url = thread_instances[0].first_user_image_url
 
     json_data = {
         "thread_id": thread_id,
         "other_user_id": other_user_id,
         "self_user_id": request.user.id,
+        "sender_image_url": sender_image_url,
+        "receiver_image_url": receiver_image_url,
     }
-    print(request.user.id)
-    print(other_user_id)
+    chat_data = {"thread_id": thread_id, "other_user_instance": other_user}
 
-    context = {"dump": json.dumps(json_data), "message_history": message_history}
+    print(request.user.id)
+    print(sender_image_url)
+    print(other_user_id)
+    print(receiver_image_url)
+    context = {
+        "dump": json.dumps(json_data),
+        "chat_data": chat_data,
+        "message_history": message_history,
+        "threads": threads,
+    }
 
     return render(request, "chat/message_room.html", context)

@@ -21,24 +21,15 @@ deploy:
     region: $REGION_UE1
     app: $APP_NAME
     bucket: $BUCKET_NAME_UE1
-    env: soloconnect-production
-    on:
-      branch: master
-  - provider: elasticbeanstalk
-    access_key_id: $ACCESS_KEY_ID
-    secret_access_key: $SECRET_ACCESS_KEY
-    region: $REGION_UE1
-    app: $APP_NAME
-    bucket: $BUCKET_NAME_UE1
-    env: soloconnect-integration
-    on:
-      branch: develop
-  - provider: elasticbeanstalk
-    access_key_id: $ACCESS_KEY_ID
-    secret_access_key: $SECRET_ACCESS_KEY
-    region: $REGION_UE1
-    app: $APP_NAME
-    bucket: $BUCKET_NAME_UE1
     env: soloconnect-chat-integration
     on:
       branch: develop
+  - provider: elasticbeanstalk
+    access_key_id: $ACCESS_KEY_ID
+    secret_access_key: $SECRET_ACCESS_KEY
+    region: $REGION_UE1
+    app: $APP_NAME
+    bucket: $BUCKET_NAME_UE1
+    env: soloconnect-chat-production
+    on:
+      branch: master

@@ -1,11 +1,15 @@
 {% extends 'home_default/base.html' %}
 {% block content %}
 <div class="container">
-    <div class="row mt-5">
-        <div class="col">
-            {% block form %}
-            {% endblock form %}
+    <div class="row">
+        <!-- Use mt-5 for margin-top on all sizes, adjust the value as needed -->
+        <div class="col-10 col-md-7 bg-sc-grey-3 mt-6 mt-lg-5 ml-5 p-4 rounded-4">
+            <div class="bg-sc-teal-4 shadow p-3 rounded-4">
+                {% block form %}
+                {% endblock form %}
+            </div>
         </div>
     </div>
 </div>
 {% endblock content %}
+

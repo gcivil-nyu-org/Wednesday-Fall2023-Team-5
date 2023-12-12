@@ -1,49 +1,261 @@
 {% extends 'home_default/base.html' %}
 {% load static %}
+{% load user_profile_custom_tags %}
 {% block content %}
-<div class="container">
-    <div class="row" id="chat-area-row">
-        <div class="col-6" id="chat-log">
-        {% for curr_message in message_history %}
-            <p class="text-start">{{ curr_message.sending_user.username }}: {{ curr_message.message }}</p>
-        {% endfor %}
+
+<style>
+    a.nav-link {
+        color: gray;
+        font-size: 18px;
+        padding: 0;
+    }
+    .chat-col-log {
+        background-color: #eef1ff;
+    }
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid #e84118;
+        padding: 2px;
+        flex: none;
+        overflow: hidden;
+    }
+
+    .thread-avatar-name {
+        vertical-align: middle;
+    }
+
+    input:focus {
+        outline: 0px !important;
+        box-shadow: none !important;
+    }
+
+    .card-text-sent-to {
+        width: auto;
+        border: 3px solid #4d4d4d;
+        border-radius: 8px;
+        background-color: #B48700;
+        {#background-color: #8E74C2;#}
+        color: whitesmoke;
+    }
+
+    .card-text-sent-by {
+        width: auto;
+        border: 3px solid #4d4d4d;
+        border-radius: 8px;
+        background-color: #005970;
+        {#background-color: #6E39C2;#}
+        color: whitesmoke;
+    }
+
+    .sent-to-client {
+        justify-content: flex-start;
+        align-items: baseline;
+    }
+
+    .sent-by-client {
+        justify-content: flex-end;
+        align-items: baseline;
+    }
+
+    .fixed-wh {
+        width: 200px;
+        max-height: 550px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+</style>
+
+<div class="container mt-6">
+    <div class="row" id="outermost-row">
+        <div class="col-2 bg-sc-grey-2-5 border-top border-bottom border-left border-black" id="threads-col-outer">
+            <div class="row" id="threads-row-header">
+                <div class="d-flex col bg-sc-grey-2-5 border-bottom border-black justify-content-center py-2" id="threads-col-header">
+                    <h3 class="pt-1" style="color:whitesmoke;">Chat With</h3>
+                </div>
+            </div>
+            <div class="row" id="threads-objects-list">
+                <div class="col border-bottom border-black" id="threads-objects-list-col">
+                    {% for thread in threads %}
+                    <div class="row" id="individual-thread-row_{{ request.user.id }}_{{ forloop.counter }}">
+                        {% if thread.first_user == request.user %}
+                        <div class="d-flex my-2 thread-block">
+                            <div class="position-relative avatar">
+                                <img src="{{ thread.second_user_image_url }}">
+                            </div>
+                            <div class="thread-avatar-name px-2 py-2">
+                                <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.second_user.id %}">
+                                    {{ thread.second_user.first_name }} {{ thread.second_user.last_name|slice:":1" }}.
+                                </a>
+                            </div>
+                        </div>
+{#                        <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.second_user.id %}"#}
+{#                           class="chat-logs-links" id="chat_link_{{ thread.id }}">#}
+{#                            {{ thread.second_user.first_name }} {{ thread.second_user.last_name|slice:":1" }}.#}
+{#                        </a>#}
+                        {% else %}
+{#                        <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.first_user.id %}"#}
+{#                           class="chat-logs-links" id="chat_link_{{ thread.id }}">#}
+{#                            {{ thread.first_user.first_name }} {{ thread.first_user.last_name|slice:":1" }}.#}
+{#                        </a>#}
+                        <div class="d-flex my-2 thread-block">
+                            <div class="position-relative avatar">
+                                <img src="{{ thread.first_user_image_url }}">
+                            </div>
+                            <div class="thread-avatar-name px-2 py-2">
+                                <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.first_user.id %}">
+                                    {{ thread.first_user.first_name }} {{ thread.first_user.last_name|slice:":1" }}
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <br>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="row justify-content-center" id="input-area-row">
-        <div class="col">
-            <input id="chat-message-input" type="text" size="100"><br>
-            <input id="chat-message-submit" type="button" value="Send">
+        <div class="col-10 bg-body-secondary" id="chat-col-outer">
+            <div class="row" id="chat-row-header">
+                <div class="col d-flex bg-sc-grey-2-5 border border-black justify-content-between py-2" id="chat-col-header">
+                    <h3 style="color:whitesmoke">{{ chat_data.other_user_instance.first_name }} {{ chat_data.other_user_instance.last_name|slice:":1" }}.</h3>
+                    <div>
+                        <a href="{% url 'user_profile:detail_profile' id=chat_data.other_user_instance.id %}" class="btn btn-primary">View Profile</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="chat-row-log">
+                <div class="col bg-sc-grey-2 fixed-wh" id="chat-col-log">
+                    <div id="chat-log">
+                        {% for curr_message in message_history %}
+                            {% if curr_message.sending_user == request.user %}
+                                {% if curr_message.thread.first_user == curr_message.sending_user %}
+                                    <div class="d-flex sent-by-client">
+                                        <div class="card card-text-sent-by p-2 px-3 m-1 d-inline-block">
+                                            {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
+                                        </div>
+                                        <div class="position-relative avatar">
+                                            <img src="{{ curr_message.thread.first_user_image_url }}" class="img-fluid rounded-circle" alt="image">
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="d-flex sent-by-client">
+                                        <div class="card card-text-sent-by p-2 px-3 m-1 d-inline-block">
+                                            {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
+                                        </div>
+                                        <div class="position-relative avatar">
+                                            <img src="{{ curr_message.thread.second_user_image_url }}" class="img-fluid rounded-circle" alt="image">
+                                        </div>
+                                    </div>
+                            <!-- End inner if statement, continue outer if statement -->
+                            {% endif %}
+                        {% else %}
+                            {% if curr_message.thread.first_user == curr_message.sending_user %}
+                                <div class="d-flex sent-to-client">
+                                    <div class="position-relative avatar">
+                                        <img src="{{ curr_message.thread.first_user_image_url }}" class="img-fluid rounded-circle" alt="image">
+                                    </div>
+                                    <div class="card card-text-sent-to p-2 px-3 m-1 d-inline-block">
+                                        {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="d-flex sent-to-client">
+                                    <div class="position-relative avatar">
+                                        <img src="{{ curr_message.thread.second_user_image_url }}" class="img-fluid rounded-circle" alt="image">
+                                    </div>
+                                    <div class="card card-text-sent-to p-2 px-3 m-1 d-inline-block">
+                                        {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        <!-- End inner if statement, end outer if statement -->
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="row" id="chat-row-send">
+            <div class="col d-flex bg-info-subtle justify-content-between" id="chat-col-input">
+                <input class="flex-grow-1" id="chat-message-input" type="text"><br>
+                <button class="btn-primary" id="chat-message-submit" type="submit">Send</button>
+            </div>
         </div>
     </div>
 </div>
-
+</div>
 <script>
     let jsonData = {{ dump|safe }}
 
     let threadId = jsonData["thread_id"];
     let selfUserId = jsonData["self_user_id"];
     let otherUserId = jsonData["other_user_id"];
+    let senderUrl = jsonData["sender_image_url"];
+    let receiverUrl = jsonData["receiver_image_url"];
+    let chatLog = document.querySelector('#chat-log');
+    let chatLogColumn = document.querySelector('#chat-col-log');
+
+    console.log("Sender URL: ");
+    console.log(senderUrl);
+    console.log("Receiver URL: ");
+    console.log(receiverUrl);
 
     let url = `ws://${window.location.host}/ws/socket-server/${threadId}`;
+
+    function scrollToBottom() {
+        chatLogColumn.scrollTo({
+            top: chatLogColumn.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
 
     let chatSocket = new WebSocket(url);
 
     chatSocket.onopen = function(e) {
         console.log('open', e);
+        scrollToBottom()
     }
 
     chatSocket.onmessage = function(e) {
         console.log('message', e);
         let data = JSON.parse(e.data);
+        console.log(data)
         let concatMessage = "";
+        console.log(senderUrl)
+        let toInsert = ``;
         if (data.type === 'chat') {
             console.log(data.message);
             user = data.user_name.concat(": ");
-            concatMessage += data.user_name + ": " + data.message;
+            concatMessage += data.first_name + " " + data.last_initial + ". : " + data.message;
             console.log("concat - " + concatMessage);
-            document.querySelector('#chat-log').insertAdjacentHTML('beforeend', `
-                <p>${concatMessage}</p>
-            `);
+            console.log(`Sent by: ${selfUserId}; data.sent_by: ${data.sent_by}`);
+            if (selfUserId === data.sent_by) {
+            toInsert = `
+               <div class="d-flex sent-by-client">
+                    <div class="card card-text-sent-by p-2 px-3 m-1 d-inline-block">
+                        ${concatMessage}
+                    </div>
+                    <div class="position-relative avatar">
+                        <img src=${data.sender_image_url} class="img-fluid rounded-circle" alt="">
+                    </div>
+                </div>
+             `;
+            } else {
+                toInsert = `
+                   <div class="d-flex sent-to-client">
+                        <div class="position-relative avatar">
+                            <img src = ${data.sender_image_url} class="img-fluid rounded-circle" alt="">
+                        </div>
+                        <div class="card card-text-sent-to p-2 px-3 m-1 d-inline-block">
+                            ${concatMessage}
+                        </div>
+                    </div>
+                `;
+            }
+            chatLog.insertAdjacentHTML('beforeend', toInsert);
+            scrollToBottom(chatLog);
         }
     }
 
