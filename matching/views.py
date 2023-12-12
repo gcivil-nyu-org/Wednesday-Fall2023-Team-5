@@ -95,18 +95,30 @@ def show_potential_matches(request, utrip_id):
     # from current user and filtering the excluding users from the match pool
 
     matching_trips = matching_trips.exclude(user_id__in=excluding_users)
+    matching_user_pool = []
+    for matching_trip in matching_trips:
+        user = matching_trip.user
+        # remove currently active user from match pool
+        if user == request.user:
+            continue
+        # check if profile images exist, if yes, get the first image
+        prof_images = list(user.userprofile.userimages_set.all())
+        if (len(prof_images) > 0):
+            profile_image = prof_images[0].get_absolute_url()
+            print(profile_image)
+        else:
+            profile_image = None
 
-    matching_user_pool = [
-        {
-            "user": matching_trip.user,
-            "sent_match": True
-            if matching_trip.user.id in already_sent_request_users
-            else False,
-            "receiver_utrip_id": matching_trip.id,
-        }
-        for matching_trip in matching_trips
-        if matching_trip.user != current_user
-    ]
+        matching_user_pool.append(
+            {
+                "user": user,
+                "sent_match": True
+                if user.id in already_sent_request_users
+                else False,
+                "receiver_utrip_id": matching_trip.id,
+                "image": profile_image,
+            }
+        )
 
     # Generate match pool:
     """ Condition-1: If user has not changed the default filters (i.e. all knn attributes are
@@ -311,15 +323,7 @@ def show_pending_requests(request, utrip_id):
         match_status=MatchStatusEnum.PENDING.value,
     )
 
-    # check if profile images exist, if yes, get the first image
-    prof_images = list(request.user.userprofile.userimages_set.all())
-    if (len(prof_images) > 0):
-        profile_image = prof_images[0].get_absolute_url()
-        print(profile_image)
-    else:
-        profile_image = None
-
-    context = {"pending_matches": pending_matches, "utrip_id": utrip_id, "image": profile_image}
+    context = {"pending_matches": pending_matches, "utrip_id": utrip_id}
     return render(request, "matching/list_pending_requests.html", context)
 
 
