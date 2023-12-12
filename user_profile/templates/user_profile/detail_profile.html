@@ -3,45 +3,59 @@
 {% block content %}
 
 <div class="container mb-5">
-    {% if images %}
-        <div class="row justify-content-center">
-            <div class="col-6 bg-gradient mt-5">
-                <br>
-                <br>
-                <div id="userPicsCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="row justify-content-center">
+        <div class="col-6 bg-gradient mt-5">
+            <br>
+            <br>
+            <div id="userPicsCarousel" class="carousel slide" data-bs-ride="carousel">
+            {% if images %}
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="d-flex justify-content-center">
+                            {% get_by_index images 0 as first_image %}
+                            <img src="{{ first_image.get_absolute_url }}" alt="image">
+                        </div>
+                    </div>
+                    {% for i in qs_range %}
+                    {% get_by_index images i as curr_image %}
+                    <div class="carousel-item">
+                        <div class="d-flex justify-content-center">
+                            <img src="{{ curr_image.get_absolute_url }}" alt="image">
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
                     <div class="carousel-inner">
                         <div class="carousel-item active">
                             <div class="d-flex justify-content-center">
-                                {% get_by_index images 0 as first_image %}
-                                <img src="{{ first_image.get_absolute_url }}" alt="image">
+                                <img src="/media/default_avatar.png" alt="image">
                             </div>
                         </div>
-                        {% for i in qs_range %}
-                        {% get_by_index images i as curr_image %}
-                        <div class="carousel-item">
-                            <div class="d-flex justify-content-center">
-                                <img src="{{ curr_image.get_absolute_url }}" alt="image">
-                            </div>
-                        </div>
-                        {% endfor %}
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#userPicsCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#userPicsCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                </div>
-                <br>
-                <br>
+                {% endif %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#userPicsCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#userPicsCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
             </div>
+            <br>
+            <br>
         </div>
-    {% endif %}
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-6 bg-dark-subtle">
+            <h3 class="text-primary fw-bolder pt-4">
+                {{ first_name }} {{ last_name|slice:":1" }}, {{ age }}
+            </h3>
+        </div>
+    </div>
     <div class="row justify-content-center" id="userBioHeading">
         <div class="col-6 bg-dark-subtle">
-            <br>
             <hr class="bg-secondary"/>
             <h5 class="text-primary fw-bolder">Bio</h5>
             <p class="text-primary fw-normal">{{ bio }}</p>
