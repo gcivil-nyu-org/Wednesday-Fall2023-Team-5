@@ -141,6 +141,12 @@ def show_potential_matches(request, utrip_id):
             if user_id in current_pool_user_ids and user_id != current_user.id:
                 ind_in_pool = current_pool_user_ids.index(user_id)
                 matching_trip = matching_trips[ind_in_pool]
+                prof_images = list(matching_trip.user.userprofile.userimages_set.all())
+                if(len(prof_images) > 0):
+                    profile_image = prof_images[0].get_absolute_url()
+                    print(profile_image)
+                else:
+                    profile_image = None
                 matching_user_pool.append(
                     {
                         "user": matching_trip.user,
@@ -148,6 +154,7 @@ def show_potential_matches(request, utrip_id):
                         if matching_trip.user.id in already_sent_request_users
                         else False,
                         "receiver_utrip_id": matching_trip.id,
+                        "images": profile_image,
                     }
                 )
 
