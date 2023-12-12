@@ -1,29 +1,41 @@
 {% extends "home_default/base.html" %}
+{% load user_profile_custom_tags %}
+{% load static %}
 {% block content %}
     <div class="container">
         <h1>Your Matches:</h1>
         {% if match_users %}
-            {% for match_user in match_users %}
-                <div class="col-3">
-                    <div class="row-gap-3">
-                        <h4>FirstName: <i>{{ match_user.first_name }}</i></h4>
-                        <h4>LastName: <i>{{ match_user.last_name }}</i></h4>
-                        <h4>Email: <i>{{ match_user.email }}</i></h4>
-                        {% if match_user.bio %}
-                        	<h5>Bio: {{ match_user.userprofile.bio }}</h5>
-                        {% endif %}
-                        <form action="{% url 'matching:unmatch' utrip_id=utrip_id %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="other_uid" value="{{ match_user.id }}">
-                            <button type="submit" class="btn btn-rounded btn-danger">Unmatch</button>
-                        </form>
-                        <br><br>
-                    </div>
+            <div class="container">
+                <div class="row justify-content-start">
+                    {% for match_user in match_users %}
+                        <div class="col-md-3">
+                            <div class="card my-3">
+                                {% if match_user.image %}
+                                    <img class="card-img-top" src="{{ match_user.image }}" alt="image">
+                                {% else %}
+                                    <img class="card-img-top" src="/media/default_avatar.png" alt="image">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5>FirstName: {{ match_user.user.first_name }}</h5>
+                                    <h5>LastName: {{ match_user.user.last_name }}</h5>
+                                    <h5>Email: <i>{{ match_user.user.email }}</i></h5>
+                                    {% if match_user.user.userprofile.bio %}
+                                        <h5>Bio: {{ match_user.user.userprofile.bio }}</h5>
+                                    {% endif %}
+                                    <form action="{% url 'matching:unmatch' utrip_id=utrip_id %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="other_uid" value="{{ match_user.user.id }}">
+                                        <button type="submit" class="btn btn-rounded btn-danger">Unmatch</button>
+                                    </form>
+                                </div>
+                            </div>
+                            </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
-
+            </div>
         {% else %}
             <h2>Oops! Sorry! No matches currently</h2>
         {% endif %}
     </div>
+
 {% endblock content %}
