@@ -44,7 +44,6 @@ class Thread(models.Model):
         return super().save(*args, **kwargs)
 
 
-
 class ChatMessage(models.Model):
     thread = models.ForeignKey(
         Thread,

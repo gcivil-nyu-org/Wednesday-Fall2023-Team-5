@@ -8,7 +8,7 @@ from django.db.models import Q
 
 from chat.models import Thread
 from trip.models import UserTrip
-from user_profile.models import User, UserImages
+from user_profile.models import User
 
 
 class MatchStatusEnum(Enum):
