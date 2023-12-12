@@ -79,7 +79,7 @@ def detail_profile(request, id):
                 "languages": target_user.userprofile.languages,
                 "images": image_qs,
                 "qs_range": qs_range,
-                "age": age
+                "age": age,
             }
             return render(request, "user_profile/detail_profile.html", context)
         else:
