@@ -1,9 +1,15 @@
 import json
+import logging
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.contrib.auth.models import User
+
+# from django.db.models import Q
+
 from common import db_retrieve_or_none
+
+# from user_profile.models import UserImages
 from .models import Thread, ChatMessage
 
 # class ChatConsumer(WebsocketConsumer):
@@ -86,7 +92,13 @@ class ChatConsumer(WebsocketConsumer):
         sending_user_instance = self.get_user_instance(sending_user_id)
         receiving_user_instance = self.get_user_instance(receiving_user_id)
 
+        sender_image_url = ""
         thread_instance = self.get_thread(thread_id)
+
+        if sending_user_instance == thread_instance.first_user:
+            sender_image_url = thread_instance.first_user_image_url
+        elif sending_user_instance == thread_instance.second_user:
+            sender_image_url = thread_instance.second_user_image_url
 
         if not sending_user_instance:
             print("Error: SUI is incorrect")
@@ -97,7 +109,9 @@ class ChatConsumer(WebsocketConsumer):
 
         target_chat_room = f"user_chatroom_{receiving_user_id}_thread_{thread_id}"
 
-        self.create_chatmessage_object(thread_instance, sending_user_instance, message)
+        self.create_chatmessage_object(
+            thread_instance, sending_user_instance, message, receiving_user_instance
+        )
 
         async_to_sync(self.channel_layer.group_send)(
             self.chat_room,
@@ -108,6 +122,9 @@ class ChatConsumer(WebsocketConsumer):
                 "thread_id": thread_id,
                 "send_to": receiving_user_id,
                 "user_name": sending_user_instance.username,
+                "first_name": sending_user_instance.first_name,
+                "last_initial": sending_user_instance.last_name[0],
+                "sender_image_url": sender_image_url,
             },
         )
         print("user name: " + sending_user_instance.username)
@@ -120,10 +137,15 @@ class ChatConsumer(WebsocketConsumer):
                 "thread_id": thread_id,
                 "send_to": receiving_user_id,
                 "user_name": sending_user_instance.username,
+                "first_name": sending_user_instance.first_name,
+                "last_initial": sending_user_instance.last_name[0],
+                "sender_image_url": sender_image_url,
             },
         )
 
     def chat_message(self, event):
+        logger = logging.getLogger()
+        logger.info(event["last_initial"])
         self.send(
             text_data=json.dumps(
                 {
@@ -133,6 +155,9 @@ class ChatConsumer(WebsocketConsumer):
                     "thread_id": event["thread_id"],
                     "send_to": event["send_to"],
                     "user_name": event["user_name"],
+                    "first_name": event["first_name"],
+                    "last_initial": event["last_initial"],
+                    "sender_image_url": event["sender_image_url"],
                 }
             )
         )
@@ -146,7 +171,19 @@ class ChatConsumer(WebsocketConsumer):
     def get_thread(self, thread_id):
         return db_retrieve_or_none(Thread, thread_id)
 
-    def create_chatmessage_object(self, thread, sending_user, message):
+    def create_chatmessage_object(self, thread, sending_user, message, receiving_user):
+        # sending_image_url = ""
+        # receiving_image_url = ""
+        # sender_image = UserImages.objects.filter(Q(user_profile_id=sending_user.id))
+        # receiver_image = UserImages.objects.filter(Q(user_profile=receiving_user.id))
+        # sender_instances = [UserImages(**item) for item in sender_image.values()]
+        # receiver_instances = [UserImages(**item) for item in receiver_image.values()]
+        # if len(sender_instances) > 0:
+        #     sending_image_url = sender_instances[0].get_absolute_url()
+        #     print(sending_image_url)
+        # if len(receiver_instances) > 0:
+        #     receiving_image_url = receiver_instances[0].get_absolute_url()
+        #     print(receiving_image_url)
         ChatMessage.objects.create(
             thread=thread, sending_user=sending_user, message=message
         )
