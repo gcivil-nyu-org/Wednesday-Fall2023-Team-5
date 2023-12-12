@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import inlineformset_factory
 from .models import UserImages, UserProfile
 from .forms import ImageUploadForm
+from .helpers import get_age
 import logging
 
 from . import forms
@@ -63,6 +64,8 @@ def detail_profile(request, id):
             else:
                 qs_range = None
 
+            age = get_age(target_user.userprofile.dob)
+
             context = {
                 "first_name": target_user.first_name,
                 "last_name": target_user.last_name,
@@ -76,6 +79,7 @@ def detail_profile(request, id):
                 "languages": target_user.userprofile.languages,
                 "images": image_qs,
                 "qs_range": qs_range,
+                "age": age
             }
             return render(request, "user_profile/detail_profile.html", context)
         else:
@@ -97,6 +101,8 @@ def view_profile(request):
     else:
         qs_range = None
 
+    age = get_age(request.user.userprofile.dob)
+
     context = {
         "first_name": request.user.first_name,
         "last_name": request.user.last_name,
@@ -112,6 +118,7 @@ def view_profile(request):
         "interests": request.user.userprofile.interests,
         "languages": request.user.userprofile.languages,
         "images": image_qs,
+        "age": age,
         "qs_range": qs_range,
     }
 

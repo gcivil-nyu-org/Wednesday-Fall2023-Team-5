@@ -35,3 +35,9 @@ def dob_gte18_and_lt100(dob):
                 False,
                 "The age you entered is over 99. Please verify your inputs and try again",
             )
+
+
+def get_age(dob):
+    time_delta = datetime.date.today() - dob
+    age = int(time_delta.days / 365.25)
+    return age
