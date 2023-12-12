@@ -31,7 +31,9 @@ def pre_process_data(data):
 
 def create_knn_model(data):
     # Create a KNN model
-    knn = NearestNeighbors(n_neighbors=data.shape[0], metric="cosine")  # n_neighbors set to 3
+    knn = NearestNeighbors(
+        n_neighbors=data.shape[0], metric="cosine"
+    )  # n_neighbors set to 3
 
     # Fit the KNN model on the feature matrix
     knn.fit(data)
@@ -63,9 +65,7 @@ def get_knn_recommendations(data, curr_user):
     ].index.values.astype(int)[0]
     user_attributes = data_encoded.iloc[user_index]
     # print(user_attributes)
-    recommendations, distances = get_recommendations(
-        knn, data_encoded, user_attributes
-    )
+    recommendations, distances = get_recommendations(knn, data_encoded, user_attributes)
     recommendations = recommendations["userprofile__user"].tolist()
 
     return recommendations
