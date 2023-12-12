@@ -6,12 +6,15 @@
             {% for match_user in match_users %}
                 <div class="col-3">
                     <div class="row-gap-3">
-                        <h4>FirstName: <i>{{ match_user.first_name }}</i></h4>
-                        <h4>LastName: <i>{{ match_user.last_name }}</i></h4>
-                        <h4>Email: <i>{{ match_user.email }}</i></h4>
-                        {% if match_user.bio %}
-                        	<h5>Bio: {{ match_user.userprofile.bio }}</h5>
-                        {% endif %}
+                        <h4><i>{{ match_user.first_name }} {{ match_user.last_name|slice:":1" }}.</i></h4>
+                        <div>
+                        <a href="{% url 'user_profile:detail_profile' id=match_user.id %}" class="btn btn-primary">View Profile </a>
+                        </div>
+                        <br>
+                        <div>
+                        <a href="{% url 'chat:threads_page' %}" class="btn btn-primary"> Chat With </a>
+                        </div>
+                         <br>
                         <form action="{% url 'matching:unmatch' utrip_id=utrip_id %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="other_uid" value="{{ match_user.id }}">

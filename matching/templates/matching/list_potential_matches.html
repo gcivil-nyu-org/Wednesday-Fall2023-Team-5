@@ -6,12 +6,11 @@
         {% for matching_user in matching_users %}
             <div class="col-3">
                 <div class="row-gap-3">
-                    <h4>FirstName: <i>{{ matching_user.user.first_name }}</i></h4>
-                    <h4>LastName: <i>{{ matching_user.user.last_name }}</i></h4>
-                    <h4>Email: <i>{{ matching_user.user.email }}</i></h4>
-                    {% if matching_user.user.userprofile.bio %}
-                        <h5>Bio: {{ matching_user.user.userprofile.bio }}</h5>
-                    {% endif %}
+                    <h4><i>{{ matching_user.user.first_name }} {{ matching_user.user.last_name|slice:":1" }}.</i></h4>
+                    <div>
+                        <a href="{% url 'user_profile:detail_profile' id=matching_user.user.id %}" class="btn btn-primary">View Profile </a>
+                    </div>
+                    <br>
                 </div>
                 <div>
                     <form action="

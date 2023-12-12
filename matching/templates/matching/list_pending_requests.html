@@ -6,12 +6,11 @@
         {% for pending_match in pending_matches %}
             <div class="col-3">
                 <div class="row-gap-3">
-                    <h4>FirstName: <i>{{ pending_match.sender.first_name }}</i></h4>
-                    <h4>LastName: <i>{{ pending_match.sender.last_name }}</i></h4>
-                    <h4>Email: <i>{{ pending_match.sender.email }}</i></h4>
-                    {% if pending_match.sender.userprofile.bio %}
-                        <h5>Bio: {{ pending_match.sender.userprofile.bio }}</h5>
-                    {% endif %}
+                    <h4><i>{{ pending_match.sender.first_name }} {{ pending_match.sender.last_name|slice:":1" }}.</i></h4>
+                    <div>
+                        <a href="{% url 'user_profile:detail_profile' id=matching_user.user.id %}" class="btn btn-primary">View Profile </a>
+                    </div>
+                    <br>
                 </div>
                 <div>
                     <form action="{% url 'matching:react_request' utrip_id=utrip_id %}" method="post">
