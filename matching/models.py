@@ -65,10 +65,13 @@ class UserTripMatches(models.Model):
         logger.info(self.match_status)
         if self.match_status == MatchStatusEnum.MATCHED.value:
             sender = User.objects.get(id=self.sender.id)
-            sender_two = User.objects.get(id=self.receiver.id)
-            t = Thread.objects.filter(first_user_id=sender.id)
-            u = Thread.objects.filter(first_user_id=sender_two.id)
-
+            receiver = User.objects.get(id=self.receiver.id)
+            t = Thread.objects.filter(
+                Q(first_user_id=sender.id) & Q(second_user_id=receiver.id)
+            )
+            u = Thread.objects.filter(
+                Q(first_user_id=receiver.id) & Q(second_user_id=sender.id)
+            )
             if not t and not u:
                 sender_image = UserImages.objects.filter(
                     Q(user_profile_id=self.sender.id)
@@ -99,9 +102,13 @@ class UserTripMatches(models.Model):
             print(t)
         elif self.match_status == MatchStatusEnum.UNMATCHED.value:
             sender = User.objects.get(id=self.sender.id)
-            sender_two = User.objects.get(id=self.receiver.id)
-            t = Thread.objects.filter(first_user_id=sender.id)
-            u = Thread.objects.filter(first_user_id=sender_two.id)
+            receiver = User.objects.get(id=self.receiver.id)
+            t = Thread.objects.filter(
+                Q(first_user_id=sender.id) & Q(second_user_id=receiver.id)
+            )
+            u = Thread.objects.filter(
+                Q(first_user_id=receiver.id) & Q(second_user_id=sender.id)
+            )
             if t:
                 print(t)
                 t.delete()
