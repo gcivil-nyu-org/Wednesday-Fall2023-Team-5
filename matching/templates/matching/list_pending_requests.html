@@ -10,8 +10,8 @@
                 {% for pending_match in pending_matches %}
                     <div class="col-md-3">
                         <div class="card my-3">
-                            {% if image %}
-                                <img class="card-img-top" src="{{ image }}" alt="image">
+                            {% if pending_match.image %}
+                                <img class="card-img-top" src="{{ pending_match.image }}" alt="image">
                             {% else %}
                                 <img class="card-img-top" src="/media/default_avatar.png" alt="image">
                             {% endif %}
