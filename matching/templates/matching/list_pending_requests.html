@@ -1,42 +1,52 @@
 {% extends "home_default/base.html" %}
+{% load user_profile_custom_tags %}
+{% load static %}
 {% block content %}
 <div class="container">
     <h1>Your Pending Matching Requests:</h1>
     {% if pending_matches %}
-        {% for pending_match in pending_matches %}
-            <div class="col-3">
-                <div class="row-gap-3">
-                    <h4>FirstName: <i>{{ pending_match.sender.first_name }}</i></h4>
-                    <h4>LastName: <i>{{ pending_match.sender.last_name }}</i></h4>
-                    <h4>Email: <i>{{ pending_match.sender.email }}</i></h4>
-                    {% if pending_match.sender.userprofile.bio %}
-                        <h5>Bio: {{ pending_match.sender.userprofile.bio }}</h5>
-                    {% endif %}
-                </div>
-                <div>
-                    <form action="{% url 'matching:react_request' utrip_id=utrip_id %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="sender_utrip_id" value="{{ pending_match.sender_user_trip.id }}">
-                        <input type="hidden" name="sender_id" value="{{ pending_match.sender.id }}">
-                        <button
-                                type="submit"
-                                name="pending_request"
-                                value="Matched"
-                                class="btn btn-rounded btn-info">
-                            Match
-                        </button>
-                        <button
-                                type="submit"
-                                name="pending_request"
-                                value="Rejected"
-                                class="btn btn-rounded btn-danger">
-                            Reject
-                        </button>
-                    </form>
-                </div>
-                <br><br>
+        <div class="container">
+            <div class="row justify-content-start">
+                {% for pending_match in pending_matches %}
+                    <div class="col-md-3">
+                        <div class="card my-3">
+                            {% if image %}
+                                <img class="card-img-top" src="{{ image }}" alt="image">
+                            {% else %}
+                                <img class="card-img-top" src="/media/default_avatar.png" alt="image">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5>FirstName: {{ pending_match.sender.first_name }}</h5>
+                                <h5>LastName: {{ pending_match.sender.last_name }}</h5>
+                                <h5>Email: <i>{{ pending_match.sender.email }}</i></h5>
+                                {% if pending_match.sender.userprofile.bio %}
+                                    <h5>Bio: {{ pending_match.sender.userprofile.bio }}</h5>
+                                {% endif %}
+                                <form action="{% url 'matching:react_request' utrip_id=utrip_id %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="sender_utrip_id" value="{{ pending_match.sender_user_trip.id }}">
+                                    <input type="hidden" name="sender_id" value="{{ pending_match.sender.id }}">
+                                    <button
+                                            type="submit"
+                                            name="pending_request"
+                                            value="Matched"
+                                            class="btn btn-rounded btn-info">
+                                        Match
+                                    </button>
+                                    <button
+                                            type="submit"
+                                            name="pending_request"
+                                            value="Rejected"
+                                            class="btn btn-rounded btn-danger">
+                                        Reject
+                                    </button>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+        </div>
     {% else %}
         <h2>Sorry, no pending requests as of this point, try sometime later.</h2>
     {% endif %}

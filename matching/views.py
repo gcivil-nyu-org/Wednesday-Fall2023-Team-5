@@ -141,8 +141,8 @@ def show_potential_matches(request, utrip_id):
             if user_id in current_pool_user_ids and user_id != current_user.id:
                 ind_in_pool = current_pool_user_ids.index(user_id)
                 matching_trip = matching_trips[ind_in_pool]
-                prof_images = list(matching_trip.user.userprofile.userimages_set.all())
                 # check if profile images exist, if yes, get the first image
+                prof_images = list(matching_trip.user.userprofile.userimages_set.all())
                 if(len(prof_images) > 0):
                     profile_image = prof_images[0].get_absolute_url()
                     print(profile_image)
@@ -303,6 +303,14 @@ def show_pending_requests(request, utrip_id):
         )
         return redirect(reverse("trip:view_trips"))
 
+    # check if profile images exist, if yes, get the first image
+    prof_images = list(request.user.userprofile.userimages_set.all())
+    if (len(prof_images) > 0):
+        profile_image = prof_images[0].get_absolute_url()
+        print(profile_image)
+    else:
+        profile_image = None
+
     pending_matches = UserTripMatches.objects.filter(
         receiver=request.user,
         receiver_user_trip=usertrip,
@@ -310,7 +318,7 @@ def show_pending_requests(request, utrip_id):
         sender_user_trip__is_active=True,
         match_status=MatchStatusEnum.PENDING.value,
     )
-    context = {"pending_matches": pending_matches, "utrip_id": utrip_id}
+    context = {"pending_matches": pending_matches, "utrip_id": utrip_id, "image": profile_image}
     return render(request, "matching/list_pending_requests.html", context)
 
 
