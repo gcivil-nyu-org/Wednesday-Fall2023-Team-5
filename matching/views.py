@@ -142,6 +142,7 @@ def show_potential_matches(request, utrip_id):
                 ind_in_pool = current_pool_user_ids.index(user_id)
                 matching_trip = matching_trips[ind_in_pool]
                 prof_images = list(matching_trip.user.userprofile.userimages_set.all())
+                # check if profile images exist, if yes, get the first image
                 if(len(prof_images) > 0):
                     profile_image = prof_images[0].get_absolute_url()
                     print(profile_image)
