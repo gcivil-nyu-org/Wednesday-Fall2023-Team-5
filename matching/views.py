@@ -303,6 +303,14 @@ def show_pending_requests(request, utrip_id):
         )
         return redirect(reverse("trip:view_trips"))
 
+    pending_matches = UserTripMatches.objects.filter(
+        receiver=request.user,
+        receiver_user_trip=usertrip,
+        sender__is_active=True,
+        sender_user_trip__is_active=True,
+        match_status=MatchStatusEnum.PENDING.value,
+    )
+
     # check if profile images exist, if yes, get the first image
     prof_images = list(request.user.userprofile.userimages_set.all())
     if (len(prof_images) > 0):
@@ -311,13 +319,6 @@ def show_pending_requests(request, utrip_id):
     else:
         profile_image = None
 
-    pending_matches = UserTripMatches.objects.filter(
-        receiver=request.user,
-        receiver_user_trip=usertrip,
-        sender__is_active=True,
-        sender_user_trip__is_active=True,
-        match_status=MatchStatusEnum.PENDING.value,
-    )
     context = {"pending_matches": pending_matches, "utrip_id": utrip_id, "image": profile_image}
     return render(request, "matching/list_pending_requests.html", context)
 
@@ -444,9 +445,19 @@ def show_matches(request, utrip_id):
         match.receiver if match.sender == request.user else match.sender
         for match in matches
     ]
+
+    # check if profile images exist, if yes, get the first image
+    prof_images = list(request.user.userprofile.userimages_set.all())
+    if (len(prof_images) > 0):
+        profile_image = prof_images[0].get_absolute_url()
+        print(profile_image)
+    else:
+        profile_image = None
+
     context = {
         "match_users": match_users,
         "utrip_id": utrip_id,
+        "image": profile_image,
     }
     return render(request, "matching/list_matches.html", context=context)
 
