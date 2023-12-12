@@ -3,12 +3,12 @@
 {% block content %}
 
 <div class="container mb-5">
-    {% if images %}
         <div class="row justify-content-center">
             <div class="col-6 bg-gradient mt-5">
                 <br>
                 <br>
                 <div id="userPicsCarousel" class="carousel slide" data-bs-ride="carousel">
+                {% if images %}
                     <div class="carousel-inner">
                         <div class="carousel-item active">
                             <div class="d-flex justify-content-center">
@@ -25,6 +25,15 @@
                         </div>
                         {% endfor %}
                     </div>
+                    {% else %}
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <div class="d-flex justify-content-center">
+                                    <img src="/media/default_avatar.png" alt="image">
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                     <button class="carousel-control-prev" type="button" data-bs-target="#userPicsCarousel" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
@@ -38,7 +47,6 @@
                 <br>
             </div>
         </div>
-    {% endif %}
     <div class="row justify-content-center" id="userBioHeading">
         <div class="col-6 bg-dark-subtle">
             <br>
