@@ -8,7 +8,7 @@
                 <div class="row-gap-3">
                     <h4><i>{{ pending_match.sender.first_name }} {{ pending_match.sender.last_name|slice:":1" }}.</i></h4>
                     <div>
-                        <a href="{% url 'user_profile:detail_profile' id=matching_user.user.id %}" class="btn btn-primary">View Profile </a>
+                        <a href="{% url 'user_profile:detail_profile' id=pending_match.sender.id %}" class="btn btn-primary">View Profile </a>
                     </div>
                     <br>
                 </div>
