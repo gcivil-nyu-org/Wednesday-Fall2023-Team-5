@@ -10,4 +10,9 @@ urlpatterns = [
         views.messages_page,
         name="messages_page",
     ),
+    path(
+        "thread/",
+        views.messages_page_empty,
+        name="messages_page_empty",
+    ),
 ]
