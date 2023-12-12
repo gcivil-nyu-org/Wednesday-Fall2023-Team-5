@@ -16,12 +16,12 @@
                                 <img class="card-img-top" src="/media/default_avatar.png" alt="image">
                             {% endif %}
                             <div class="card-body">
-                                <h5>First Name: {{ matching_user.user.first_name }}</h5>
-                                <h5>Last Name: {{ matching_user.user.last_name }}</h5>
-                                <h5>Email: <i>{{ matching_user.user.email }}</i></h5>
-                                {% if matching_user.user.userprofile.bio %}
-                                    <h5>Bio: {{ matching_user.user.userprofile.bio }}</h5>
-                                {% endif %}
+                                <h4><i>{{ matching_user.user.first_name }} {{ matching_user.user.last_name|slice:":1" }}.</i></h4>
+                        <div>
+                        <a href="{% url 'user_profile:detail_profile' id=matching_user.user.id %}" class="btn btn-primary">View Profile </a>
+                        </div>
+                            <br>
+
                                 <form action="
                                     {% if not matching_user.sent_match %}
                                         {% url 'matching:send_request' utrip_id=utrip_id %}

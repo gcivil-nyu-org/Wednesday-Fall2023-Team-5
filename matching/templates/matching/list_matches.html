@@ -16,12 +16,15 @@
                                     <img class="card-img-top" src="/media/default_avatar.png" alt="image">
                                 {% endif %}
                                 <div class="card-body">
-                                    <h5>FirstName: {{ match_user.user.first_name }}</h5>
-                                    <h5>LastName: {{ match_user.user.last_name }}</h5>
-                                    <h5>Email: <i>{{ match_user.user.email }}</i></h5>
-                                    {% if match_user.user.userprofile.bio %}
-                                        <h5>Bio: {{ match_user.user.userprofile.bio }}</h5>
-                                    {% endif %}
+                                    <h4><i>{{ match_user.first_name }} {{ match_user.last_name|slice:":1" }}.</i></h4>
+                                <div>
+                                <a href="{% url 'user_profile:detail_profile' id=match_user.id %}" class="btn btn-primary">View Profile </a>
+                                </div>
+                                <br>
+                                <div>
+                                <a href="{% url 'chat:threads_page' %}" class="btn btn-primary"> Chat With </a>
+                                </div>
+                                <br>
                                     <form action="{% url 'matching:unmatch' utrip_id=utrip_id %}" method="post">
                                         {% csrf_token %}
                                         <input type="hidden" name="other_uid" value="{{ match_user.user.id }}">
