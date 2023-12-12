@@ -21,8 +21,6 @@
                                 <a href="{% url 'user_profile:detail_profile' id=matching_user.user.id %}" class="btn btn-primary">View Profile </a>
                                 </div>
                                 <br>
-                                </div>
-                                <div>
                                 <form action="{% url 'matching:react_request' utrip_id=utrip_id %}" method="post">
                                     {% csrf_token %}
                                     <input type="hidden" name="sender_utrip_id" value="{{ pending_match.sender_user_trip.id }}">
