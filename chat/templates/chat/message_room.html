@@ -84,7 +84,7 @@
                         {% if thread.first_user == request.user %}
                         <div class="d-flex my-2 thread-block">
                             <div class="position-relative avatar">
-                                <img src="{{ thread.second_user_image_url }}">
+                                <img class="img-fluid rounded-circle" src="{{ thread.second_user_image_url }}">
                             </div>
                             <div class="thread-avatar-name px-2 py-2">
                                 <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.second_user.id %}">
@@ -103,7 +103,7 @@
 {#                        </a>#}
                         <div class="d-flex my-2 thread-block">
                             <div class="position-relative avatar">
-                                <img src="{{ thread.first_user_image_url }}">
+                                <img class="img-fluid rounded-circle" src="{{ thread.first_user_image_url }}">
                             </div>
                             <div class="thread-avatar-name px-2 py-2">
                                 <a href="{% url 'chat:messages_page' thread_id=thread.id other_user_id=thread.first_user.id %}">
@@ -158,7 +158,7 @@
                                     <div class="position-relative avatar">
                                         <img src="{{ curr_message.thread.first_user_image_url }}" class="img-fluid rounded-circle" alt="image">
                                     </div>
-                                    <div class="card card-text-sent-to p-2 px-3 m-1 d-inline-block">
+                                    <div class="card card-text-sent-to p-2 px-3 m-1 d-inline-block" style="max-width: 60%;">
                                         {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
                                     </div>
                                 </div>
@@ -166,8 +166,9 @@
                                 <div class="d-flex sent-to-client">
                                     <div class="position-relative avatar">
                                         <img src="{{ curr_message.thread.second_user_image_url }}" class="img-fluid rounded-circle" alt="image">
+                                        {{ curr_message.thread.first_user_image_url }}
                                     </div>
-                                    <div class="card card-text-sent-to p-2 px-3 m-1 d-inline-block">
+                                    <div class="card card-text-sent-to p-2 px-3 m-1 d-inline-block" style="max-width: 60%;">>
                                         {{ curr_message.sending_user.first_name }} {{ curr_message.sending_user.last_name|slice:":1" }}. : {{ curr_message.message }}
                                     </div>
                                 </div>
