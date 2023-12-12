@@ -155,7 +155,7 @@ def show_potential_matches(request, utrip_id):
                         if matching_trip.user.id in already_sent_request_users
                         else False,
                         "receiver_utrip_id": matching_trip.id,
-                        "images": profile_image,
+                        "image": profile_image,
                     }
                 )
 
