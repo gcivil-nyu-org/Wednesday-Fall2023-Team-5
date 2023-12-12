@@ -3,54 +3,60 @@
 {% load static %}
 {% block content %}
 <div class="container">
-    <h1>Your Potential Matches:</h1>
-    {% if matching_users %}
-        <div class="container">
-            <div class="row justify-content-start">
-                {% for matching_user in matching_users %}
-                    <div class="col-md-3">
-                        <div class="card my-3">
-                            {% if matching_user.image %}
-                                <img class="card-img-top" src="{{ matching_user.image }}" alt="image">
-                            {% else %}
-                                <img class="card-img-top" src="/media/default_avatar.png" alt="image">
-                            {% endif %}
-                            <div class="card-body">
-                                <h4><i>{{ matching_user.user.first_name }} {{ matching_user.user.last_name|slice:":1" }}.</i></h4>
-                        <div>
-                        <a href="{% url 'user_profile:detail_profile' id=matching_user.user.id %}" class="btn btn-primary">View Profile </a>
-                        </div>
-                            <br>
 
-                                <form action="
+    {% if matching_users %}
+    <div class="d-flex container">
+        <div class="row justify-content-start mt-5">
+            <h1>People Travelling to your Destination</h1>
+            {% for matching_user in matching_users %}
+            <div class="col-md-3">
+                <div class="card my-3">
+                    {% if matching_user.image %}
+                    <img class="card-img-top" src="{{ matching_user.image }}" alt="image">
+                    {% else %}
+                    <img class="card-img-top" src="/media/default_avatar.png" alt="image">
+                    {% endif %}
+                    <div class="card-body">
+                        <h4><i>{{ matching_user.user.first_name }} {{ matching_user.user.last_name|slice:":1" }}.</i>
+                        </h4>
+                        <form action="
                                     {% if not matching_user.sent_match %}
                                         {% url 'matching:send_request' utrip_id=utrip_id %}
                                     {% else %}
                                         {% url 'matching:cancel_request' utrip_id=utrip_id %}
                                     {% endif %}"
-                                method="post"
-                            >
-                                {% csrf_token %}
-                                <input type="hidden" name="receiver_uid" value="{{ matching_user.user.id }}">
-                                <input type="hidden" name="receiver_utrip_id" value="{{ matching_user.receiver_utrip_id }}">
-                                {% if not matching_user.sent_match %}
-                                     <button type="submit" class="btn btn-info btn-rounded">Send Request</button>
+                              method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="receiver_uid" value="{{ matching_user.user.id }}">
+                            <input type="hidden" name="receiver_utrip_id"
+                                   value="{{ matching_user.receiver_utrip_id }}">
+                            {% if not matching_user.sent_match %}
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <a href="{% url 'user_profile:detail_profile' id=matching_user.user.id %}"
+                                       class="btn btn-outline-info">View Profile </a>
+                                </div>
+                                <button type="submit" class="btn btn-outline-primary btn-rounded">Send Request</button>
                                 {% else %}
-                                    <button type="submit" class="btn btn-rounded btn-secondary">Cancel Request</button>
+                                <button type="submit" class="btn btn-rounded btn-outline-secondary">Cancel Request
+                                </button>
                                 {% endif %}
-                            </form>
                             </div>
-                        </div>
+                        </form>
                     </div>
-                {% endfor %}
+                </div>
             </div>
+
+            {% endfor %}
         </div>
-    {% else %}
-        <h2>No potential matching user as per your matching preferences,
-            try softening the preferences a bit</h2>
-            <br>
-        <h4>Also, please check your pending requests, some might have already sent you a matching request.</h4>
-    {% endif %}
+    </div>
+</div>
+{% else %}
+<h2>No potential matching user as per your matching preferences,
+    try softening the preferences a bit</h2>
+<br>
+<h4>Also, please check your pending requests, some might have already sent you a matching request.</h4>
+{% endif %}
 </div>
 
 
