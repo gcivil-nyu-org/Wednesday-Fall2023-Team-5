@@ -109,9 +109,7 @@ def show_potential_matches(request, utrip_id):
         matching_user_pool.append(
             {
                 "user": user,
-                "sent_match": True
-                if user.id in already_sent_request_users
-                else False,
+                "sent_match": True if user.id in already_sent_request_users else False,
                 "receiver_utrip_id": matching_trip.id,
                 "image": profile_image,
             }
@@ -326,9 +324,9 @@ def show_pending_requests(request, utrip_id):
             profile_pic = image_set[0].get_absolute_url()
         pending_match_requests.append(
             {
-                'sender': sender,
-                'image': profile_pic,
-                'sender_user_trip': pending_match.sender_user_trip,
+                "sender": sender,
+                "image": profile_pic,
+                "sender_user_trip": pending_match.sender_user_trip,
             }
         )
     context = {"pending_matches": pending_match_requests, "utrip_id": utrip_id}
@@ -458,11 +456,13 @@ def show_matches(request, utrip_id):
     for match in matches:
         user = match.receiver if match.sender == request.user else match.sender
         prof_images = list(user.userprofile.userimages_set.all())
-        profile_pic = None if len(prof_images) == 0 else prof_images[0].get_absolute_url()
+        profile_pic = (
+            None if len(prof_images) == 0 else prof_images[0].get_absolute_url()
+        )
         matching_users.append(
             {
-                'user': user,
-                'image': profile_pic,
+                "user": user,
+                "image": profile_pic,
             }
         )
 
