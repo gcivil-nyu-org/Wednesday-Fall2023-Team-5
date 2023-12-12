@@ -4,7 +4,7 @@ import json
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
-
+from django.contrib import messages
 # from user_profile.models import UserProfile, UserImages
 
 # from common import db_retrieve_or_none
@@ -36,12 +36,13 @@ def threads_page(request):
     if to_pass:
         return redirect(reverse('chat:messages_page', kwargs={'thread_id': to_pass.id, 'other_user_id': ou_id}))
     else:
+        messages.info(request, "You don't have any matches yet. When you match with someone, you'll be able to chat with them here.")
         return redirect(reverse('chat:messages_page_empty'))
 
 
 @login_required
 def messages_page_empty(request):
-    return render(request, 'chat/message_room.html', {})
+    return render(request, 'chat/message_room_backup.html', {})
 
 
 @login_required
