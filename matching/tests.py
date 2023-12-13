@@ -367,3 +367,16 @@ class TestMatchingViews(TestCase):
         u = Thread.objects.filter(Q(first_user=self.user2) & Q(second_user=self.user1))
         self.assertQuerysetEqual(t, Thread.objects.none())
         self.assertTrue(u[0].first_user, self.user2)
+        response = self.client.post(
+            reverse("matching:react_request", kwargs={"utrip_id": self.utrip1.id}),
+            {
+                "sender_utrip_id": self.utrip2.id,
+                "sender_id": self.user2.id,
+                "pending_request": "Matched",
+            },
+            follow=True,
+        )
+        self.assertEqual(
+            list(get_messages(response.wsgi_request))[0].message,
+            "This matching request has already been accepted",
+        )
