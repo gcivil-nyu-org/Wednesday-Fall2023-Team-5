@@ -82,11 +82,12 @@ class UserImages(models.Model):
         return os.path.join("/media", self.image.name)
 
     def save(self, *args, **kwargs):
-        super().save()
-        existing_pic = Image.open(self.image.path)
-        output_size = (400, 400)
-        existing_pic.thumbnail(output_size)
-        existing_pic.save(self.image.path)
+        super().save(*args, **kwargs)
+        output_size = (360, 360)
+        with Image.open(self.image.path) as profile_pic:
+            profile_pic_resized = profile_pic.resize(output_size)
+            profile_pic_resized.save(self.image.path)
+
 
     def __str__(self):
         return f"Image: {self.image}"
