@@ -1,9 +1,13 @@
 {% extends 'home_default/form_base.html' %}
 {% load crispy_forms_tags %}
 {% block form %}
-<form method="POST">
+<div class="row">
+    <h4 class="fw-normal" style="color: #A1A1B9">Create an Account</h4>
+</div>
+<form method="POST" style="color: #A1A1B9">
     {% csrf_token %}
     {{ acc_form|crispy }}
+    <br>
     <input type="submit" value="Submit" />
 </form>
 {% endblock form %}

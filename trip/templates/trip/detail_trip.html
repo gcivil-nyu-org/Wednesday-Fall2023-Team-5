@@ -16,21 +16,20 @@
                         <h3 class = "fw-bold">Trip to {{ usertrip_instance.trip.destination_city }}, {{ usertrip_instance.trip.destination_country }}</h3>
                     </div>
                     <h5>{{ usertrip_instance.start_trip|date:"m/d/Y" }} - {{ usertrip_instance.end_trip|date:"m/d/Y" }}</h5>
-
                     <br>
-                    <div>
+                    <div class="mb-1">
                         <a href="{% url 'trip:update_trip' ut_id=usertrip_instance.id %}" class="btn btn-outline-info btn-rounded">Update Travel Dates </a>
                     </div>
-                    <div>
+                    <div class="mb-1">
                         <a href="{% url 'matching:show_potential_matches' utrip_id=usertrip_instance.id%}" class="btn btn-outline-primary btn-rounded">View Potential Matches</a>
                     </div>
-                    <div>
+                    <div class="mb-1">
                         <a href="{% url 'matching:show_pending_requests' utrip_id=usertrip_instance.id %}" class="btn btn-outline-primary btn-rounded">View Match Requests</a>
                     </div>
-                    <div>
+                    <div class="mb-1">
                         <a href="{% url 'matching:show_matches' utrip_id=usertrip_instance.id %}" class="btn btn-outline-primary btn-rounded">View Matches</a>
                     </div>
-                    <div>
+                    <div class="mb-1">
                         <a href="{% url 'trip:milestone_trip' ut_id=usertrip_instance.id %}" class="btn btn-outline-danger btn-rounded">Cancel Trip</a>
                     </div>
                 </div>
