@@ -1,8 +1,11 @@
 from datetime import datetime
 
+from django.db.models import Q, QuerySet  # noqa
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
+
+from chat.models import Thread
 from trip.models import UserTrip, Trip
 from django.contrib.messages import get_messages
 
@@ -331,4 +334,96 @@ class TestMatchingViews(TestCase):
         pass
 
     def test_unmatch(self):
-        pass
+        self.client.login(username="matching_user2", password=self.password)
+        _ = self.client.post(
+            reverse("matching:send_request", kwargs={"utrip_id": self.utrip2.id}),
+            {
+                "receiver_utrip_id": self.utrip1.id,
+                "receiver_uid": self.user1.id,
+            },
+            follow=True,
+        )
+        self.client.logout()
+        self.client.login(username="matching_user", password=self.password)
+        self.utrip1.is_active = True
+        self.utrip1.save()
+        response = self.client.post(
+            reverse("matching:react_request", kwargs={"utrip_id": self.utrip1.id}),
+            {
+                "sender_utrip_id": self.utrip2.id,
+                "sender_id": self.user2.id,
+                "pending_request": "Matched",
+            },
+            follow=True,
+        )
+        response = self.client.post(
+            reverse("matching:unmatch", kwargs={"utrip_id": self.utrip1.id}),
+            {"other_uid": self.user1.id},
+            follow=True,
+        )
+        self.assertEqual(
+            list(get_messages(response.wsgi_request))[0].message,
+            "No match found, other user might have already unmatched",
+        )
+        response = self.client.post(
+            reverse("matching:unmatch", kwargs={"utrip_id": 0}),
+            {"other_uid": self.user1.id},
+            follow=True,
+        )
+        self.assertEqual(
+            list(get_messages(response.wsgi_request))[0].message,
+            "Please select a valid trip",
+        )
+
+    def test_save_matches(self):
+        self.client.login(username="matching_user2", password=self.password)
+        _ = self.client.post(
+            reverse("matching:send_request", kwargs={"utrip_id": self.utrip2.id}),
+            {
+                "receiver_utrip_id": self.utrip1.id,
+                "receiver_uid": self.user1.id,
+            },
+            follow=True,
+        )
+        self.client.logout()
+        self.client.login(username="matching_user", password=self.password)
+        self.utrip1.is_active = True
+        self.utrip1.save()
+        response = self.client.post(
+            reverse("matching:react_request", kwargs={"utrip_id": self.utrip1.id}),
+            {
+                "sender_utrip_id": self.utrip2.id,
+                "sender_id": self.user2.id,
+                "pending_request": "Matched",
+            },
+            follow=True,
+        )
+        self.assertEqual(
+            list(get_messages(response.wsgi_request))[0].message,
+            "You are successfully matched with the sender",
+        )
+        t = Thread.objects.filter(Q(first_user=self.user1) & Q(second_user=self.user2))
+        u = Thread.objects.filter(Q(first_user=self.user2) & Q(second_user=self.user1))
+        self.assertQuerysetEqual(t, Thread.objects.none())
+        self.assertTrue(u[0].first_user, self.user2)
+        response = self.client.post(
+            reverse("matching:react_request", kwargs={"utrip_id": self.utrip1.id}),
+            {
+                "sender_utrip_id": self.utrip2.id,
+                "sender_id": self.user2.id,
+                "pending_request": "Matched",
+            },
+            follow=True,
+        )
+        self.assertEqual(
+            list(get_messages(response.wsgi_request))[0].message,
+            "This matching request has already been accepted",
+        )
+        response = self.client.post(
+            reverse("matching:unmatch", kwargs={"utrip_id": self.utrip1.id}),
+            {"other_uid": self.user2.id},
+            follow=True,
+        )
+        u = Thread.objects.filter(Q(first_user=self.user2) & Q(second_user=self.user1))
+        self.assertQuerysetEqual(u, Thread.objects.none())
+        self.assertEqual(response.status_code, 200)

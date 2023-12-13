@@ -24,11 +24,24 @@ class Thread(models.Model):
     )
     updated = models.DateTimeField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    first_user_image_url = models.CharField(default="")
-    second_user_image_url = models.CharField(default="")
+    first_user_image_url = models.CharField(default="/media/default_avatar.png")
+    second_user_image_url = models.CharField(default="/media/default_avatar.png")
 
     class Meta:
         unique_together = ["first_user", "second_user"]
+
+    def save(self, *args, **kwargs):
+        first_qs = self.first_user.userprofile.userimages_set.all()
+        second_qs = self.second_user.userprofile.userimages_set.all()
+        if first_qs:
+            self.first_user_image_url = first_qs[0].get_absolute_url()
+
+        if second_qs:
+            self.second_user_image_url = second_qs[0].get_absolute_url()
+
+        print(self.first_user_image_url)
+        print(self.second_user_image_url)
+        return super().save(*args, **kwargs)
 
 
 class ChatMessage(models.Model):

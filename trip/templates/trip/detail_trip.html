@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 <div class="container">
-<div class="row mt-5">
+    <div class="row mt-5">
         <div class="col">
             <h1>Trip Details</h1>
         </div>
@@ -12,41 +12,30 @@
             <div class="card my-3">
                 <img class="card-img-top" src="{% static 'trip/images/vacation_card_img.jpeg' %}" alt="Vacation image">
                 <div class="card-body">
-                     <h4>Trip to {{ usertrip_instance.trip.destination_city }}, {{ usertrip_instance.trip.destination_country }}</h4>
-                        <h5>Start date: {{ usertrip_instance.start_trip|date:"m/d/Y" }}</h5>
-                        <h5>End date: {{ usertrip_instance.end_trip|date:"m/d/Y" }}</h5>
-                    <br>
-                        <a href="{% url 'matching:show_potential_matches' utrip_id=usertrip_instance.id%}">
-                        <button type="button" class="btn btn-info btn-rounded">
-                        View Potential Matches
-                        </button>
-                            <br><br>
-                        </a>
-                        <a href="{% url 'matching:show_pending_requests' utrip_id=usertrip_instance.id %}">
-                            <button type="button" class="btn btn-rounded btn-primary">
-                                View Match Requests
-                            </button>
-                        </a>
-                        <a href="{% url 'matching:show_matches' utrip_id=usertrip_instance.id %}">
-                            <button type="button" class="btn btn-success btn-rounded">
-                                View Matches
-                            </button>
-                        </a>
-                    <br><br>
-                        <a href="{% url 'trip:update_trip' ut_id=usertrip_instance.id %}">
-                            <button type="button" class="btn btn-info btn-rounded">
-                            Update Travel Dates
-                            </button>
-                        </a>
-                        <a href="{% url 'trip:milestone_trip' ut_id=usertrip_instance.id %}">
-                            <button type="button" class="btn btn-info btn-rounded">
-                            Cancel Trip
-                            </button>
-                        </a>
+                    <div class="card-title">
+                        <h3 class = "fw-bold">Trip to {{ usertrip_instance.trip.destination_city }}, {{ usertrip_instance.trip.destination_country }}</h3>
+                    </div>
+                    <h5>{{ usertrip_instance.start_trip|date:"m/d/Y" }} - {{ usertrip_instance.end_trip|date:"m/d/Y" }}</h5>
 
-                        </div>
+                    <br>
+                    <div>
+                        <a href="{% url 'trip:update_trip' ut_id=usertrip_instance.id %}" class="btn btn-outline-info btn-rounded">Update Travel Dates </a>
+                    </div>
+                    <div>
+                        <a href="{% url 'matching:show_potential_matches' utrip_id=usertrip_instance.id%}" class="btn btn-outline-primary btn-rounded">View Potential Matches</a>
+                    </div>
+                    <div>
+                        <a href="{% url 'matching:show_pending_requests' utrip_id=usertrip_instance.id %}" class="btn btn-outline-primary btn-rounded">View Match Requests</a>
+                    </div>
+                    <div>
+                        <a href="{% url 'matching:show_matches' utrip_id=usertrip_instance.id %}" class="btn btn-outline-primary btn-rounded">View Matches</a>
+                    </div>
+                    <div>
+                        <a href="{% url 'trip:milestone_trip' ut_id=usertrip_instance.id %}" class="btn btn-outline-danger btn-rounded">Cancel Trip</a>
                     </div>
                 </div>
+            </div>
+        </div>
     </div>
     <div class="row gap-3">
         <div class="col">
@@ -73,7 +62,7 @@
         </ul>
     </div>
 </div>
-    <br><br><br>
+<br><br><br>
 
 
 {% endblock content %}
