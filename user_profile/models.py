@@ -88,6 +88,5 @@ class UserImages(models.Model):
             profile_pic_resized = profile_pic.resize(output_size)
             profile_pic_resized.save(self.image.path)
 
-
     def __str__(self):
         return f"Image: {self.image}"
