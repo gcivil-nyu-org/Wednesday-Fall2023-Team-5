@@ -3,60 +3,82 @@
 {% load static %}
 {% block content %}
 
-{% if matching_users %}
-<div class="d-flex container">
-    <div class="row justify-content-start mt-5">
-        <h1>People Travelling to your Destination</h1>
-        {% for matching_user in matching_users %}
-        <div class="col-md-3">
-            <div class="card my-3">
-                {% if matching_user.image %}
-                <img class="card-img-top" src="{{ matching_user.image }}" alt="image">
-                {% else %}
-                <img class="card-img-top" src="/media/default_avatar.png" alt="image">
-                {% endif %}
-                <div class="card-body">
-                    <h4><i>{{ matching_user.user.first_name }} {{ matching_user.user.last_name|slice:":1" }}.</i>
-                    </h4>
-                    <form action="
-                                    {% if not matching_user.sent_match %}
-                                        {% url 'matching:send_request' utrip_id=utrip_id %}
-                                    {% else %}
-                                        {% url 'matching:cancel_request' utrip_id=utrip_id %}
-                                    {% endif %}"
-                          method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="receiver_uid" value="{{ matching_user.user.id }}">
-                        <input type="hidden" name="receiver_utrip_id"
-                               value="{{ matching_user.receiver_utrip_id }}">
-                        {% if not matching_user.sent_match %}
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <a href="{% url 'user_profile:detail_profile' id=matching_user.user.id %}"
-                                   class="btn btn-outline-info">View Profile </a>
-                            </div>
-                            <button type="submit" class="btn btn-outline-primary btn-rounded">Send Request</button>
-                            {% else %}
-                            <button type="submit" class="btn btn-rounded btn-outline-secondary">Cancel Request
-                            </button>
-                            {% endif %}
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
+<!-- Navigation -->
+<div class="container mt-5">
+    <div class="row">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link"
+                   aria-current="page"
+                   href="{% url 'matching:show_potential_matches' utrip_id=utrip_id %}">
+                    Fellow Travellers
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   aria-current="page"
+                   href="{% url 'matching:show_pending_requests' utrip_id=utrip_id %}">
+                    Match Requests
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   href="{% url 'matching:show_matches' utrip_id=utrip_id %}"
+                   aria-current="page"
+                   tabindex="-1">
+                    Matches
+                </a>
+            </li>
+        </ul>
     </div>
 </div>
+<!-- End Navigation -->
 
-{% else %}
-<div class="d-flex container mt-5">
-    <h2>No potential matching user as per your matching preferences,
-        try softening the preferences a bit</h2>
-    <br>
-    <h4>Also, please check your pending requests, some might have already sent you a matching request.</h4>
+<div class="container mt-5">
+    <div class="d-flex row">
+    {% if matching_users %}
+    {% for matching_user in matching_users %}
+        <div class="col-3">
+            <div class="card my-3">
+            {% if matching_user.image %}
+                <img class="card-img-top" src="{{ matching_user.image }}" alt="image">
+            {% else %}
+                <img class="card-img-top" src="/media/default_avatar.png" alt="image">
+            {% endif %}
+            <div class="card-body">
+                <div class="card-title">
+                    <h4>
+                        {{ matching_user.user.first_name }} {{ matching_user.user.last_name|slice:":1" }}.
+                    </h4>
+                </div>
+                <form action="{% if not matching_user.sent_match %}
+                                {% url 'matching:send_request' utrip_id=utrip_id %}
+                              {% else %}
+                                {% url 'matching:cancel_request' utrip_id=utrip_id %}
+                              {% endif %}"
+                                method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="receiver_uid" value="{{ matching_user.user.id }}">
+                    <input type="hidden" name="receiver_utrip_id" value="{{ matching_user.receiver_utrip_id }}">
+                    {% if not matching_user.sent_match %}
+                        <div class="d flex justify-content-between">
+                            <a href="{% url 'user_profile:detail_profile' id=matching_user.user.id %}" class="btn btn-outline-info">View Profile</a>
+                            <button type="submit" class="btn btn-outline-primary btn-rounded">Send Request</button>
+                        </div>
+                    {% else %}
+                        <button type="submit" class="btn btn-rounded btn-outline-secondary">Cancel Request</button>
+                    {% endif %}
+                </form>
+            </div>
+            </div>
+        </div>
+    {% endfor %}
+    {% else %}
+        <div class="d-flex container mt-5">
+            <h2>No fellow travellers yet! Try broadening your age range and check your match requests!</h2>
+            <img src="{% static 'home_default/site_images/sc-party-people-1.png'%}">
+        </div>
+    {% endif %}
+    </div>
 </div>
-{% endif %}
-
-
 {% endblock content %}

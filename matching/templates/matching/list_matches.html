@@ -2,43 +2,74 @@
 {% load user_profile_custom_tags %}
 {% load static %}
 {% block content %}
-    <div class="container">
-        <h1>Your Matches:</h1>
-        {% if match_users %}
-            <div class="container">
-                <div class="row justify-content-start">
-                    {% for match_user in match_users %}
-                        <div class="col-md-3">
-                            <div class="card my-3">
-                                {% if match_user.image %}
-                                    <img class="card-img-top" src="{{ match_user.image }}" alt="image">
-                                {% else %}
-                                    <img class="card-img-top" src="/media/default_avatar.png" alt="image">
-                                {% endif %}
-                                <div class="card-body">
+
+<!-- Navigation -->
+<div class="container mt-5">
+    <div class="row">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link"
+                   aria-current="page"
+                   href="{% url 'matching:show_potential_matches' utrip_id=utrip_id %}">
+                    Fellow Travellers
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   aria-current="page"
+                   href="{% url 'matching:show_pending_requests' utrip_id=utrip_id %}">
+                    Match Requests
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   href="{% url 'matching:show_matches' utrip_id=utrip_id %}"
+                   aria-current="page"
+                   tabindex="-1">
+                    Matches
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- End Navigation -->
+
+<div class="container mt-5">
+    <h1>Your Matches:</h1>
+    {% if match_users %}
+        <div class="container">
+            <div class="row justify-content-start">
+                {% for match_user in match_users %}
+                    <div class="col-md-3">
+                        <div class="card my-3">
+                            {% if match_user.image %}
+                                <img class="card-img-top" src="{{ match_user.image }}" alt="image">
+                            {% else %}
+                                <img class="card-img-top" src="/media/default_avatar.png" alt="image">
+                            {% endif %}
+
+                            <div class="card-body">
+                                <div class="card-title">
                                     <h4><i>{{ match_user.user.first_name }} {{ match_user.user.last_name|slice:":1" }}.</i></h4>
-                                <div>
-                                <a href="{% url 'user_profile:detail_profile' id=match_user.user.id %}" class="btn btn-primary">View Profile </a>
                                 </div>
-                                <br>
-                                <div>
-                                <a href="{% url 'chat:threads_page' %}" class="btn btn-primary"> Chat With </a>
-                                </div>
-                                <br>
+                                <div class="d-flex justify-content-between">
+                                    <a href="{% url 'user_profile:detail_profile' id=match_user.user.id %}" class="btn btn-outline-info">View Profile </a>
+                                    <a href="{% url 'chat:threads_page' %}" class="btn btn-outline-primary">Chat</a>
                                     <form action="{% url 'matching:unmatch' utrip_id=utrip_id %}" method="post">
                                         {% csrf_token %}
                                         <input type="hidden" name="other_uid" value="{{ match_user.user.id }}">
-                                        <button type="submit" class="btn btn-rounded btn-danger">Unmatch</button>
+                                        <button type="submit" class="btn btn-rounded btn-outline-danger">Unmatch</button>
                                     </form>
                                 </div>
                             </div>
-                            </div>
-                    {% endfor %}
-                </div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% else %}
-            <h2>Oops! Sorry! No matches currently</h2>
-        {% endif %}
-    </div>
-
+        </div>
+    {% else %}
+        <h2>No matches yet! Try sending some requests out!</h2>
+        <img src="{% static 'home_default/site_images/sc-party-people-1.png'%}">
+    {% endif %}
+</div>
 {% endblock content %}
