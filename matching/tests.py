@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 from chat.models import Thread
-from matching.models import UserTripMatches
 from trip.models import UserTrip, Trip
 from django.contrib.messages import get_messages
 
@@ -371,7 +370,10 @@ class TestMatchingViews(TestCase):
             {"other_uid": self.user1.id},
             follow=True,
         )
-        self.assertEqual(list(get_messages(response.wsgi_request))[0].message, "Please select a valid trip")
+        self.assertEqual(
+            list(get_messages(response.wsgi_request))[0].message,
+            "Please select a valid trip",
+        )
 
     def test_save_matches(self):
         self.client.login(username="matching_user2", password=self.password)
