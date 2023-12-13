@@ -38,10 +38,10 @@
     <div class="d-flex row">
     {% if matching_users %}
     {% for matching_user in matching_users %}
-        <div class="col-3">
+        <div class="col-lg-3 col-md-6 col-sm-12">
             <div class="card my-3">
             {% if matching_user.image %}
-                <img class="card-img-top" src="{{ matching_user.image }}" alt="image">
+                <img class="card-img-top" src="{{ matching_user.image }}" alt="image" style="max-width: 214px; max-height: 214px;">
             {% else %}
                 <img class="card-img-top" src="/media/default_avatar.png" alt="image">
             {% endif %}

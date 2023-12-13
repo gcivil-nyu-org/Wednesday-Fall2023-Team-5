@@ -38,10 +38,10 @@
     <div class="row">
     {% if pending_matches %}
         {% for pending_match in pending_matches %}
-        <div class="d-flex col-md-3">
+        <div class="d-flex col-lg-3 col-md-6 col-sm-12">
             <div class="card my-3">
                 {% if pending_match.image %}
-                    <img class="card-img-top" src="{{ pending_match.image }}" alt="image">
+                    <img class="card-img-top" src="{{ pending_match.image }}" alt="image" style="max-width: 214px; max-height: 214px;">
                 {% else %}
                     <img class="card-img-top" src="/media/default_avatar.png" alt="image">
                 {% endif %}
