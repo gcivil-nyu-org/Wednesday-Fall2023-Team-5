@@ -1,11 +1,14 @@
 {% extends "home_default/form_base.html" %}
 {% load crispy_forms_tags %}
 {% block form %}
-<form method="POST" id="trip-creation-form">
+<div class="row">
+    <h4 class="fw-normal" style="color: #A1A1B9">Create a New Trip</h4>
+</div>
+<form method="POST" id="trip-creation-form" style="color: #A1A1B9">
     {% csrf_token %}
     {{ form | crispy }}
     <br>
-    <input type="submit" value="Submit" />
+    <input class="btn btn-outline-success" type="submit" value="Submit" />
 </form>
 {{ form.media }}
 {% endblock form %}

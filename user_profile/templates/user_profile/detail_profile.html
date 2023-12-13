@@ -87,7 +87,15 @@
         </div>
         <div class="col-3 bg-dark-subtle">
             <h6 class="text-primary fw-bold">Languages</h6>
-            <p class="text-primary fw-normal">{{ languages }}</p>
+            <p class="text-primary fw-normal">
+            {% for language in languages %}
+                {% if not forloop.last %}
+                <span class="text-primary">{{ language }}, </span>
+                {% else %}
+                <span class="text-primary">{{ language }}</span>
+                {% endif %}
+            {% endfor %}
+            </p>
         </div>
     </div>
     <div class="row justify-content-center" id="userProfileContentRow-3">
@@ -107,7 +115,15 @@
         </div>
         <div class="col-3 bg-dark-subtle">
             <h6 class="text-primary fw-bold">Interests</h6>
-            <p class="text-primary fw-normal">{{ interests }}</p>
+            <p>
+            {% for interest in interests %}
+                {% if not forloop.last %}
+                <span class="text-primary">{{ interest }}, </span>
+                {% else %}
+                <span class="text-primary">{{ interest }}</span>
+                {% endif %}
+            {% endfor %}
+            </p>
             <br>
         </div>
     </div>
