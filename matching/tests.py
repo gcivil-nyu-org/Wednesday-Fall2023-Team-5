@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.db.models import Q, QuerySet
+from django.db.models import Q, QuerySet  # noqa
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
