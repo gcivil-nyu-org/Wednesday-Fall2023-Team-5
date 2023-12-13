@@ -1,46 +1,77 @@
-{% extends "home_default/base.html" %}
+{% extends 'home_default/base.html' %}
+{% load user_profile_custom_tags %}
+{% load static %}
 {% block content %}
-<div class="container">
-    <h1>Your Pending Matching Requests:</h1>
+
+<!-- Navigation -->
+<div class="container mt-5">
+    <div class="row">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link"
+                   aria-current="page"
+                   href="{% url 'matching:show_potential_matches' utrip_id=utrip_id %}">
+                    Fellow Travellers
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   aria-current="page"
+                   href="{% url 'matching:show_pending_requests' utrip_id=utrip_id %}">
+                    Match Requests
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   href="{% url 'matching:show_matches' utrip_id=utrip_id %}"
+                   aria-current="page"
+                   tabindex="-1">
+                    Matches
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- End Navigation -->
+
+<div class="container mt-5">
+    <div class="row">
     {% if pending_matches %}
         {% for pending_match in pending_matches %}
-            <div class="col-3">
-                <div class="row-gap-3">
-                    <h4>FirstName: <i>{{ pending_match.sender.first_name }}</i></h4>
-                    <h4>LastName: <i>{{ pending_match.sender.last_name }}</i></h4>
-                    <h4>Email: <i>{{ pending_match.sender.email }}</i></h4>
-                    {% if pending_match.sender.userprofile.bio %}
-                        <h5>Bio: {{ pending_match.sender.userprofile.bio }}</h5>
-                    {% endif %}
-                </div>
-                <div>
+        <div class="d-flex col-md-3">
+            <div class="card my-3">
+                {% if pending_match.image %}
+                    <img class="card-img-top" src="{{ pending_match.image }}" alt="image">
+                {% else %}
+                    <img class="card-img-top" src="/media/default_avatar.png" alt="image">
+                {% endif %}
+                <div class="card-body">
+                    <div class="card-title">
+                        <h4>
+                            <i>{{ pending_match.sender.first_name }} {{ pending_match.sender.last_name|slice:":1" }}.</i>
+                        </h4>
+                    </div>
                     <form action="{% url 'matching:react_request' utrip_id=utrip_id %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="sender_utrip_id" value="{{ pending_match.sender_user_trip.id }}">
                         <input type="hidden" name="sender_id" value="{{ pending_match.sender.id }}">
-                        <button
-                                type="submit"
-                                name="pending_request"
-                                value="Matched"
-                                class="btn btn-rounded btn-info">
-                            Match
-                        </button>
-                        <button
-                                type="submit"
-                                name="pending_request"
-                                value="Rejected"
-                                class="btn btn-rounded btn-danger">
-                            Reject
-                        </button>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" name="pending_request" value="Rejected" class="btn btn-rounded btn-outline-danger">Reject</button>
+                            <a href="{% url 'user_profile:detail_profile' id=pending_match.sender.id %}" class="btn btn-outline-info">View Profile</a>
+                            <button type="submit" name="pending_request" value="Matched" class="btn btn-rounded btn-outline-success">Accept</button>
+                        </div>
                     </form>
                 </div>
-                <br><br>
+                <br>
             </div>
+        </div>
         {% endfor %}
-    {% else %}
-        <h2>Sorry, no pending requests as of this point, try sometime later.</h2>
-    {% endif %}
+        {% else %}
+        <div class="col">
+            <h1>When a traveller sends you a match request, you will see it here</h1>
+            <img src="{% static 'home_default/site_images/sc-party-people-1.png'%}">
+        </div>
+        {% endif %}
+    </div>
 </div>
-
-
 {% endblock content %}

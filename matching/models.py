@@ -1,7 +1,10 @@
+import datetime
 import logging
 
 from django.db import models
 from enum import Enum
+
+from django.db.models import Q
 
 from chat.models import Thread
 from trip.models import UserTrip
@@ -61,8 +64,36 @@ class UserTripMatches(models.Model):
         logger.info("In the save function Match status:")
         logger.info(self.match_status)
         if self.match_status == MatchStatusEnum.MATCHED.value:
-            t, _ = Thread.objects.get_or_create(
-                first_user=self.sender, second_user=self.receiver
+            sender = User.objects.get(id=self.sender.id)
+            receiver = User.objects.get(id=self.receiver.id)
+            t = Thread.objects.filter(
+                Q(first_user_id=sender.id) & Q(second_user_id=receiver.id)
             )
+            u = Thread.objects.filter(
+                Q(first_user_id=receiver.id) & Q(second_user_id=sender.id)
+            )
+            if not t and not u:
+                Thread.objects.create(
+                    first_user=self.sender,
+                    second_user=self.receiver,
+                    updated=datetime.datetime.utcnow(),
+                )
+
             print(t)
+        elif self.match_status == MatchStatusEnum.UNMATCHED.value:
+            sender = User.objects.get(id=self.sender.id)
+            receiver = User.objects.get(id=self.receiver.id)
+            t = Thread.objects.filter(
+                Q(first_user_id=sender.id) & Q(second_user_id=receiver.id)
+            )
+            u = Thread.objects.filter(
+                Q(first_user_id=receiver.id) & Q(second_user_id=sender.id)
+            )
+            if t:
+                print(t)
+                t.delete()
+            if u:
+                print(u)
+                u.delete()
+            print("Deleting thread if unmatched")
         return super().save(*args, **kwargs)

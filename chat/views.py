@@ -1,12 +1,13 @@
 import json
 
-# from django.contrib.auth.models import User
-
 # import logging
 
-# from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
+# from user_profile.models import UserProfile, UserImages
 
 # from common import db_retrieve_or_none
 # from matching.models import UserTripMatches
@@ -22,51 +23,82 @@ def threads_page(request):
     threads = (
         Thread.objects.filter(Q(first_user=request.user) | Q(second_user=request.user))
         .prefetch_related("chat_message")
-        .order_by("timestamp")
+        .order_by("updated")
     )
-    # if not threads:
-    #     print("No threads present")
-    #     first_user = request.user
-    #     print(first_user)
-    #     matches = UserTripMatches.objects.values().filter(Q(match_status="Matched"))
-    #     print(matches)
-    #     for match in matches:
-    #         print("sender id: ")
-    #         print(match["sender_id"])
-    #         print("receiver id: ")
-    #         print(match["receiver_id"])
-    #         print("request_id: ")
-    #         print(request.user.id)
-    #         if request.user.id == match["sender_id"]:
-    #             second_user = db_retrieve_or_none(User, match["receiver_id"])
-    #             print("second_user: ")
-    #             print(second_user.id)
-    #             if second_user:
-    #                 if second_user.id != first_user.id:
-    #                     t = Thread.objects.get_or_create(
-    #                         first_user=first_user, second_user=second_user
-    #                     )
-    #                 #         # print(t)
-    #                     print("Created thread for")
-    #                     print(first_user)
-    #                     print(second_user)
+    ou_id = None
+    if threads:
+        to_pass = threads[0]
+        if request.user == to_pass.first_user:
+            ou_id = to_pass.second_user.id
+        else:
+            ou_id = to_pass.first_user.id
+    else:
+        to_pass = None
 
-    # Thread.objects.create()
-    return render(request, "chat/threads.html", {"threads": threads})
+    if to_pass:
+        return redirect(
+            reverse(
+                "chat:messages_page",
+                kwargs={"thread_id": to_pass.id, "other_user_id": ou_id},
+            )
+        )
+    else:
+        messages.info(
+            request,
+            "You don't have any matches yet. "
+            "When you match with someone, you'll be able to chat with them here.",
+        )
+        return redirect(reverse("chat:messages_page_empty"))
+
+
+@login_required
+def messages_page_empty(request):
+    return render(request, "chat/message_room_backup.html", {})
 
 
 @login_required
 def messages_page(request, thread_id, other_user_id):
+    threads = (
+        Thread.objects.filter(Q(first_user=request.user) | Q(second_user=request.user))
+        .prefetch_related("chat_message")
+        .order_by("timestamp")
+    )
+
     message_history = ChatMessage.objects.filter(thread=thread_id)
+    thread_instances = [Thread(**item) for item in threads.values()]
+
+    print(message_history.values())
+    other_user = User.objects.get(id=other_user_id)
+
+    sender_image_url = ""
+    receiver_image_url = ""
+
+    if len(thread_instances) > 0:
+        if thread_instances[0].first_user == request.user:
+            sender_image_url = thread_instances[0].first_user_image_url
+            receiver_image_url = thread_instances[0].second_user_image_url
+        else:
+            sender_image_url = thread_instances[0].second_user_image_url
+            receiver_image_url = thread_instances[0].first_user_image_url
 
     json_data = {
         "thread_id": thread_id,
         "other_user_id": other_user_id,
         "self_user_id": request.user.id,
+        "sender_image_url": sender_image_url,
+        "receiver_image_url": receiver_image_url,
     }
-    print(request.user.id)
-    print(other_user_id)
+    chat_data = {"thread_id": thread_id, "other_user_instance": other_user}
 
-    context = {"dump": json.dumps(json_data), "message_history": message_history}
+    print(request.user.id)
+    print(sender_image_url)
+    print(other_user_id)
+    print(receiver_image_url)
+    context = {
+        "dump": json.dumps(json_data),
+        "chat_data": chat_data,
+        "message_history": message_history,
+        "threads": threads,
+    }
 
     return render(request, "chat/message_room.html", context)

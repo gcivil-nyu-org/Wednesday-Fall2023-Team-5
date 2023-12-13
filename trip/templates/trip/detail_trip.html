@@ -1,39 +1,40 @@
 {% extends "home_default/base.html" %}
+{% load static %}
 {% block content %}
 <div class="container">
-    <div class="row-gap-3 mt-5">
+    <div class="row mt-5">
         <div class="col">
-             <h4>Trip to {{ usertrip_instance.trip.destination_city }}, {{ usertrip_instance.trip.destination_country }}</h4>
-                <p>Start date: {{ usertrip_instance.start_trip|date:"m/d/Y" }}</p>
-                <p>End date: {{ usertrip_instance.end_trip|date:"m/d/Y" }}</p>
+            <h1>Trip Details</h1>
         </div>
-        <div class="col">
-            <a href="{% url 'matching:show_potential_matches' utrip_id=usertrip_instance.id%}">
-                <button type="button" class="btn btn-info btn-rounded">
-                Show Potential Matches
-                </button>
-            </a>
-            <a href="{% url 'matching:show_pending_requests' utrip_id=usertrip_instance.id %}">
-                <button type="button" class="btn btn-rounded btn-primary">
-                    Show Pending Matches
-                </button>
-            </a>
-            <a href="{% url 'matching:show_matches' utrip_id=usertrip_instance.id %}">
-                <button type="button" class="btn btn-success btn-rounded">
-                    Show Matches
-                </button>
-            </a>
-            <br><br>
-            <a href="{% url 'trip:update_trip' ut_id=usertrip_instance.id %}">
-                <button type="button" class="btn btn-info btn-rounded">
-                Update Travel Dates
-                </button>
-            </a>
-            <a href="{% url 'trip:milestone_trip' ut_id=usertrip_instance.id %}">
-                <button type="button" class="btn btn-info btn-rounded">
-                Cancel Trip
-                </button>
-            </a>
+    </div>
+    <div class="row-gap-3 mt-3">
+        <div class="col-md-3">
+            <div class="card my-3">
+                <img class="card-img-top" src="{% static 'trip/images/vacation_card_img.jpeg' %}" alt="Vacation image">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h3 class = "fw-bold">Trip to {{ usertrip_instance.trip.destination_city }}, {{ usertrip_instance.trip.destination_country }}</h3>
+                    </div>
+                    <h5>{{ usertrip_instance.start_trip|date:"m/d/Y" }} - {{ usertrip_instance.end_trip|date:"m/d/Y" }}</h5>
+
+                    <br>
+                    <div>
+                        <a href="{% url 'trip:update_trip' ut_id=usertrip_instance.id %}" class="btn btn-outline-info btn-rounded">Update Travel Dates </a>
+                    </div>
+                    <div>
+                        <a href="{% url 'matching:show_potential_matches' utrip_id=usertrip_instance.id%}" class="btn btn-outline-primary btn-rounded">View Potential Matches</a>
+                    </div>
+                    <div>
+                        <a href="{% url 'matching:show_pending_requests' utrip_id=usertrip_instance.id %}" class="btn btn-outline-primary btn-rounded">View Match Requests</a>
+                    </div>
+                    <div>
+                        <a href="{% url 'matching:show_matches' utrip_id=usertrip_instance.id %}" class="btn btn-outline-primary btn-rounded">View Matches</a>
+                    </div>
+                    <div>
+                        <a href="{% url 'trip:milestone_trip' ut_id=usertrip_instance.id %}" class="btn btn-outline-danger btn-rounded">Cancel Trip</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row gap-3">
@@ -42,7 +43,7 @@
             <small><a href="{% url 'trip:view_trips' %}">View All Trips</a></small>
         </div>
     </div>
-    <br><br><br>
+    <br><br>
     <div class="col-3">
         <h3>Emergency Contact List</h3>
         <ul class="list-group">
@@ -61,6 +62,7 @@
         </ul>
     </div>
 </div>
+<br><br><br>
 
 
 {% endblock content %}

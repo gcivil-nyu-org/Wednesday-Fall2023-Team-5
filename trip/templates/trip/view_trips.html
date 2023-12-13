@@ -1,4 +1,5 @@
 {% extends "home_default/base.html" %}
+{% load static %}
 {% block content %}
 <div class="container">
     <div class="row mt-5">
@@ -7,20 +8,30 @@
         </div>
     </div>
     {% if trips %}
-        {% for ut in trips %}
-            <div class="row">
-                <a href="{% url 'trip:detail_trip' ut_id=ut.id %}">
-                    Trip to: {{ ut.trip.destination_city }}, {{ ut.trip.destination_country }}
-                </a>
-                <br><br>
+        <div class="container">
+            <div class="row justify-content-start">
+            {% for ut in trips %}
+                <div class="col-md-3">
+                    <div class="card my-3">
+                        <img class="card-img-top" src="{% static 'trip/images/vacation_card_img.jpeg' %}" alt="Vacation image">
+                        <div class="card-body">
+                            <h5 class="card-title ">Your trip to</h5>
+                            <p class="card-text fw-bold">{{ ut.trip.destination_city }}, {{ ut.trip.destination_country }}</p>
+                            <a href="{% url 'trip:detail_trip' ut_id=ut.id %}" class="btn btn-outline-info">View Trip</a>
+                        <br><br>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
             </div>
-        {% endfor %}
-        <div class="row">
-            <a href="{% url 'trip:create_trip' %}">
-                <button type="button" class="btn btn-success btn-rounded btn-sm">
-                    <i class="fas fa-edit" style="font-size:20px"></i> Plan a Trip
-                </button>
-            </a>
+
+            <div class="row">
+                <a href="{% url 'trip:create_trip' %}">
+                    <button type="button" class="btn btn-success btn-rounded btn-sm">
+                        <i class="fas fa-edit" style="font-size:20px"></i> Plan a Trip
+                    </button>
+                </a>
+            </div>
         </div>
     {% else %}
         <p>To see your trips, <a href="{% url 'trip:create_trip' %}">please create a trip</a></p>

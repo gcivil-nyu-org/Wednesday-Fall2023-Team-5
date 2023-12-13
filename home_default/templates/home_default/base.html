@@ -9,6 +9,7 @@
     <link rel="shortcut icon" href="{% static 'home_default/site_images/favicon.ico' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'home_default/css/bootstrap.css' %}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <link rel="stylesheet" href="{% static 'home_default/css/sc-custom-colors.css' %}" />
 </head>
 <body>
 <header>
@@ -38,10 +39,10 @@
                         <a class="nav-link active" href="{% url 'trip:create_trip' %}">Plan a Trip</a>
                     </li>
                     <li class ="nav-item">
-                        <a class="nav-link active" href="{% url 'user_profile:logout' %}">Log Out</a>
+                        <a class="nav-link active" href="{% url 'chat:threads_page' %}">Chat</a>
                     </li>
                     <li class ="nav-item">
-                        <a class="nav-link active" href="{% url 'chat:threads_page' %}">Chat</a>
+                        <a class="nav-link active" href="{% url 'user_profile:logout' %}">Log Out</a>
                     </li>
                 </ul>
             </div>
@@ -54,7 +55,7 @@
             <a href="{% url 'home_default:home_page' %}">
                 <img src="{% static 'home_default/site_images/sc-logo-main-cropped.png' %}" alt="SoloConnect Logo" height="55" width="55">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse2"
                     aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -63,7 +64,7 @@
                     <li class ="nav-item px-3">
                         <a class="nav-link active" href="{% url 'home_default:home_page' %}">Home</a>
                     </li>
-                    <li class ="nav-item">
+                    <li class ="nav-item px-3">
                         <a class="nav-link active" href="{% url 'user_profile:login' %}">Log In</a>
                     </li>
                 </ul>

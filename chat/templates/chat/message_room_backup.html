@@ -1,0 +1,105 @@
+{% extends 'home_default/base.html' %}
+{% load static %}
+{% load user_profile_custom_tags %}
+{% block content %}
+
+<style>
+    a.nav-link {
+        color: gray;
+        font-size: 18px;
+        padding: 0;
+    }
+    .chat-col-log {
+        background-color: #eef1ff;
+    }
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid #e84118;
+        padding: 2px;
+        flex: none;
+        overflow: hidden;
+    }
+
+    .thread-avatar-name {
+        vertical-align: middle;
+    }
+
+    input:focus {
+        outline: 0px !important;
+        box-shadow: none !important;
+    }
+
+    .card-text-sent-to {
+        width: auto;
+        border: 3px solid #4d4d4d;
+        border-radius: 8px;
+        background-color: #B48700;
+        {#background-color: #8E74C2;#}
+        color: whitesmoke;
+    }
+
+    .card-text-sent-by {
+        width: auto;
+        border: 3px solid #4d4d4d;
+        border-radius: 8px;
+        background-color: #005970;
+        {#background-color: #6E39C2;#}
+        color: whitesmoke;
+    }
+
+    .sent-to-client {
+        justify-content: flex-start;
+        align-items: baseline;
+    }
+
+    .sent-by-client {
+        justify-content: flex-end;
+        align-items: baseline;
+    }
+
+    .fixed-wh {
+        width: 200px;
+        height: 550px;
+        max-height: 550px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+</style>
+<div class="container mt-6">
+    <div class="row" id="outermost-row">
+        <div class="col-2 bg-sc-grey-2-5 border-top border-bottom border-left border-black" id="threads-col-outer">
+            <div class="row" id="threads-row-header">
+                <div class="d-flex col bg-sc-grey-2-5 border-black justify-content-center py-2" id="threads-col-header">
+                    <h3 class="pt-1" style="color:whitesmoke;">Chat With</h3>
+                </div>
+            </div>
+            <div class="row" id="threads-objects-list">
+                <div class="col border-bottom border-black" id="threads-objects-list-col">
+                </div>
+            </div>
+        </div>
+        <div class="col-8 bg-body-secondary" id="chat-col-outer">
+            <div class="row" id="chat-row-header">
+                <div class="col d-flex bg-sc-grey-2-5 border border-black justify-content-between py-2" id="chat-col-header">
+                    <h3 style="color:whitesmoke">. </h3>
+                    <div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="chat-row-log">
+                <div class="col bg-sc-grey-2 fixed-wh" id="chat-col-log">
+                    <div id="chat-log">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="chat-row-send">
+            <div class="col d-flex bg-info-subtle justify-content-between" id="chat-col-input">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
