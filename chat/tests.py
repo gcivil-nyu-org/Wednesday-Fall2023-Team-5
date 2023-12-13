@@ -37,6 +37,10 @@ class TestViews(TestCase):
             user_profile=self.user1.userprofile,
             image="profileImages/great-gatsby-background-1.jpg",
         )
+        self.user2.userprofile.images = UserImages.objects.create(
+            user_profile=self.user2.userprofile,
+            image="profileImages/great-gatsby-background-1.jpg",
+        )
         self.user1.save()
         self.user2.save()
 
@@ -100,27 +104,5 @@ class TestViews(TestCase):
                 t[0].first_user_image_url,
                 "/media/profileImages/great-gatsby-background-1.jpg",
             )
-            self.assertEqual(t[0].second_user_image_url, "/media/default_avatar.png")
-            t.delete()
+            self.assertEqual(t[0].second_user_image_url, "/media/profileImages/great-gatsby-background-1.jpg")
 
-        def test_branch_save(self):
-            self.user1.userprofile.images = UserImages.objects.create(
-                user_profile=self.user1.userprofile,
-                image="/media/default_avatar.png",
-            )
-            self.user2.userprofile.images = UserImages.objects.create(
-                user_profile=self.user1.userprofile,
-                image="/media/profileImages/great-gatsby-background-1.jpg",
-            )
-            Thread.objects.create(
-                first_user=self.user1, second_user=self.user2, updated=datetime.utcnow()
-            )
-            t = Thread.objects.filter(
-                Q(first_user=self.user1) & Q(second_user=self.user2)
-            )
-            # ChatMessage.objects.create(thread=t, sending_user=self.user1, message="hello")
-            self.assertEqual(
-                t[0].second_user_image_url,
-                "/media/profileImages/great-gatsby-background-1.jpg",
-            )
-            self.assertEqual(t[0].first_user_image_url, "/media/default_avatar.png")

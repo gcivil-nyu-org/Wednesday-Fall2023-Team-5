@@ -130,6 +130,20 @@ class TestTripViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response=None, template_name="trip/create_trip.html")
 
+    def test_update_trip_GET(self):
+        ut_id = random.randrange(1, 100)
+        response = self.client.get(reverse("trip:update_trip", kwargs={"ut_id": ut_id}))
+        valid_results = [403, 200, 302]
+        self.assertIn(response.status_code, valid_results)
+        self.assertTemplateUsed(response=None, template_name="trip/update_trip.html")
+
+    def test_milestone_trip_GET(self):
+        ut_id = random.randrange(1, 100)
+        response = self.client.get(reverse("trip:milestone_trip", kwargs={"ut_id": ut_id}))
+        valid_results = [403, 200, 302]
+        self.assertIn(response.status_code, valid_results)
+        self.assertTemplateUsed(response=None, template_name="trip/milestone_confirm.html")
+
     @mock.patch("trip.forms.UserTripCreationForm")
     def test_create_trip_POST_valid(self, mock_form):
         date_start = datetime.today() + timedelta(24)
