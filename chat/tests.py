@@ -104,5 +104,7 @@ class TestViews(TestCase):
                 t[0].first_user_image_url,
                 "/media/profileImages/great-gatsby-background-1.jpg",
             )
-            self.assertEqual(t[0].second_user_image_url, "/media/profileImages/great-gatsby-background-1.jpg")
-
+            self.assertEqual(
+                t[0].second_user_image_url,
+                "/media/profileImages/great-gatsby-background-1.jpg",
+            )
