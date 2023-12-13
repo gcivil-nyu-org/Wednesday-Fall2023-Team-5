@@ -40,10 +40,10 @@
         <div class="container">
             <div class="row justify-content-start">
                 {% for match_user in match_users %}
-                    <div class="col-md-3">
+                    <div class="col-sm-12 col-md-6 col-lg-3">
                         <div class="card my-3">
                             {% if match_user.image %}
-                                <img class="card-img-top" src="{{ match_user.image }}" alt="image">
+                                <img class="card-img-top" src="{{ match_user.image }}" alt="image" style="max-width: 214px; max-height: 214px;">
                             {% else %}
                                 <img class="card-img-top" src="/media/default_avatar.png" alt="image">
                             {% endif %}
