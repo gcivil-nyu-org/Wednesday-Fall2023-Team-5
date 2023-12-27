@@ -2,10 +2,10 @@
 [![Build Status](https://app.travis-ci.com/gcivil-nyu-org/Wednesday-Fall2023-Team-5.svg?branch=develop)](https://app.travis-ci.com/gcivil-nyu-org/Wednesday-Fall2023-Team-5)
 
 Contributors: 
-Mike Zacharchenko 
-Kumud Ravisankaran
-Rishabh Verma
-Rishie Nandhan Babu 
+- Mike Zacharchenko 
+- Kumud Ravisankaran
+- Rishabh Verma
+- Rishie Nandhan Babu 
 
 
 master: [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/Wednesday-Fall2023-Team-5/badge.svg?branch=master)](https://coveralls.io/github/gcivil-nyu-org/Wednesday-Fall2023-Team-5?branch=master)
